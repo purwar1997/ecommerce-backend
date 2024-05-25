@@ -9,7 +9,7 @@ const connectDB = async () => {
     console.log(`Database connection success: ${response.connection.host}`);
 
     mongoose.connection.on('error', error => {
-      console.log('ERROR:', error);
+      console.error('ERROR:', error);
     });
 
     mongoose.connection.on('disconnected', () => {
@@ -21,7 +21,7 @@ const connectDB = async () => {
     });
   } catch (error) {
     console.log('Database connection failed');
-    console.log('ERROR:', error);
+    console.error('ERROR:', error);
     process.exit(1);
   }
 };

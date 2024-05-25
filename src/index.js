@@ -14,7 +14,7 @@ import app from './app.js';
       console.log(`Server is running on http://localhost:${config.PORT}`);
     });
   } catch (error) {
-    console.log('ERROR:', error);
+    console.error('ERROR:', error);
     process.exit(1);
   }
 })();
