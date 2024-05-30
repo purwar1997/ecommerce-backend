@@ -2,6 +2,15 @@ import express from 'express';
 
 const app = express();
 
+app.use((err, _req, res, _next) => {
+  console.log(err.stack);
+
+  res.status(500).json({
+    success: false,
+    message: err.message,
+  });
+});
+
 app.get('/api/v1', (_req, res) => {
   res.send('Received GET request');
 });
