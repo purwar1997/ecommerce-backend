@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import config from '../config/config.js';
-import { emailRegex, phoneRegex, passwordRegex } from '../../utils/regex.js';
+import { emailRegex, phoneRegex, passwordRegex } from '../utils/regex.js';
 import { ROLES, JWT_EXPIRY } from '../constants.js';
 
 const Schema = mongoose.Schema;
@@ -12,7 +12,7 @@ const userSchema = new Schema(
   {
     firstname: {
       type: String,
-      required: [true, 'Firstname is required.'],
+      required: [true, 'Firstname is required'],
       trim: true,
     },
     lastname: {
@@ -21,25 +21,25 @@ const userSchema = new Schema(
     },
     email: {
       type: String,
-      required: [true, 'Email address is required.'],
+      required: [true, 'Email address is required'],
       unique: true,
       immutable: true,
       lowercase: true,
       trim: true,
-      match: [emailRegex, 'Please provide a valid email address.'],
+      match: [emailRegex, 'Please provide a valid email address'],
     },
     phone: {
       type: String,
-      required: [true, 'Phone number is required.'],
+      required: [true, 'Phone number is required'],
       trim: true,
-      match: [phoneRegex, 'Please provide a valid phone number.'],
+      match: [phoneRegex, 'Please provide a valid phone number'],
     },
     password: {
       type: String,
-      required: [true, 'Password is required.'],
+      required: [true, 'Password is required'],
       match: [
         passwordRegex,
-        'Password must be 6-20 characters long and should contain atleast one digit, one letter and one special character.',
+        'Password must be 6-20 characters long and should contain atleast one digit, one letter and one special character',
       ],
       select: false,
     },
@@ -48,7 +48,7 @@ const userSchema = new Schema(
       default: ROLES.USER,
       enum: {
         values: Object.values(ROLES),
-        message: 'Invalid role.',
+        message: 'Invalid role',
       },
     },
     cart: [
@@ -63,7 +63,7 @@ const userSchema = new Schema(
             validator: function (v) {
               return Number.isInteger(v) && v > 0;
             },
-            message: 'Quantity must be a positive integer.',
+            message: 'Quantity must be a positive integer',
           },
         },
       },
