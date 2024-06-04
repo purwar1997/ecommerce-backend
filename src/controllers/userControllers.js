@@ -2,8 +2,8 @@ import User from '../models/User.js';
 import handleAsync from '../services/handleAsync.js';
 import CustomError from '../utils/customError.js';
 
-export const getUserDetails = handleAsync(async (_req, res) => {
-  const { user } = res;
+export const getUserDetails = handleAsync(async (req, res) => {
+  const { user } = req;
 
   res.status(200).json({
     success: true,
