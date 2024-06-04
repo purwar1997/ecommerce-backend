@@ -2,6 +2,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import authRouter from './routes/authRoutes.js';
 import userRouter from './routes/userRoutes.js';
+import errorMiddleware from './middlewares/errorHandler.js';
 
 const app = express();
 
@@ -11,13 +12,6 @@ app.use(cookieParser());
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1', userRouter);
 
-app.use((err, _req, res, _next) => {
-  console.log(err.stack);
-
-  res.status(500).json({
-    success: false,
-    message: 'Internal server error',
-  });
-});
+app.use(errorMiddleware);
 
 export default app;

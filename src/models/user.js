@@ -31,6 +31,7 @@ const userSchema = new Schema(
     phone: {
       type: String,
       required: [true, 'Phone number is required'],
+      unique: true,
       trim: true,
       match: [phoneRegex, 'Please provide a valid phone number'],
     },
@@ -51,6 +52,10 @@ const userSchema = new Schema(
         message: 'Invalid role',
       },
     },
+    avatar: {
+      public_id: String,
+      url: String,
+    },
     cart: [
       {
         product: {
@@ -69,9 +74,8 @@ const userSchema = new Schema(
       },
     ],
     wishlist: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
-    profilePhoto: String,
-    forgotPasswordToken: String,
-    forgotPasswordExpiry: Date,
+    resetPasswordToken: String,
+    resetPasswordExpiry: Date,
   },
   {
     timestamps: true,
@@ -110,9 +114,9 @@ userSchema.methods = {
   },
 
   generateForgotPasswordToken() {
-    const token = crypto.randomBytes(256).toString('hex');
-    this.forgotPasswordToken = crypto.createHash('sha256').update(token).digest('hex');
-    this.forgotPasswordExpiry = new Date(Date.now() + 30 * 60 * 1000);
+    const token = crypto.randomBytes(32).toString('hex');
+    this.resetPasswordToken = crypto.createHash('sha256').update(token).digest('hex');
+    this.resetPasswordExpiry = new Date(Date.now() + 30 * 60 * 1000);
 
     return token;
   },
