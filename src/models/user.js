@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import config from '../config/config.js';
-import { emailRegex, phoneRegex, passwordRegex } from '../utils/regex.js';
+import { nameRegex, emailRegex, phoneRegex, passwordRegex } from '../utils/regex.js';
 import { ROLES, JWT_EXPIRY } from '../constants.js';
 
 const Schema = mongoose.Schema;
@@ -12,27 +12,24 @@ const userSchema = new Schema(
   {
     firstname: {
       type: String,
-      required: [true, 'Firstname is required'],
-      trim: true,
+      required: [true, 'First name is required'],
+      match: [nameRegex, 'First name must contain only alphabets'],
     },
     lastname: {
       type: String,
-      trim: true,
+      match: [nameRegex, 'Last name must contain only alphabets'],
     },
     email: {
       type: String,
       required: [true, 'Email address is required'],
       unique: true,
       immutable: true,
-      lowercase: true,
-      trim: true,
       match: [emailRegex, 'Please provide a valid email address'],
     },
     phone: {
       type: String,
       required: [true, 'Phone number is required'],
       unique: true,
-      trim: true,
       match: [phoneRegex, 'Please provide a valid phone number'],
     },
     password: {
