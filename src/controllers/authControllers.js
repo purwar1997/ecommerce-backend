@@ -1,4 +1,4 @@
-import User from '../models/User.js';
+import User from '../models/user.js';
 import handleAsync from '../services/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import { setCookieOptions, clearCookieOptions } from '../utils/cookieOptions.js';
