@@ -1,5 +1,6 @@
 import Joi from 'joi';
 import { nameRegex, phoneRegex, passwordRegex } from '../utils/regex.js';
+import { stripConfirmPassword } from '../utils/helpers.js';
 
 export const updateUserSchema = Joi.object({
   firstname: Joi.string().trim().pattern(nameRegex).required().messages({
@@ -26,6 +27,7 @@ export const updateUserSchema = Joi.object({
   }),
 })
   .with('password', 'confirmPassword')
+  .custom(stripConfirmPassword)
   .messages({
     'object.with': 'Confirm password is required',
   });

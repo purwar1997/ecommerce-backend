@@ -1,5 +1,6 @@
 import Joi from 'joi';
 import { nameRegex, phoneRegex, passwordRegex } from '../utils/regex.js';
+import { stripConfirmPassword } from '../utils/helpers.js';
 
 const emailSchema = Joi.string()
   .trim()
@@ -41,7 +42,7 @@ export const signupSchema = Joi.object({
 
   password: newPasswordSchema,
   confirmPassword: confirmPasswordSchema,
-});
+}).custom(stripConfirmPassword);
 
 export const loginSchema = Joi.object({
   email: emailSchema,
