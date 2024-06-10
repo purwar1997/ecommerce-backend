@@ -21,7 +21,7 @@ export const signup = handleAsync(async (req, res) => {
   res.status(201).json({
     success: true,
     message: 'User created successfully',
-    user: newUser,
+    user: newUser.toObject(),
   });
 });
 
@@ -66,7 +66,7 @@ export const forgotPassword = handleAsync(async (req, res) => {
 
   const resetPasswordToken = user.generateForgotPasswordToken();
 
-  await user.save({ validateBeforeSave: true });
+  await user.save();
 
   const resetPasswordUrl = `${req.protocol}://${req.hostname}/reset-password/${resetPasswordToken}`;
 
@@ -81,7 +81,7 @@ export const forgotPassword = handleAsync(async (req, res) => {
   } catch (error) {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpiry = undefined;
-    await user.save({ validateBeforeSave: true });
+    await user.save();
     throw new CustomError('Failure sending mail to the user', 500);
   }
 
@@ -100,7 +100,7 @@ export const resetPassword = handleAsync(async (req, res) => {
   const user = await User.findOne({
     resetPasswordToken: encryptedToken,
     resetPasswordExpiry: { $gt: new Date() },
-  }).select('+password');
+  });
 
   if (!user) {
     throw new CustomError('Reset password token is either invalid or expired', 400);

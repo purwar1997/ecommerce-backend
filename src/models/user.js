@@ -76,6 +76,14 @@ const userSchema = new Schema(
   },
   {
     timestamps: true,
+    toObject: {
+      versionKey: false,
+      virtuals: true,
+      transform: function (_doc, res) {
+        delete res.id;
+        return res;
+      },
+    },
   }
 );
 
@@ -103,9 +111,16 @@ userSchema.methods = {
   },
 
   generateJWTToken() {
-    const token = jwt.sign({ userId: this._id }, config.JWT_SECRET_KEY, {
-      expiresIn: JWT_EXPIRY,
-    });
+    const token = jwt.sign(
+      {
+        userId: this._id,
+        role: this.role,
+      },
+      config.JWT_SECRET_KEY,
+      {
+        expiresIn: JWT_EXPIRY,
+      }
+    );
 
     return token;
   },
