@@ -13,8 +13,6 @@ const validateSchema = schema =>
       throw new CustomError(message, 400);
     }
 
-    console.log(value);
-
     req.body = value;
     next();
   });
