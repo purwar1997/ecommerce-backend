@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import config from '../config/config.js';
-import { nameRegex, emailRegex, phoneRegex, passwordRegex } from '../utils/regex.js';
+import { nameRegex, emailRegex, phoneRegex } from '../utils/regex.js';
 import { ROLES, JWT_EXPIRY } from '../constants.js';
 
 const Schema = mongoose.Schema;
@@ -35,10 +35,6 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: [true, 'Password is required'],
-      match: [
-        passwordRegex,
-        'Password must be 6-20 characters long and should contain atleast one digit, one letter and one special character',
-      ],
       select: false,
     },
     role: {
@@ -73,6 +69,10 @@ const userSchema = new Schema(
     wishlist: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
     resetPasswordToken: String,
     resetPasswordExpiry: Date,
+    deleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
@@ -101,8 +101,24 @@ userSchema.pre('save', async function (next) {
   }
 });
 
+userSchema.pre('findOneAndUpdate', async function (next) {
+  const update = this.getUpdate();
+
+  if (!update.password) {
+    return next();
+  }
+
+  try {
+    const salt = await bcrypt.genSalt(10);
+    update.password = await bcrypt.hash(update.password, salt);
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
 userSchema.virtual('fullname').get(function () {
-  return `${this.firstname} ${this.lastname}`;
+  return `${this.firstname} ${this.lastname}`.trimEnd();
 });
 
 userSchema.methods = {
