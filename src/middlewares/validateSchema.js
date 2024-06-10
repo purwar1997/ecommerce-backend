@@ -3,7 +3,7 @@ import CustomError from '../utils/customError.js';
 
 const validateSchema = schema =>
   handleAsync((req, _res, next) => {
-    const { error, value } = schema.validate(req.body, { abortEarly: false });
+    const { error, value } = schema.validate(req.body, { abortEarly: false, stripUnknown: true });
 
     if (error) {
       console.log(error);

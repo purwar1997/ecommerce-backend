@@ -30,7 +30,7 @@ const errorHandler = (err, _req, res, _next) => {
   }
 
   if (err.code === 11000) {
-    const message = `${Object.keys(err.keyPattern)[0]} already exists`;
+    const message = `Duplicate value provided for ${Object.keys(err.keyPattern)[0]}`;
     err = new CustomError(message, 400);
   }
 
