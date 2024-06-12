@@ -127,18 +127,11 @@ userSchema.methods = {
   },
 
   generateJWTToken() {
-    const token = jwt.sign(
-      {
-        userId: this._id,
-        role: this.role,
-      },
-      config.JWT_SECRET_KEY,
-      {
-        expiresIn: JWT_EXPIRY,
-      }
-    );
+    const jwtToken = jwt.sign({ userId: this._id }, config.JWT_SECRET_KEY, {
+      expiresIn: JWT_EXPIRY,
+    });
 
-    return token;
+    return jwtToken;
   },
 
   generateForgotPasswordToken() {
