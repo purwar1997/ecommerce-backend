@@ -1,5 +1,0 @@
-77136160-97c5-4a5a-8ae2-35f61bc05ef1 ::1 [Wed, 12 Jun 2024 18:34:39 GMT] GET /api/v1/admin/users HTTP/1.1 200 application/json; charset=utf-8 640 - 121 ms
-ecb01e9c-eee9-4695-9752-96216bdf14e1 ::1 [Wed, 12 Jun 2024 18:35:44 GMT] POST /api/v1/auth/logout HTTP/1.1 200 application/json; charset=utf-8 57 - 45 ms
-a1570613-c19f-4291-a046-a6456bdaf2b3 ::1 [Wed, 12 Jun 2024 18:35:57 GMT] POST /api/v1/auth/login HTTP/1.1 200 application/json; charset=utf-8 56 - 273 ms
-1e7484fc-870b-4793-880a-e6e12b2130b6 ::1 [Wed, 12 Jun 2024 18:36:07 GMT] POST /api/v1/auth/logout HTTP/1.1 200 application/json; charset=utf-8 57 - 43 ms
-a298906c-6f57-4897-9d50-47f74c500aa9 ::1 [Wed, 12 Jun 2024 18:36:17 GMT] POST /api/v1/auth/login HTTP/1.1 401 application/json; charset=utf-8 48 - 218 ms
