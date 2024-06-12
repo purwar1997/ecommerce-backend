@@ -15,6 +15,8 @@ import { updateUserSchema, updateRoleSchema } from '../schemas/userSchemas.js';
 import authenticate from '../middlewares/authenticate.js';
 import validateRole from '../middlewares/validateRole.js';
 import validateSchema from '../middlewares/validateSchema.js';
+import checkAdminSelfUpdate from '../middlewares/checkAdminSelfUpdate.js';
+import checkAdminSelfDelete from '../middlewares/checkAdminSelfDelete.js';
 import { ROLES } from '../constants.js';
 
 const router = express.Router();
@@ -30,8 +32,14 @@ router.route('/admin/users').get(authenticate, validateRole(ROLES.ADMIN), getUse
 router
   .route('/admin/users/:userId')
   .get(authenticate, validateRole(ROLES.ADMIN), getUserById)
-  .put(authenticate, validateRole(ROLES.ADMIN), validateSchema(updateRoleSchema), updateUserRole)
-  .delete(authenticate, validateRole(ROLES.ADMIN), deleteUser);
+  .put(
+    authenticate,
+    validateRole(ROLES.ADMIN),
+    checkAdminSelfUpdate,
+    validateSchema(updateRoleSchema),
+    updateUserRole
+  )
+  .delete(authenticate, validateRole(ROLES.ADMIN), checkAdminSelfDelete, deleteUser);
 
 router.route('/admin/admins').get(authenticate, validateRole(ROLES.ADMIN), getOtherAdmins);
 

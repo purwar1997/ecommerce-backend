@@ -83,10 +83,6 @@ export const updateUserRole = handleAsync(async (req, res) => {
   const { userId } = req.params;
   const { role } = req.body;
 
-  if (userId === req.user._id.toString()) {
-    throw new CustomError('An admin is not allowed to update their role through this route', 403);
-  }
-
   const user = await User.findOneAndUpdate(
     { _id: userId, deleted: false },
     { role },
@@ -106,13 +102,6 @@ export const updateUserRole = handleAsync(async (req, res) => {
 
 export const deleteUser = handleAsync(async (req, res) => {
   const { userId } = req.params;
-
-  if (userId === req.user._id.toString()) {
-    throw new CustomError(
-      'An admin is not allowed to delete their account through this route',
-      403
-    );
-  }
 
   const user = await User.findOneAndUpdate(
     { _id: userId, deleted: false },
