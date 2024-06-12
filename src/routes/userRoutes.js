@@ -1,13 +1,17 @@
 import express from 'express';
 import {
   getUserDetails,
-  updateUser,
+  updateProfile,
   deleteAccount,
   getUsers,
   getUserById,
-  getAllAdmins,
+  updateUserRole,
+  deleteUser,
+  getOtherAdmins,
+  adminSelfDemote,
+  adminSelfDelete,
 } from '../controllers/userControllers.js';
-import { updateUserSchema } from '../schemas/userSchemas.js';
+import { updateUserSchema, updateRoleSchema } from '../schemas/userSchemas.js';
 import authenticate from '../middlewares/authenticate.js';
 import validateRole from '../middlewares/validateRole.js';
 import validateSchema from '../middlewares/validateSchema.js';
@@ -18,11 +22,22 @@ const router = express.Router();
 router
   .route('/user')
   .get(authenticate, getUserDetails)
-  .put(authenticate, validateSchema(updateUserSchema), updateUser)
+  .put(authenticate, validateSchema(updateUserSchema), updateProfile)
   .delete(authenticate, deleteAccount);
 
 router.route('/admin/users').get(authenticate, validateRole(ROLES.ADMIN), getUsers);
-router.route('/admin/users/:userId').get(authenticate, validateRole(ROLES.ADMIN), getUserById);
-router.route('/admin/admins').get(authenticate, validateRole(ROLES.ADMIN), getAllAdmins);
+
+router
+  .route('/admin/users/:userId')
+  .get(authenticate, validateRole(ROLES.ADMIN), getUserById)
+  .put(authenticate, validateRole(ROLES.ADMIN), validateSchema(updateRoleSchema), updateUserRole)
+  .delete(authenticate, validateRole(ROLES.ADMIN), deleteUser);
+
+router.route('/admin/admins').get(authenticate, validateRole(ROLES.ADMIN), getOtherAdmins);
+
+router
+  .route('/admin/self')
+  .put(authenticate, validateRole(ROLES.ADMIN), adminSelfDemote)
+  .delete(authenticate, validateRole(ROLES.ADMIN), adminSelfDelete);
 
 export default router;

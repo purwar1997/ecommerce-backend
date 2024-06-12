@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import { nameRegex, phoneRegex, passwordRegex } from '../utils/regex.js';
 import { stripConfirmPassword } from '../utils/helpers.js';
+import { ROLES } from '../constants.js';
 
 export const updateUserSchema = Joi.object({
   firstname: Joi.string().trim().pattern(nameRegex).required().messages({
@@ -31,3 +32,10 @@ export const updateUserSchema = Joi.object({
   .messages({
     'object.with': 'Confirm password is required',
   });
+
+export const updateRoleSchema = Joi.object({
+  role: Joi.string().trim().lowercase().valid(ROLES.USER, ROLES.ADMIN).required().messages({
+    'string.empty': 'Role is required',
+    'any.only': 'Invalid role',
+  }),
+});
