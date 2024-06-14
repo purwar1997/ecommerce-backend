@@ -4,13 +4,15 @@ import { stripConfirmPassword } from '../utils/helpers.js';
 import { ROLES } from '../constants.js';
 
 export const updateUserSchema = Joi.object({
-  firstname: Joi.string().trim().pattern(nameRegex).required().messages({
+  firstname: Joi.string().trim().pattern(nameRegex).max(50).required().messages({
     'string.empty': 'First name is required',
     'string.pattern.base': 'First name must contain only alphabets',
+    'string.max': 'First name cannot exceed 50 characters',
   }),
 
-  lastname: Joi.string().trim().pattern(nameRegex).allow('').messages({
+  lastname: Joi.string().trim().pattern(nameRegex).max(50).allow('').messages({
     'string.pattern.base': 'Last name must contain only alphabets',
+    'string.max': 'Last name cannot exceed 50 characters',
   }),
 
   phone: Joi.string().trim().pattern(phoneRegex).required().messages({

@@ -14,10 +14,12 @@ const userSchema = new Schema(
       type: String,
       required: [true, 'First name is required'],
       match: [nameRegex, 'First name must contain only alphabets'],
+      maxLength: [50, 'First name cannot exceed 50 characters'],
     },
     lastname: {
       type: String,
       match: [nameRegex, 'Last name must contain only alphabets'],
+      maxLength: [50, 'Last name cannot exceed 50 characters'],
     },
     email: {
       type: String,
