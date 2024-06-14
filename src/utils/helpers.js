@@ -1,4 +1,22 @@
-export const serializeDocs = docs => docs.map(doc => doc.toObject());
+export const serialize = data => {
+  if (!data) {
+    return;
+  }
+
+  if (!Array.isArray(data)) {
+    return data.toObject();
+  }
+
+  return data.map(doc => doc.toObject());
+};
+
+export const sendResponse = (res, statusCode, message, data) => {
+  res.status(statusCode).json({
+    success: true,
+    message,
+    data: serialize(data),
+  });
+};
 
 export const stripConfirmPassword = (value, _helpers) => {
   const { confirmPassword, ...rest } = value;

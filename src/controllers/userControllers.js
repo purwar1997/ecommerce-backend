@@ -1,17 +1,13 @@
 import User from '../models/user.js';
 import handleAsync from '../services/handleAsync.js';
 import CustomError from '../utils/customError.js';
-import { serializeDocs } from '../utils/helpers.js';
+import { sendResponse } from '../utils/helpers.js';
 import { clearCookieOptions } from '../utils/cookieOptions.js';
 
 export const getUserDetails = handleAsync(async (req, res) => {
   const user = await User.findById(req.user._id).select({ cart: 0, wishlist: 0 });
 
-  res.status(200).json({
-    success: true,
-    message: 'User details fetched successfully',
-    user: user.toObject(),
-  });
+  sendResponse(res, 200, 'User details fetched successfully', user);
 });
 
 export const updateProfile = handleAsync(async (req, res) => {
@@ -35,20 +31,15 @@ export const updateProfile = handleAsync(async (req, res) => {
     new: true,
   });
 
-  res.status(200).json({
-    success: true,
-    message: 'Profile updated successfully',
-    user: updatedUser.toObject(),
-  });
+  sendResponse(res, 200, 'Profile updated successfully', updatedUser);
 });
 
 export const deleteAccount = handleAsync(async (req, res) => {
   await User.findByIdAndUpdate(req.user._id, { deleted: true }, { runValidators: true });
 
-  res.clearCookie('token', clearCookieOptions).status(200).json({
-    success: true,
-    message: 'Account deleted successfully',
-  });
+  res.clearCookie('token', clearCookieOptions);
+
+  sendResponse(res, 200, 'Account deleted successfully');
 });
 
 export const getUsers = handleAsync(async (req, res) => {
@@ -56,11 +47,7 @@ export const getUsers = handleAsync(async (req, res) => {
 
   const users = await User.find({ deleted: false }).sort({ createdAt: -1 }).limit(page);
 
-  res.status(200).json({
-    success: true,
-    message: 'Users fetched successfully',
-    users: serializeDocs(users),
-  });
+  sendResponse(res, 200, 'Users fetched successfully', users);
 });
 
 export const getUserById = handleAsync(async (req, res) => {
@@ -72,11 +59,7 @@ export const getUserById = handleAsync(async (req, res) => {
     throw new CustomError('User not found', 404);
   }
 
-  res.status(200).json({
-    success: true,
-    message: 'User fetched by ID successfully',
-    user: user.toObject(),
-  });
+  sendResponse(res, 200, 'User fetched by ID successfully', user);
 });
 
 export const updateUserRole = handleAsync(async (req, res) => {
@@ -93,11 +76,7 @@ export const updateUserRole = handleAsync(async (req, res) => {
     throw new CustomError('User not found', 404);
   }
 
-  res.status(200).json({
-    success: true,
-    message: 'User role updated sucessfully',
-    user: user.toObject(),
-  });
+  sendResponse(res, 200, 'User role updated successfully', user);
 });
 
 export const deleteUser = handleAsync(async (req, res) => {
@@ -113,20 +92,13 @@ export const deleteUser = handleAsync(async (req, res) => {
     throw new CustomError('User not found', 404);
   }
 
-  res.status(200).json({
-    success: true,
-    message: 'User deleted sucessfully',
-  });
+  sendResponse(res, 200, 'User deleted successfully');
 });
 
 export const getOtherAdmins = handleAsync(async (req, res) => {
   const admins = await User.find({ role: 'admin', deleted: false, _id: { $ne: req.user._id } });
 
-  res.status(200).json({
-    success: true,
-    message: 'Admins other than current admin fetched successfully',
-    admins: serializeDocs(admins),
-  });
+  sendResponse(res, 200, 'Admins other than current admin fetched successfully', admins);
 });
 
 export const adminSelfDemote = handleAsync(async (req, res) => {
@@ -149,11 +121,7 @@ export const adminSelfDemote = handleAsync(async (req, res) => {
     { runValidators: true, new: true }
   );
 
-  res.status(200).json({
-    success: true,
-    message: 'Admin role demoted to user successfully',
-    admin: admin.toObject(),
-  });
+  sendResponse(res, 200, 'Admin role demoted to user successfully', admin);
 });
 
 export const adminSelfDelete = handleAsync(async (req, res) => {
@@ -172,8 +140,7 @@ export const adminSelfDelete = handleAsync(async (req, res) => {
 
   await User.findByIdAndUpdate(req.user._id, { deleted: true }, { runValidators: true, new: true });
 
-  res.clearCookie('token', clearCookieOptions).status(200).json({
-    success: true,
-    message: 'Admin deleted sucessfully',
-  });
+  res.clearCookie('token', clearCookieOptions);
+
+  sendResponse(res, 200, 'Admin deleted successfully');
 });

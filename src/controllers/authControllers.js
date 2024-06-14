@@ -4,11 +4,10 @@ import handleAsync from '../services/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import sendMail from '../services/sendMail.js';
 import { setCookieOptions, clearCookieOptions } from '../utils/cookieOptions.js';
+import { sendResponse } from '../utils/helpers.js';
 
 export const signup = handleAsync(async (req, res) => {
   const { firstname, lastname, email, phone, password } = req.body;
-
-  console.log(req.body);
 
   let user = await User.findOne({ email, deleted: false });
 
@@ -34,11 +33,7 @@ export const signup = handleAsync(async (req, res) => {
       { runValidators: true, new: true }
     );
 
-    res.status(200).json({
-      success: true,
-      message: 'Account reactivated successfully',
-      user: newUser.toObject(),
-    });
+    sendResponse(res, 200, 'Account reactivated successfully', newUser);
   }
 
   user = await User.findOne({ phone });
@@ -54,11 +49,7 @@ export const signup = handleAsync(async (req, res) => {
 
   newUser.password = undefined;
 
-  res.status(201).json({
-    success: true,
-    message: 'User created successfully',
-    user: newUser.toObject(),
-  });
+  sendResponse(res, 201, 'User created successfully', newUser);
 });
 
 export const login = handleAsync(async (req, res) => {
@@ -78,17 +69,15 @@ export const login = handleAsync(async (req, res) => {
 
   const accessToken = user.generateJWTToken();
 
-  res.cookie('token', accessToken, setCookieOptions).status(200).json({
-    success: true,
-    message: 'User logged in successfully',
-  });
+  res.cookie('token', accessToken, setCookieOptions);
+
+  sendResponse(res, 200, 'User logged in successfully');
 });
 
 export const logout = handleAsync(async (_req, res) => {
-  res.clearCookie('token', clearCookieOptions).status(200).json({
-    success: true,
-    message: 'User logged out successfully',
-  });
+  res.clearCookie('token', clearCookieOptions);
+
+  sendResponse(res, 200, 'User logged out successfully');
 });
 
 export const forgotPassword = handleAsync(async (req, res) => {
@@ -121,10 +110,7 @@ export const forgotPassword = handleAsync(async (req, res) => {
     throw new CustomError('Failure sending mail to the user', 500);
   }
 
-  res.status(200).json({
-    success: true,
-    message: 'Password reset mail sent successfully',
-  });
+  sendResponse(res, 200, 'Password reset mail sent successfully');
 });
 
 export const resetPassword = handleAsync(async (req, res) => {
@@ -152,8 +138,5 @@ export const resetPassword = handleAsync(async (req, res) => {
 
   await user.save();
 
-  res.status(200).json({
-    success: true,
-    message: 'Password has been reset sucessfully',
-  });
+  sendResponse(res, 200, 'Password has been reset sucessfully');
 });
