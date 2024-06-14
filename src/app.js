@@ -8,6 +8,9 @@ import { v4 as uuidv4 } from 'uuid';
 import generator from './utils/generator.js';
 import authRouter from './routes/authRoutes.js';
 import userRouter from './routes/userRoutes.js';
+import categoryRouter from './routes/categoryRoutes.js';
+import brandRouter from './routes/brandRoutes.js';
+import addressRouter from './routes/addressRoutes.js';
 import errorMiddleware from './middlewares/errorHandler.js';
 
 const app = express();
@@ -44,6 +47,9 @@ app.use(cookieParser());
 
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1', userRouter);
+app.use('/api/v1', categoryRouter);
+app.use('/api/v1', brandRouter);
+app.use('/api/v1', addressRouter);
 
 app.use(errorMiddleware);
 
