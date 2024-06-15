@@ -6,10 +6,10 @@ const reviewSchema = new Schema(
   {
     rating: {
       type: Number,
-      required: [true, 'Please provide a star rating'],
+      required: [true, 'Please provide a rating'],
       enum: {
         values: [1, 2, 3, 4, 5],
-        message: 'Please provide a rating between 1 and 5',
+        message: 'Please provide an integer rating between 1 and 5',
       },
     },
     headline: {
