@@ -7,10 +7,17 @@ const brandSchema = new Schema(
     name: {
       type: String,
       required: [true, 'Brand name is required'],
+      trim: true,
     },
     logo: {
-      url: String,
-      public_id: String,
+      url: {
+        type: String,
+        required: [true, 'URL of uploaded logo is required'],
+      },
+      public_id: {
+        type: String,
+        required: [true, 'Public ID of uploaded logo is required'],
+      },
     },
     createdBy: {
       type: Schema.Types.ObjectId,
