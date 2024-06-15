@@ -53,14 +53,14 @@ const addressSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    isDeleted: {
-      type: Boolean,
-      default: false,
-    },
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
     },
   },
   {

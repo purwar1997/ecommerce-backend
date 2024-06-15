@@ -18,14 +18,14 @@ export const getAddressById = handleAsync(async (req, res) => {
     throw new CustomError('Address not found', 404);
   }
 
-  sendResponse(res, 200, 'Address fetched by Id successfully', address);
+  sendResponse(res, 200, 'Address fetched by ID successfully', address);
 });
 
 export const addNewAddress = handleAsync(async (req, res) => {
-  const payload = req.body;
+  const address = req.body;
   const userId = req.user._id;
 
-  if (payload.isDefault) {
+  if (address.isDefault) {
     await Address.findOneAndUpdate(
       { user: userId, isDefault: true },
       { isDefault: false },
@@ -36,10 +36,10 @@ export const addNewAddress = handleAsync(async (req, res) => {
   const addresses = await Address.find({ user: userId, deleted: false });
 
   if (!addresses.length) {
-    payload.isDefault = true;
+    address.isDefault = true;
   }
 
-  const newAddress = await Address.create({ ...payload, user: userId });
+  const newAddress = await Address.create({ ...address, user: userId });
 
   sendResponse(res, 201, 'Address created successfully', newAddress);
 });
