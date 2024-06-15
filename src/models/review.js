@@ -7,9 +7,11 @@ const reviewSchema = new Schema(
     rating: {
       type: Number,
       required: [true, 'Please provide a rating'],
-      enum: {
-        values: [1, 2, 3, 4, 5],
-        message: 'Please provide an integer rating between 1 and 5',
+      min: [1, 'Rating must be between 1 and 5 inclusive'],
+      max: [5, 'Rating must be between 1 and 5 inclusive'],
+      validate: {
+        validator: Number.isInteger,
+        message: 'Rating must be an integer',
       },
     },
     headline: {
@@ -25,7 +27,7 @@ const reviewSchema = new Schema(
     product: {
       type: Schema.Types.ObjectId,
       ref: 'Product',
-      required: [true, 'Please provide the ID of the product being reviewed'],
+      required: true,
     },
     user: {
       type: Schema.Types.ObjectId,

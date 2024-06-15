@@ -16,17 +16,17 @@ export const getProductReviews = handleAsync(async (req, res) => {
 
   const reviews = await Review.find({ product: productId });
 
-  sendResponse(res, 200, 'Product reviews fetched successfully', reviews);
+  sendResponse(res, 200, 'Reviews fetched successfully', reviews);
 });
 
-export const addReview = handleAsync(async (req, res) => {
-  const review = req.body;
+export const addProductReview = handleAsync(async (req, res) => {
+  const { productId } = req.params;
   const userId = req.user._id;
 
   const order = await Order.findOne({
     user: userId,
     items: {
-      $elemMatch: { product: review.product },
+      $elemMatch: { product: productId },
     },
   });
 
@@ -41,12 +41,12 @@ export const addReview = handleAsync(async (req, res) => {
     );
   }
 
-  const addedReview = await Review.create({ ...review, user: userId });
+  const addedReview = await Review.create({ ...req.body, product: productId, user: userId });
 
   sendResponse(res, 201, 'Review added successfully', addedReview);
 });
 
-export const getReviewById = handleAsync(async (req, res) => {
+export const getProductReviewById = handleAsync(async (req, res) => {
   const { reviewId } = req.params;
 
   const review = await Review.findById(reviewId);
@@ -62,7 +62,7 @@ export const getReviewById = handleAsync(async (req, res) => {
   sendResponse(res, 200, 'Review fetched by ID successfully', review);
 });
 
-export const updateReview = handleAsync(async (req, res) => {
+export const updateProductReview = handleAsync(async (req, res) => {
   const { reviewId } = req.params;
   const updates = req.body;
 
