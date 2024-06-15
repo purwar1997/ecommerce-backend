@@ -11,6 +11,7 @@ import userRouter from './routes/userRoutes.js';
 import categoryRouter from './routes/categoryRoutes.js';
 import brandRouter from './routes/brandRoutes.js';
 import addressRouter from './routes/addressRoutes.js';
+import reviewRouter from './routes/reviewRoutes.js';
 import errorMiddleware from './middlewares/errorHandler.js';
 
 const app = express();
@@ -50,6 +51,7 @@ app.use('/api/v1', userRouter);
 app.use('/api/v1', categoryRouter);
 app.use('/api/v1', brandRouter);
 app.use('/api/v1', addressRouter);
+app.use('/api/v1', reviewRouter);
 
 app.use(errorMiddleware);
 
