@@ -2,6 +2,7 @@ import express from 'express';
 import {
   getCategories,
   addNewCategory,
+  getCategoryById,
   updateCategory,
 } from '../controllers/categoryControllers.js';
 import authenticate from '../middlewares/authenticate.js';
@@ -17,6 +18,7 @@ router
 
 router
   .route('/categories/:categoryId')
-  .put(authenticate, validateRole(ROLES.ADMIN), updateCategory);
+  .get(authenticate, validateRole(ROLES.ADMIN), getCategoryById)
+  .post(authenticate, validateRole(ROLES.ADMIN), updateCategory);
 
 export default router;
