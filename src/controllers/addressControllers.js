@@ -33,7 +33,7 @@ export const addNewAddress = handleAsync(async (req, res) => {
     );
   }
 
-  const addresses = await Address.find({ user: userId, deleted: false });
+  const addresses = await Address.find({ user: userId, isDeleted: false });
 
   if (!addresses.length) {
     address.isDefault = true;
@@ -100,10 +100,10 @@ export const deleteAddress = handleAsync(async (req, res) => {
 
   await address.save();
 
-  sendResponse(res, 200, 'Address deleted successfully');
+  sendResponse(res, 200, 'Address isDeleted successfully');
 });
 
-export const setDefaultAddress = handleAsync(async (re, res) => {
+export const setDefaultAddress = handleAsync(async (req, res) => {
   const { addressId } = req.params;
 
   await Address.findOneAndUpdate(

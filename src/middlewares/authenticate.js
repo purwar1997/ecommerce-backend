@@ -17,7 +17,7 @@ const authenticate = handleAsync(async (req, _res, next) => {
 
   const decodedToken = jwt.verify(token, config.JWT_SECRET_KEY);
 
-  const user = await User.findById(decodedToken.userId);
+  const user = await User.findOne({ _id: decodedToken.userId, isDeleted: false });
 
   if (!user) {
     throw new CustomError('Access denied. User not found.', 401);

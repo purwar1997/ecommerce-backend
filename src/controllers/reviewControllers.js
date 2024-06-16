@@ -8,7 +8,7 @@ import { sendResponse } from '../utils/helpers.js';
 export const getProductReviews = handleAsync(async (req, res) => {
   const { productId } = req.params;
 
-  const product = await Product.findOne({ _id: productId, deleted: false });
+  const product = await Product.findOne({ _id: productId, isDeleted: false });
 
   if (!product) {
     throw new CustomError('Product not found', 404);
