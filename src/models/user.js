@@ -8,6 +8,22 @@ import { ROLES, JWT_EXPIRY } from '../constants.js';
 
 const Schema = mongoose.Schema;
 
+const cartItemSchema = new Schema({
+  product: {
+    type: Schema.Types.ObjectId,
+    ref: 'Product',
+  },
+  quantity: {
+    type: Number,
+    min: [1, 'Quantity must be between 1 and 10 inclusive'],
+    max: [10, 'Quantity must be between 1 and 10 inclusive'],
+    validate: {
+      validator: Number.isInteger,
+      message: 'Quantity must be an integer',
+    },
+  },
+});
+
 const userSchema = new Schema(
   {
     firstname: {
@@ -51,30 +67,29 @@ const userSchema = new Schema(
       public_id: String,
       url: String,
     },
-    cart: [
+    cart: [cartItemSchema],
+    wishlist: [
       {
-        product: {
-          type: Schema.Types.ObjectId,
-          ref: 'Product',
-        },
-        quantity: {
-          type: Number,
-          validate: {
-            validator: function (v) {
-              return Number.isInteger(v) && v > 0;
-            },
-            message: 'Quantity must be a positive integer',
-          },
-        },
+        type: Schema.Types.ObjectId,
+        ref: 'Product',
       },
     ],
-    wishlist: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
     resetPasswordToken: String,
     resetPasswordExpiry: Date,
-    deleted: {
+    isDeleted: {
       type: Boolean,
       default: false,
     },
+    deletedBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    roleUpdatedBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    deletedAt: Date,
+    roleUpdatedAt: Date,
   },
   {
     timestamps: true,

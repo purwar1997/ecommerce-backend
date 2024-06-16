@@ -9,39 +9,47 @@ import { sendResponse } from '../utils/helpers.js';
 export const signup = handleAsync(async (req, res) => {
   const { firstname, lastname, email, phone, password } = req.body;
 
-  let user = await User.findOne({ email, deleted: false });
+  let user = await User.findOne({ email, isDeleted: false });
 
   if (user) {
     throw new CustomError('User with this email already exists', 409);
   }
 
-  user = await User.findOne({ email, deleted: true });
+  user = await User.findOne({ email, isDeleted: true });
 
   if (user) {
     const anotherUser = await User.findOne({ phone, _id: { $ne: user._id } });
 
     if (anotherUser) {
       throw new CustomError(
-        'This phone number is being used by another user. Please set a different phone number',
-        400
+        'This phone number is linked to another user. Please provide a different phone number.',
+        409
       );
     }
 
-    const newUser = await User.findOneAndUpdate(
+    const restoredUser = await User.findOneAndUpdate(
       { email },
-      { firstname, lastname, phone, password, deleted: false },
+      {
+        firstname,
+        lastname,
+        phone,
+        password,
+        isDeleted: false,
+        deletedBy: undefined,
+        deletedAt: undefined,
+      },
       { runValidators: true, new: true }
     );
 
-    sendResponse(res, 200, 'Account reactivated successfully', newUser);
+    sendResponse(res, 200, 'Account restored successfully', restoredUser);
   }
 
   user = await User.findOne({ phone });
 
   if (user) {
     throw new CustomError(
-      'This phone number is being used by another user. Please set a different phone number',
-      400
+      'This phone number is linked to another user. Please provide a different phone number.',
+      409
     );
   }
 
@@ -55,7 +63,7 @@ export const signup = handleAsync(async (req, res) => {
 export const login = handleAsync(async (req, res) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email, deleted: false }).select('+password');
+  const user = await User.findOne({ email, isDeleted: false }).select('+password');
 
   if (!user) {
     throw new CustomError('No user registered with this email', 400);
@@ -83,7 +91,7 @@ export const logout = handleAsync(async (_req, res) => {
 export const forgotPassword = handleAsync(async (req, res) => {
   const { email } = req.body;
 
-  const user = await User.findOne({ email, deleted: false });
+  const user = await User.findOne({ email, isDeleted: false });
 
   if (!user) {
     throw new CustomError('No user registered with this email', 400);
@@ -128,7 +136,7 @@ export const resetPassword = handleAsync(async (req, res) => {
     throw new CustomError('Reset password token is either invalid or expired', 400);
   }
 
-  if (user.deleted) {
+  if (user.isDeleted) {
     throw new CustomError('User account has been deleted', 409);
   }
 

@@ -35,7 +35,13 @@ export const updateProfile = handleAsync(async (req, res) => {
 });
 
 export const deleteAccount = handleAsync(async (req, res) => {
-  await User.findByIdAndUpdate(req.user._id, { deleted: true }, { runValidators: true });
+  const userId = req.user._id;
+
+  await User.findByIdAndUpdate(
+    userId,
+    { isDeleted: true, deletedBy: userId, deletedAt: Date.now() },
+    { runValidators: true }
+  );
 
   res.clearCookie('token', clearCookieOptions);
 
@@ -45,7 +51,7 @@ export const deleteAccount = handleAsync(async (req, res) => {
 export const getUsers = handleAsync(async (req, res) => {
   const { page } = req.query;
 
-  const users = await User.find({ deleted: false }).sort({ createdAt: -1 }).limit(page);
+  const users = await User.find({ isDeleted: false }).sort({ createdAt: -1 }).limit(page);
 
   sendResponse(res, 200, 'Users fetched successfully', users);
 });
@@ -53,7 +59,7 @@ export const getUsers = handleAsync(async (req, res) => {
 export const getUserById = handleAsync(async (req, res) => {
   const { userId } = req.params;
 
-  const user = await User.findOne({ _id: userId, deleted: false });
+  const user = await User.findOne({ _id: userId, isDeleted: false });
 
   if (!user) {
     throw new CustomError('User not found', 404);
@@ -67,8 +73,8 @@ export const updateUserRole = handleAsync(async (req, res) => {
   const { role } = req.body;
 
   const user = await User.findOneAndUpdate(
-    { _id: userId, deleted: false },
-    { role },
+    { _id: userId, isDeleted: false },
+    { role, roleUpdatedBy: req.user._id, roleUpdatedAt: Date.now() },
     { runValidators: true, new: true }
   );
 
@@ -83,8 +89,8 @@ export const deleteUser = handleAsync(async (req, res) => {
   const { userId } = req.params;
 
   const user = await User.findOneAndUpdate(
-    { _id: userId, deleted: false },
-    { deleted: true },
+    { _id: userId, isDeleted: false },
+    { isDeleted: true, deletedBy: req.user._id, deletedAt: Date.now() },
     { runValidators: true, new: true }
   );
 
@@ -96,16 +102,22 @@ export const deleteUser = handleAsync(async (req, res) => {
 });
 
 export const getOtherAdmins = handleAsync(async (req, res) => {
-  const admins = await User.find({ role: 'admin', deleted: false, _id: { $ne: req.user._id } });
+  const admins = await User.find({
+    role: 'admin',
+    isDeleted: false,
+    _id: { $ne: req.user._id },
+  });
 
   sendResponse(res, 200, 'Admins other than current admin fetched successfully', admins);
 });
 
 export const adminSelfDemote = handleAsync(async (req, res) => {
+  const userId = req.user._id;
+
   const otherAdmins = await User.find({
     role: 'admin',
-    deleted: false,
-    _id: { $ne: req.user._id },
+    isDeleted: false,
+    _id: { $ne: userId },
   });
 
   if (!otherAdmins.length) {
@@ -116,8 +128,8 @@ export const adminSelfDemote = handleAsync(async (req, res) => {
   }
 
   const admin = await User.findByIdAndUpdate(
-    req.user._id,
-    { role: 'user' },
+    userId,
+    { role: 'user', roleUpdatedBy: userId, roleUpdatedAt: Date.now() },
     { runValidators: true, new: true }
   );
 
@@ -125,10 +137,12 @@ export const adminSelfDemote = handleAsync(async (req, res) => {
 });
 
 export const adminSelfDelete = handleAsync(async (req, res) => {
+  const userId = req.user._id;
+
   const otherAdmins = await User.find({
     role: 'admin',
-    deleted: false,
-    _id: { $ne: req.user._id },
+    isDeleted: false,
+    _id: { $ne: userId },
   });
 
   if (!otherAdmins.length) {
@@ -138,7 +152,11 @@ export const adminSelfDelete = handleAsync(async (req, res) => {
     );
   }
 
-  await User.findByIdAndUpdate(req.user._id, { deleted: true }, { runValidators: true, new: true });
+  await User.findByIdAndUpdate(
+    userId,
+    { isDeleted: true, deletedBy: userId, deletedAt: Date.now() },
+    { runValidators: true, new: true }
+  );
 
   res.clearCookie('token', clearCookieOptions);
 
