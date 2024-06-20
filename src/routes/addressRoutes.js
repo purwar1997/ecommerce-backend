@@ -8,22 +8,22 @@ import {
   setDefaultAddress,
 } from '../controllers/addressControllers.js';
 import { addressSchema } from '../schemas/addressSchema.js';
-import authenticate from '../middlewares/authenticate.js';
-import validateSchema from '../middlewares/validateSchema.js';
+import { isAuthenticated } from '../middlewares/authMiddlewares.js';
+import { validateSchema } from '../middlewares/validateSchema.js';
 
 const router = express.Router();
 
 router
   .route('/addresses')
-  .get(authenticate, getAddresses)
-  .post(authenticate, validateSchema(addressSchema), addNewAddress);
+  .get(isAuthenticated, getAddresses)
+  .post(isAuthenticated, validateSchema(addressSchema), addNewAddress);
 
 router
   .route('/addresses/:addressId')
-  .get(authenticate, getAddressById)
-  .put(authenticate, validateSchema(addressSchema), updateAddress)
-  .delete(authenticate, deleteAddress);
+  .get(isAuthenticated, getAddressById)
+  .put(isAuthenticated, validateSchema(addressSchema), updateAddress)
+  .delete(isAuthenticated, deleteAddress);
 
-router.route('/addresses/:addressId/default').put(authenticate, setDefaultAddress);
+router.route('/addresses/:addressId/default').put(isAuthenticated, setDefaultAddress);
 
 export default router;

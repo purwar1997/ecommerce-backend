@@ -6,19 +6,19 @@ import {
   updateProductReview,
 } from '../controllers/reviewControllers.js';
 import { reviewSchema } from '../schemas/reviewSchema.js';
-import authenticate from '../middlewares/authenticate.js';
-import validateSchema from '../middlewares/validateSchema.js';
+import { isAuthenticated,  } from '../middlewares/authMiddlewares.js';
+import { validateSchema } from '../middlewares/validateSchema.js';
 
 const router = express.Router();
 
 router
   .route('/products/:productId/reviews')
   .get(getProductReviews)
-  .post(authenticate, validateSchema(reviewSchema), addProductReview);
+  .post(isAuthenticated, validateSchema(reviewSchema), addProductReview);
 
 router
-  .get(authenticate, getProductReviewById)
+  .get(isAuthenticated, getProductReviewById)
   .route('/reviews/:reviewId')
-  .put(authenticate, validateSchema(reviewSchema), updateProductReview);
+  .put(isAuthenticated, validateSchema(reviewSchema), updateProductReview);
 
 export default router;

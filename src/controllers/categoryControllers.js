@@ -1,5 +1,5 @@
 import Category from '../models/category.js';
-import handleAsync from '../services/handleAsync.js';
+import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import { sendResponse } from '../utils/helpers.js';
 

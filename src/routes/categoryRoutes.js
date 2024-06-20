@@ -5,20 +5,35 @@ import {
   getCategoryById,
   updateCategory,
 } from '../controllers/categoryControllers.js';
-import authenticate from '../middlewares/authenticate.js';
-import validateRole from '../middlewares/validateRole.js';
+import { categorySchema } from '../schemas/categorySchema.js';
+import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
+import { parseFormData } from '../middlewares/parseFormData.js';
+import { validateSchema } from '../middlewares/validateSchema.js';
 import { ROLES } from '../constants.js';
 
 const router = express.Router();
 
-router
-  .route('/categories')
-  .get(getCategories)
-  .post(authenticate, validateRole(ROLES.ADMIN), addNewCategory);
+router.route('/categories').get(getCategories);
 
 router
-  .route('/categories/:categoryId')
-  .get(authenticate, validateRole(ROLES.ADMIN), getCategoryById)
-  .post(authenticate, validateRole(ROLES.ADMIN), updateCategory);
+  .route('/admin/categories')
+  .post(
+    isAuthenticated,
+    authorizeRole(ROLES.ADMIN),
+    parseFormData,
+    validateSchema(categorySchema),
+    addNewCategory
+  );
+
+router
+  .route('/admin/categories/:categoryId')
+  .get(isAuthenticated, authorizeRole(ROLES.ADMIN), getCategoryById)
+  .post(
+    isAuthenticated,
+    authorizeRole(ROLES.ADMIN),
+    parseFormData,
+    validateSchema(categorySchema),
+    updateCategory
+  );
 
 export default router;

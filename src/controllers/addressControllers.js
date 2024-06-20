@@ -1,5 +1,5 @@
 import Address from '../models/address.js';
-import handleAsync from '../services/handleAsync.js';
+import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import { sendResponse } from '../utils/helpers.js';
 
@@ -100,7 +100,7 @@ export const deleteAddress = handleAsync(async (req, res) => {
 
   await address.save();
 
-  sendResponse(res, 200, 'Address isDeleted successfully');
+  sendResponse(res, 200, 'Address deleted successfully');
 });
 
 export const setDefaultAddress = handleAsync(async (req, res) => {

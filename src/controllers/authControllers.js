@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import User from '../models/user.js';
-import handleAsync from '../services/handleAsync.js';
+import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import sendMail from '../services/sendMail.js';
 import { setCookieOptions, clearCookieOptions } from '../utils/cookieOptions.js';
@@ -22,7 +22,7 @@ export const signup = handleAsync(async (req, res) => {
 
     if (anotherUser) {
       throw new CustomError(
-        'This phone number is linked to another user. Please provide a different phone number.',
+        'This phone number is linked to another user. Please provide a different phone number',
         409
       );
     }
@@ -48,7 +48,7 @@ export const signup = handleAsync(async (req, res) => {
 
   if (user) {
     throw new CustomError(
-      'This phone number is linked to another user. Please provide a different phone number.',
+      'This phone number is linked to another user. Please provide a different phone number',
       409
     );
   }
