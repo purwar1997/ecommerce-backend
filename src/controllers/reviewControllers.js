@@ -1,7 +1,7 @@
 import Review from '../models/review.js';
 import Product from '../models/product.js';
 import Order from '../models/order.js';
-import handleAsync from '../services/handleAsync.js';
+import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import { sendResponse } from '../utils/helpers.js';
 
@@ -43,6 +43,15 @@ export const addProductReview = handleAsync(async (req, res) => {
 
   const addedReview = await Review.create({ ...req.body, product: productId, user: userId });
 
+  const product = await Product.findById(productId);
+
+  product.avgRating =
+    (product.avgRating * product.reviewCount + req.body.rating) / (product.reviewCount + 1);
+
+  product.reviewCount = product.reviewCount + 1;
+
+  await product.save();
+
   sendResponse(res, 201, 'Review added successfully', addedReview);
 });
 
@@ -80,6 +89,14 @@ export const updateProductReview = handleAsync(async (req, res) => {
     runValidators: true,
     new: true,
   });
+
+  const product = await Product.findById(updatedReview.product);
+
+  product.avgRating =
+    (product.avgRating * product.reviewCount - review.rating + updates.rating) /
+    product.reviewCount;
+
+  await product.save();
 
   sendResponse(res, 200, 'Review updated successfully', updatedReview);
 });
