@@ -5,22 +5,28 @@ import { ROLES } from '../constants.js';
 
 export const updateUserSchema = Joi.object({
   firstname: Joi.string().trim().pattern(nameRegex).max(50).required().messages({
-    'string.empty': 'First name is required',
-    'string.pattern.base': 'First name must contain only alphabets',
+    'any.required': 'First name is required',
+    'string.empty': 'First name cannot be empty',
+    'string.base': 'First name must be a string',
+    'string.pattern.base': 'First name must contain only letters',
     'string.max': 'First name cannot exceed 50 characters',
   }),
 
   lastname: Joi.string().trim().pattern(nameRegex).max(50).allow('').messages({
-    'string.pattern.base': 'Last name must contain only alphabets',
+    'string.base': 'Last name must be a string',
+    'string.pattern.base': 'Last name must contain only letters',
     'string.max': 'Last name cannot exceed 50 characters',
   }),
 
   phone: Joi.string().trim().pattern(phoneRegex).required().messages({
-    'string.empty': 'Phone number is required',
+    'any.required': 'Phone number is required',
+    'string.empty': 'Phone number cannot be empty',
+    'string.base': 'Phone number must be a string',
     'string.pattern.base': 'Please provide a valid phone number',
   }),
 
   password: Joi.string().pattern(passwordRegex).allow('').messages({
+    'string.base': 'Password must be a string',
     'string.pattern.base':
       'Password must be 6-20 characters long and should contain atleast one digit, one letter and one special character',
   }),
@@ -36,8 +42,15 @@ export const updateUserSchema = Joi.object({
   });
 
 export const updateRoleSchema = Joi.object({
-  role: Joi.string().trim().lowercase().valid(ROLES.USER, ROLES.ADMIN).required().messages({
-    'string.empty': 'Please provide a role',
-    'any.only': 'Invalid role',
-  }),
+  role: Joi.string()
+    .trim()
+    .lowercase()
+    .valid(...Object.values(ROLES))
+    .required()
+    .messages({
+      'any.required': 'Role is required',
+      'string.empty': 'Role cannot be empty',
+      'string.base': 'Role must be a string',
+      'any.only': 'Invalid role. Valid options are user and admin',
+    }),
 });

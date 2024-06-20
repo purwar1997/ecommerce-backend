@@ -3,39 +3,54 @@ import { fullnameRegex, phoneRegex, postalCodeRegex } from '../utils/regex.js';
 
 export const addressSchema = Joi.object({
   fullname: Joi.string().trim().pattern(fullnameRegex).max(100).required().messages({
-    'string.empty': 'Full name is required',
-    'string.pattern.base': 'Full name must contain only alphabets',
+    'any.required': 'Full name is required',
+    'string.empty': 'Full name cannot be empty',
+    'string.base': 'Full name must be a string',
+    'string.pattern.base': 'Full name must contain only letters',
     'string.max': 'Full name cannot exceed 100 characters',
   }),
   phone: Joi.string().trim().pattern(phoneRegex).required().messages({
-    'string.empty': 'Phone number is required',
-    'string.pattern.base':
-      'Please enter a valid phone number so we can call if there are any issues with delivery',
+    'any.required': 'Phone number is required',
+    'string.empty': 'Phone number cannot be empty',
+    'string.base': 'Phone number must be a string',
+    'string.pattern.base': 'Please enter a valid phone number for delivery issues',
   }),
   line1: Joi.string().trim().max(200).required().messages({
-    'string.empty': 'Address line1 is required',
-    'string.max': 'Address line1 cannot exceed 200 characters',
+    'any.required': 'Address line 1 is required',
+    'string.empty': 'Address line 1 cannot be empty',
+    'string.base': 'Address line 1 must be a string',
+    'string.max': 'Address line 1 cannot exceed 200 characters',
   }),
-  line2: Joi.string().trim().max(200).messages({
-    'string.max': 'Address line2 cannot exceed 200 characters',
+  line2: Joi.string().trim().max(200).allow('').messages({
+    'string.base': 'Address line 2 must be a string',
+    'string.max': 'Address line 2 cannot exceed 200 characters',
   }),
-  landmark: Joi.string().trim().max(200).messages({
+  landmark: Joi.string().trim().max(200).allow('').messages({
+    'string.base': 'Landmark must be a string',
     'string.max': 'Landmark cannot exceed 200 characters',
   }),
   country: Joi.string().trim().required().messages({
-    'string.empty': 'Country is required',
+    'any.required': 'Country is required',
+    'string.empty': 'Country cannot be empty',
+    'string.base': 'Country must be a string',
   }),
   state: Joi.string().trim().required().messages({
-    'string.empty': 'State is required',
+    'any.required': 'State is required',
+    'string.empty': 'State cannot be empty',
+    'string.base': 'State must be a string',
   }),
   city: Joi.string().trim().required().messages({
-    'string.empty': 'City is required',
+    'any.required': 'City is required',
+    'string.empty': 'City cannot be empty',
+    'string.base': 'City must be a string',
   }),
   postalCode: Joi.string().trim().pattern(postalCodeRegex).required().messages({
-    'string.empty': 'Postal code is required',
-    'string.pattern.base': 'Please enter a valid ZIP or postal code',
+    'any.required': 'Postal code is required',
+    'string.empty': 'Postal code cannot be empty',
+    'string.base': 'Postal code must be a string',
+    'string.pattern.base': 'Please enter a valid postal code',
   }),
   isDefault: Joi.boolean().default(false).messages({
-    'boolean.base': 'Only boolean values are allowed',
+    'boolean.base': 'isDefault must be a boolean value',
   }),
 });

@@ -1,19 +1,31 @@
 import Joi from 'joi';
+import { MIN_RATING, MAX_RATING } from '../constants.js';
 
 export const reviewSchema = Joi.object({
-  rating: Joi.number().integer().min(1).max(5).required().messages({
-    'any.required': 'Please provide a rating',
-    'number.base': 'Rating must be a number',
-    'number.integer': 'Rating must be an integer',
-    'number.min': 'Rating must be between 1 and 5 inclusive',
-    'number.max': 'Rating must be between 1 and 5 inclusive',
-  }),
+  rating: Joi.number()
+    .integer()
+    .min(MIN_RATING)
+    .max(MAX_RATING)
+    .required()
+    .messages({
+      'any.required': 'Rating is required',
+      'number.base': 'Rating must be a number',
+      'number.integer': 'Rating must be an integer',
+      'number.min': `Rating must be at least ${MIN_RATING}`,
+      'number.max': `Rating must be at most ${MAX_RATING}`,
+    }),
+
   headline: Joi.string().trim().max(100).required().messages({
-    'string.empty': 'Please provide a review headline',
+    'any.required': 'Review headline is required',
+    'string.empty': 'Review headline cannot be empty',
+    'string.base': 'Review headline must be a string',
     'string.max': 'Review headline cannot exceed 100 characters',
   }),
+
   body: Joi.string().trim().max(800).required().messages({
-    'string.empty': 'Please provide a review body',
+    'any.required': 'Review body is required',
+    'string.empty': 'Review body cannot be empty',
+    'string.base': 'Review body must be a string',
     'string.max': 'Review body cannot exceed 800 characters',
   }),
 });
