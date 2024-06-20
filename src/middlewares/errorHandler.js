@@ -1,6 +1,8 @@
+import mongoose from 'mongoose';
 import CustomError from '../utils/customError.js';
+import { formatCastError } from '../utils/helpers.js';
 
-const errorHandler = (err, _req, res, _next) => {
+export const errorHandler = (err, _req, res, _next) => {
   console.error(err);
 
   err.message = err.message || 'Internal server error';
@@ -18,14 +20,20 @@ const errorHandler = (err, _req, res, _next) => {
 
   if (err.name === 'ValidationError') {
     const message = Object.values(err.errors)
-      .map(error => error.message)
+      .map(error => {
+        if (error instanceof mongoose.Error.CastError) {
+          return formatCastError(error);
+        } else {
+          return error.message;
+        }
+      })
       .join('. ');
 
     err = new CustomError(message, 400);
   }
 
   if (err.name === 'CastError') {
-    const message = 'Invalid ID format';
+    const message = formatCastError(err);
     err = new CustomError(message, 400);
   }
 
@@ -43,5 +51,3 @@ const errorHandler = (err, _req, res, _next) => {
     message: err.message,
   });
 };
-
-export default errorHandler;
