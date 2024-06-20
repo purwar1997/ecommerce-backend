@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 import config from '../config/config.js';
-import { DB_NAME } from '../constants.js';
+import { DATABASE_NAME } from '../constants.js';
 
 const connectDB = async () => {
   try {
-    const response = await mongoose.connect(`${config.MONGODB_URL}/${DB_NAME}`);
+    const response = await mongoose.connect(`${config.MONGODB_URL}/${DATABASE_NAME}`);
 
     console.log(`Database connection success: ${response.connection.host}`);
 
