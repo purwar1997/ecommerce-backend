@@ -1,8 +1,9 @@
 import User from '../models/user.js';
-import handleAsync from '../services/handleAsync.js';
+import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import { sendResponse } from '../utils/helpers.js';
 import { clearCookieOptions } from '../utils/cookieOptions.js';
+import { USERS_PER_PAGE } from '../constants.js';
 
 export const getUserDetails = handleAsync(async (req, res) => {
   const user = await User.findById(req.user._id).select({ cart: 0, wishlist: 0 });
@@ -51,7 +52,10 @@ export const deleteAccount = handleAsync(async (req, res) => {
 export const getUsers = handleAsync(async (req, res) => {
   const { page } = req.query;
 
-  const users = await User.find({ isDeleted: false }).sort({ createdAt: -1 }).limit(page);
+  const users = await User.find({ isDeleted: false })
+    .sort({ createdAt: -1 })
+    .skip((page - 1) * USERS_PER_PAGE)
+    .limit(USERS_PER_PAGE);
 
   sendResponse(res, 200, 'Users fetched successfully', users);
 });
@@ -122,7 +126,7 @@ export const adminSelfDemote = handleAsync(async (req, res) => {
 
   if (!otherAdmins.length) {
     throw new CustomError(
-      'You are the only admin. Promote another user before demoting yourself.',
+      'You are the only admin. Promote another user before demoting yourself',
       409
     );
   }
@@ -147,7 +151,7 @@ export const adminSelfDelete = handleAsync(async (req, res) => {
 
   if (!otherAdmins.length) {
     throw new CustomError(
-      'You are the only admin. Promote another user before deleting yourself.',
+      'You are the only admin. Promote another user before deleting yourself',
       409
     );
   }
