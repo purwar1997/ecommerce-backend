@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { imageUrlRegex } from '../utils/regex.js';
 
 const Schema = mongoose.Schema;
 
@@ -7,22 +8,23 @@ const categorySchema = new Schema(
     title: {
       type: String,
       required: [true, 'Category title is required'],
-      trim: true,
+      maxLength: [50, 'Category title cannot exceed 50 characters'],
     },
     image: {
       url: {
         type: String,
-        required: [true, 'URL of uploaded image is required'],
+        required: [true, 'Image URL is required'],
+        match: [imageUrlRegex, 'Invalid image URL format'],
       },
-      public_id: {
+      publicId: {
         type: String,
-        required: [true, 'Public ID of uploaded image is required'],
+        required: [true, 'Image public ID is required'],
       },
     },
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+      required: [true, 'The ID of the user who added this category is required'],
     },
     lastUpdatedBy: {
       type: Schema.Types.ObjectId,

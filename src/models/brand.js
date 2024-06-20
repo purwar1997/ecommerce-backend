@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { imageUrlRegex } from '../utils/regex.js';
 
 const Schema = mongoose.Schema;
 
@@ -7,22 +8,23 @@ const brandSchema = new Schema(
     name: {
       type: String,
       required: [true, 'Brand name is required'],
-      trim: true,
+      maxLength: [50, 'Brand name cannot exceed 50 characters'],
     },
     logo: {
       url: {
         type: String,
-        required: [true, 'URL of uploaded logo is required'],
+        required: [true, 'Image URL is required'],
+        match: [imageUrlRegex, 'Invalid image URL format'],
       },
-      public_id: {
+      publicId: {
         type: String,
-        required: [true, 'Public ID of uploaded logo is required'],
+        required: [true, 'Image public ID is required'],
       },
     },
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+      required: [true, 'The ID of the user who added this brand is required'],
     },
     lastUpdatedBy: {
       type: Schema.Types.ObjectId,

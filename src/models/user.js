@@ -3,8 +3,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import config from '../config/config.js';
-import { nameRegex, emailRegex, phoneRegex } from '../utils/regex.js';
-import { ROLES, JWT_EXPIRY } from '../constants.js';
+import { nameRegex, emailRegex, phoneRegex, imageUrlRegex } from '../utils/regex.js';
+import { MIN_QUANTITY, MAX_QUANTITY, ROLES, JWT_EXPIRY } from '../constants.js';
 
 const Schema = mongoose.Schema;
 
@@ -12,11 +12,13 @@ const cartItemSchema = new Schema({
   product: {
     type: Schema.Types.ObjectId,
     ref: 'Product',
+    required: [true, 'Product is required'],
   },
   quantity: {
     type: Number,
-    min: [1, 'Quantity must be between 1 and 10 inclusive'],
-    max: [10, 'Quantity must be between 1 and 10 inclusive'],
+    required: [true, 'Quantity is required'],
+    min: [MIN_QUANTITY, `Quantity must be at least ${MIN_QUANTITY}`],
+    max: [MAX_QUANTITY, `Quantity must be at most ${MAX_QUANTITY}`],
     validate: {
       validator: Number.isInteger,
       message: 'Quantity must be an integer',
@@ -29,12 +31,12 @@ const userSchema = new Schema(
     firstname: {
       type: String,
       required: [true, 'First name is required'],
-      match: [nameRegex, 'First name must contain only alphabets'],
+      match: [nameRegex, 'First name must contain only letters'],
       maxLength: [50, 'First name cannot exceed 50 characters'],
     },
     lastname: {
       type: String,
-      match: [nameRegex, 'Last name must contain only alphabets'],
+      match: [nameRegex, 'Last name must contain only letters'],
       maxLength: [50, 'Last name cannot exceed 50 characters'],
     },
     email: {
@@ -64,8 +66,11 @@ const userSchema = new Schema(
       },
     },
     avatar: {
-      public_id: String,
-      url: String,
+      url: {
+        type: String,
+        match: [imageUrlRegex, 'Invalid image URL format'],
+      },
+      publicId: String,
     },
     cart: [cartItemSchema],
     wishlist: [
