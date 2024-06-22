@@ -1,4 +1,11 @@
-/node_modules
-/src/log
+# NPM Packages
+node_modules/
+
+# Config files
 nodemon.json
+
+# Environment variables
 .env
+
+# Log files
+src/log/
