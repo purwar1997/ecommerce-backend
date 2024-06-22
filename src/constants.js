@@ -1,4 +1,4 @@
-export const DATABASE_NAME = 'Ecommerce';
+export const DATABASE_NAME = 'ecommerce_db';
 export const JWT_EXPIRY = '24h';
 
 export const ROLES = {
