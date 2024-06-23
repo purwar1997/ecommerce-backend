@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { fullnameRegex, phoneRegex, postalCodeRegex } from '../utils/regex.js';
+import { removeExtraInnerSpaces } from '../utils/helpers.js';
 
 export const addressSchema = customJoi.object({
   fullname: Joi.string().trim().pattern(fullnameRegex).max(100).required().messages({
@@ -16,17 +17,17 @@ export const addressSchema = customJoi.object({
     'string.base': 'Phone number must be a string',
     'string.pattern.base': 'Please enter a valid phone number for delivery issues',
   }),
-  line1: Joi.string().trim().max(200).required().messages({
+  line1: Joi.string().trim().max(200).required().custom(removeExtraInnerSpaces).messages({
     'any.required': 'Address line 1 is required',
     'string.empty': 'Address line 1 cannot be empty',
     'string.base': 'Address line 1 must be a string',
     'string.max': 'Address line 1 cannot exceed 200 characters',
   }),
-  line2: Joi.string().trim().max(200).allow('').messages({
+  line2: Joi.string().trim().max(200).allow('').custom(removeExtraInnerSpaces).messages({
     'string.base': 'Address line 2 must be a string',
     'string.max': 'Address line 2 cannot exceed 200 characters',
   }),
-  landmark: Joi.string().trim().max(200).allow('').messages({
+  landmark: Joi.string().trim().max(200).allow('').custom(removeExtraInnerSpaces).messages({
     'string.base': 'Landmark must be a string',
     'string.max': 'Landmark cannot exceed 200 characters',
   }),

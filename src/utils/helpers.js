@@ -44,6 +44,18 @@ export const lowercaseFirstLetter = str => {
   return str.at(0).toLowerCase() + str.slice(1);
 };
 
+export const formatCastError = error => {
+  if (!(error instanceof mongoose.Error.CastError)) {
+    return error.message;
+  }
+
+  return `Invalid value provided for ${error.path}. Expected a valid ${lowercaseFirstLetter(
+    error.kind
+  )} but received '${error.value}'`;
+};
+
+// Custom joi sanitizers
+
 export const stripConfirmPassword = value => {
   const { confirmPassword, ...rest } = value;
   return rest;
@@ -67,20 +79,24 @@ export const roundToTwoDecimalPlaces = (value, helpers) => {
   return Math.round(value * 100) / 100;
 };
 
+export const removeExtraInnerSpaces = (value, helpers) => {
+  if (typeof value !== 'string') {
+    return helpers.error('string.base', { value });
+  }
+
+  if (!value) {
+    return helpers.error('string.empty', { value });
+  }
+
+  return value.replace(/\s+/g, ' ');
+};
+
+// Custom joi validators
+
 export const isObjectIdValid = (value, helpers) => {
   if (!mongoose.Types.ObjectId.isValid(value)) {
     return helpers.error('any.invalid', { value });
   }
 
   return value;
-};
-
-export const formatCastError = error => {
-  if (!(error instanceof mongoose.Error.CastError)) {
-    return error.message;
-  }
-
-  return `Invalid value provided for ${error.path}. Expected a valid ${lowercaseFirstLetter(
-    error.kind
-  )} but received '${error.value}'`;
 };

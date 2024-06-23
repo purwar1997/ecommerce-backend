@@ -1,17 +1,21 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
-import { roundToTwoDecimalPlaces, isObjectIdValid } from '../utils/helpers.js';
+import {
+  roundToTwoDecimalPlaces,
+  isObjectIdValid,
+  removeExtraInnerSpaces,
+} from '../utils/helpers.js';
 import { MIN_PRICE, MAX_PRICE, MIN_STOCK, MAX_STOCK } from '../constants.js';
 
 export const productSchema = customJoi.object({
-  title: Joi.string().trim().max(100).required().messages({
+  title: Joi.string().trim().max(100).required().custom(removeExtraInnerSpaces).messages({
     'any.required': 'Product title is required',
     'string.empty': 'Product title cannot be empty',
     'string.base': 'Product title must be a string',
     'string.max': 'Product title cannot exceed 100 characters',
   }),
 
-  description: Joi.string().trim().max(500).required().messages({
+  description: Joi.string().trim().max(500).required().custom(removeExtraInnerSpaces).messages({
     'any.required': 'Product description is required',
     'string.empty': 'Product description cannot be empty',
     'string.base': 'Product description must be a string',
