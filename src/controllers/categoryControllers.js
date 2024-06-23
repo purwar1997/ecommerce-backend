@@ -9,7 +9,18 @@ export const getCategories = handleAsync(async (_req, res) => {
   sendResponse(res, 200, 'Categories fetched successfully', categories);
 });
 
-export const addNewCategory = handleAsync(async (req, res) => {});
+export const addNewCategory = handleAsync(async (req, res) => {
+  const { title } = req.body;
+
+  const category = await Category.findOne({ title });
+
+  if (category) {
+    throw new CustomError(
+      'Category by this title already exists. Please set a different category title',
+      409
+    );
+  }
+});
 
 export const getCategoryById = handleAsync(async (req, res) => {
   const { categoryId } = req.params;

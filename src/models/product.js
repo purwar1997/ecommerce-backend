@@ -107,4 +107,6 @@ const productSchema = new Schema(
   }
 );
 
+productSchema.index({ title: 1, brand: 1, category: 1 }, { unique: true });
+
 export default mongoose.model('Product', productSchema);

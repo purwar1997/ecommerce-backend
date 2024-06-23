@@ -7,6 +7,7 @@ const categorySchema = new Schema(
   {
     title: {
       type: String,
+      unique: true,
       required: [true, 'Category title is required'],
       maxLength: [50, 'Category title cannot exceed 50 characters'],
     },
