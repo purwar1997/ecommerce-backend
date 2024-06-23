@@ -1,6 +1,7 @@
 import Joi from 'joi';
+import customJoi from '../utils/customJoi.js';
 
-export const brandSchema = Joi.object({
+export const brandSchema = customJoi.object({
   name: Joi.string().trim().max(50).required().messages({
     'any.required': 'Brand name is required',
     'string.empty': 'Brand name cannot be empty',

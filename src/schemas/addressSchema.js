@@ -1,7 +1,8 @@
 import Joi from 'joi';
+import customJoi from '../utils/customJoi.js';
 import { fullnameRegex, phoneRegex, postalCodeRegex } from '../utils/regex.js';
 
-export const addressSchema = Joi.object({
+export const addressSchema = customJoi.object({
   fullname: Joi.string().trim().pattern(fullnameRegex).max(100).required().messages({
     'any.required': 'Full name is required',
     'string.empty': 'Full name cannot be empty',

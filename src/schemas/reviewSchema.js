@@ -1,7 +1,8 @@
 import Joi from 'joi';
+import customJoi from '../utils/customJoi.js';
 import { MIN_RATING, MAX_RATING } from '../constants.js';
 
-export const reviewSchema = Joi.object({
+export const reviewSchema = customJoi.object({
   rating: Joi.number()
     .integer()
     .min(MIN_RATING)
