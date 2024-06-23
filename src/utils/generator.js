@@ -1,9 +1,9 @@
 const padZero = num => (num < 10 ? '0' : '') + num;
 
-const parseDate = dateObj => {
-  const year = dateObj.getFullYear();
-  const month = padZero(dateObj.getMonth() + 1);
-  const date = padZero(dateObj.getDate());
+const parseDate = currentDate => {
+  const year = currentDate.getFullYear();
+  const month = padZero(currentDate.getMonth() + 1);
+  const date = padZero(currentDate.getDate());
 
   return `access-${year}-${month}-${date}.log`;
 };

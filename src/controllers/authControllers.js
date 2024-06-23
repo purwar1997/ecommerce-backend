@@ -129,7 +129,7 @@ export const resetPassword = handleAsync(async (req, res) => {
 
   const user = await User.findOne({
     resetPasswordToken: encryptedToken,
-    resetPasswordExpiry: { $gt: new Date() },
+    resetPasswordExpiry: { $gt: Date.now() },
   });
 
   if (!user) {

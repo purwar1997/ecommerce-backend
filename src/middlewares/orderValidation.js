@@ -28,7 +28,7 @@ export const validateCoupon = handleAsync(async (req, _res, next) => {
     const validCoupon = await Coupon.findOne({
       _id: coupon,
       isDeleted: false,
-      expiryDate: { $gt: new Date() },
+      expiryDate: { $gt: Date.now() },
     });
 
     if (!validCoupon) {
