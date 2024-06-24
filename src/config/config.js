@@ -11,6 +11,8 @@ const config = {
   SMTP_USERNAME: process.env.SMTP_USERNAME,
   SMTP_PASSWORD: process.env.SMTP_PASSWORD,
   SENDER_ADDRESS: process.env.SENDER_ADDRESS,
+  EMAIL_VERIFICATION_KEY: process.env.EMAIL_VERIFICATION_KEY,
+  PHONE_VERIFICATION_KEY: process.env.PHONE_VERIFICATION_KEY,
 };
 
 export default config;
