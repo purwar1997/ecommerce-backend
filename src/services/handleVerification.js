@@ -5,7 +5,7 @@ import CustomError from '../utils/customError.js';
 export const verifyEmail = async email => {
   try {
     const response = await axios.get(
-      `https://emailvalidation.abstractapi.com/v1/?api_key=${config.EMAIL_VERIFICATION_KEY}&email=${email}`
+      `https://emailvalidation.abstractapi.com/v1/?api_key=${config.verification.emailKey}&email=${email}`
     );
 
     const { is_valid_format, is_disposable_email, deliverability } = response.data;
@@ -27,7 +27,7 @@ export const verifyEmail = async email => {
 export const verifyPhone = async phone => {
   try {
     const response = await axios.get(
-      `https://phonevalidation.abstractapi.com/v1/?api_key=${config.PHONE_VERIFICATION_KEY}&phone=${phone}&country=IN`
+      `https://phonevalidation.abstractapi.com/v1/?api_key=${config.verification.phoneKey}&phone=${phone}&country=IN`
     );
 
     const { valid } = response.data;

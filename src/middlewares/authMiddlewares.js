@@ -15,7 +15,7 @@ export const isAuthenticated = handleAsync(async (req, _res, next) => {
     throw new CustomError('Access denied. Token not provided', 401);
   }
 
-  const decodedToken = jwt.verify(token, config.JWT_SECRET_KEY);
+  const decodedToken = jwt.verify(token, config.auth.jwtSecretKey);
 
   const user = await User.findOne({ _id: decodedToken.userId, isDeleted: false });
 

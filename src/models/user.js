@@ -150,7 +150,7 @@ userSchema.methods = {
   },
 
   generateJWTToken() {
-    const jwtToken = jwt.sign({ userId: this._id }, config.JWT_SECRET_KEY, {
+    const jwtToken = jwt.sign({ userId: this._id }, config.auth.jwtSecretKey, {
       expiresIn: JWT_EXPIRY,
     });
 
