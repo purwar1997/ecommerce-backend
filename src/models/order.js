@@ -1,13 +1,12 @@
 import mongoose from 'mongoose';
-import CustomError from '../utils/customError.js';
 import { roundTwoDecimals } from '../utils/helpers.js';
+import { couponCodeRegex } from '../utils/regex.js';
 import {
   MIN_QUANTITY,
   MAX_QUANTITY,
   MIN_PRICE,
   MAX_PRICE,
   MIN_SHIPPING_CHARGE,
-  GST_RATE,
   ORDER_STATUS,
   PAYMENT_METHODS,
 } from '../constants.js';
@@ -50,6 +49,7 @@ const orderSchema = new Schema(
     },
     orderAmount: {
       type: Number,
+      required: [true, 'Order amount is required'],
       min: [MIN_PRICE, `Order amount must be at least ₹${MIN_PRICE}`],
       set: roundTwoDecimals,
     },
@@ -67,17 +67,22 @@ const orderSchema = new Schema(
     },
     taxAmount: {
       type: Number,
+      required: [true, 'Tax amount is required'],
       min: [0, 'Tax amount cannot be negative'],
       set: roundTwoDecimals,
     },
     totalAmount: {
       type: Number,
+      required: [true, 'Total amount is required'],
       min: [0, 'Total amount cannot be negative'],
       set: roundTwoDecimals,
     },
     coupon: {
-      type: Schema.Types.ObjectId,
-      ref: 'Coupon',
+      type: String,
+      match: [
+        couponCodeRegex,
+        'Coupon code must be 5-15 characters long, contain only uppercase letters and digits, and start with a letter',
+      ],
     },
     shippingAddress: {
       type: Schema.Types.ObjectId,
@@ -127,22 +132,5 @@ const orderSchema = new Schema(
     },
   }
 );
-
-orderSchema.pre('save', function (next) {
-  this.orderAmount = this.items.reduce((total, item) => total + item.price * item.quantity, 0);
-
-  if (this.orderAmount < MIN_PRICE) {
-    return next(new CustomError(`Order amount must be at least ₹${MIN_PRICE}`, 400));
-  }
-
-  if (this.shippingCharges < MIN_SHIPPING_CHARGE) {
-    return next(new CustomError(`Shipping charges must be at least ₹${MIN_SHIPPING_CHARGE}`, 400));
-  }
-
-  this.taxAmount = this.orderAmount * GST_RATE + this.shippingCharges * GST_RATE;
-  this.totalAmount = this.orderAmount + this.shippingCharges + this.taxAmount;
-
-  next();
-});
 
 export default mongoose.model('Order', orderSchema);

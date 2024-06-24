@@ -19,6 +19,11 @@ export const PAYMENT_METHODS = {
   CREDIT_CARD: 'credit_card',
 };
 
+export const DISCOUNT_TYPES = {
+  PERCENTAGE: 'percentage',
+  FLAT: 'flat',
+};
+
 export const PRODUCTS_PER_PAGE = 15;
 export const ORDERS_PER_PAGE = 5;
 export const USERS_PER_PAGE = 5;
