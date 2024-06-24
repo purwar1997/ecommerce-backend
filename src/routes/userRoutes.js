@@ -14,6 +14,7 @@ import {
 import { updateUserSchema, updateRoleSchema } from '../schemas/userSchemas.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
 import { validateSchema } from '../middlewares/validateSchema.js';
+import { isPhoneValid } from '../middlewares/verifyCredentials.js';
 import { checkAdminSelfUpdate, checkAdminSelfDelete } from '../middlewares/checkAdmin.js';
 import { ROLES } from '../constants.js';
 
@@ -22,7 +23,7 @@ const router = express.Router();
 router
   .route('/user')
   .get(isAuthenticated, getUserDetails)
-  .put(isAuthenticated, validateSchema(updateUserSchema), updateProfile)
+  .put(isAuthenticated, validateSchema(updateUserSchema), isPhoneValid, updateProfile)
   .delete(isAuthenticated, deleteAccount);
 
 router.route('/admin/users').get(isAuthenticated, authorizeRole(ROLES.ADMIN), getUsers);
