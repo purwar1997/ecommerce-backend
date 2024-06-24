@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import config from '../config/config.js';
 import { nameRegex, emailRegex, phoneRegex, imageUrlRegex } from '../utils/regex.js';
+import { formatOptions } from '../utils/helpers.js';
 import { MIN_QUANTITY, MAX_QUANTITY, ROLES, JWT_EXPIRY } from '../constants.js';
 
 const Schema = mongoose.Schema;
@@ -62,7 +63,7 @@ const userSchema = new Schema(
       default: ROLES.USER,
       enum: {
         values: Object.values(ROLES),
-        message: 'Invalid role',
+        message: `Invalid role. Valid options are: ${formatOptions(ROLES)}`,
       },
     },
     avatar: {

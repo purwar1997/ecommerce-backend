@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { nameRegex, phoneRegex, passwordRegex } from '../utils/regex.js';
-import { stripConfirmPassword } from '../utils/helpers.js';
+import { stripConfirmPassword, formatOptions } from '../utils/helpers.js';
 import { ROLES } from '../constants.js';
 
 export const updateUserSchema = customJoi
@@ -53,6 +53,6 @@ export const updateRoleSchema = customJoi.object({
       'any.required': 'Role is required',
       'string.empty': 'Role cannot be empty',
       'string.base': 'Role must be a string',
-      'any.only': 'Invalid role. Valid options are user and admin',
+      'any.only': `Invalid role. Valid options are: ${formatOptions(ROLES)}`,
     }),
 });

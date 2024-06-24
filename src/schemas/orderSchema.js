@@ -1,7 +1,12 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
-import { isObjectIdValid, roundToTwoDecimalPlaces, stripEmptyKeys } from '../utils/helpers.js';
 import { couponCodeRegex } from '../utils/regex.js';
+import {
+  isObjectIdValid,
+  roundToTwoDecimalPlaces,
+  stripEmptyKeys,
+  formatOptions,
+} from '../utils/helpers.js';
 import {
   MIN_QUANTITY,
   MAX_QUANTITY,
@@ -87,8 +92,7 @@ export const createOrderSchema = customJoi
         'any.required': 'Payment method is required',
         'string.empty': 'Payment method cannot be empty',
         'string.base': 'Payment method must be a string',
-        'any.only':
-          'Invalid payment method. Valid options are cash_on_delivery, debit_card and credit_card',
+        'any.only': `Invalid payment method. Valid options are: ${formatOptions(PAYMENT_METHODS)}`,
       }),
   })
   .custom(stripEmptyKeys);

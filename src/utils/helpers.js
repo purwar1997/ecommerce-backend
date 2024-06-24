@@ -54,6 +54,26 @@ export const formatCastError = error => {
   )} but received '${error.value}'`;
 };
 
+export const formatOptions = options => {
+  options = Object.values(options);
+
+  if (options.length === 0) {
+    return '';
+  }
+
+  if (options.length === 1) {
+    return options[0];
+  }
+
+  if (options.length === 2) {
+    return options.join(' and ');
+  }
+
+  const lastOption = options.pop();
+
+  return `${options.join(', ')} and ${lastOption}`;
+};
+
 // Custom joi sanitizers
 
 export const stripConfirmPassword = value => {

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { roundTwoDecimals } from '../utils/helpers.js';
+import { roundTwoDecimals, formatOptions } from '../utils/helpers.js';
 import { couponCodeRegex } from '../utils/regex.js';
 import {
   MIN_QUANTITY,
@@ -81,7 +81,7 @@ const orderSchema = new Schema(
       type: String,
       match: [
         couponCodeRegex,
-        'Coupon code must be 5-15 characters long, contain only uppercase letters and digits, and start with a letter',
+        'Coupon code must be 5-15 characters long, start with a letter, and contain only uppercase letters and digits',
       ],
     },
     shippingAddress: {
@@ -94,7 +94,7 @@ const orderSchema = new Schema(
       required: [true, 'Payment method is required'],
       enum: {
         values: Object.values(PAYMENT_METHODS),
-        message: 'Invalid payment method',
+        message: `Invalid payment method. Valid options are: ${formatOptions(PAYMENT_METHODS)}`,
       },
     },
     orderStatus: {
@@ -102,7 +102,7 @@ const orderSchema = new Schema(
       default: ORDER_STATUS.PENDING,
       enum: {
         values: Object.values(ORDER_STATUS),
-        message: 'Invalid order status',
+        message: `Invalid order status. Valid options are: ${formatOptions(ORDER_STATUS)}`,
       },
     },
     user: {
