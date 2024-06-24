@@ -2,7 +2,7 @@ import Order from '../models/order.js';
 import Product from '../models/product.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
-import sendMail from '../services/sendMail.js';
+import sendEmail from '../services/sendEmail.js';
 import { sendResponse } from '../utils/helpers.js';
 import { GST_RATE, DISCOUNT_TYPES } from '../constants.js';
 
@@ -59,13 +59,13 @@ export const createOrder = handleAsync(async (req, res) => {
   );
 
   try {
-    await sendMail({
+    await sendEmail({
       recepient: user.email,
-      subject: 'Order confirmation mail',
+      subject: 'Order confirmation email',
       text: `Order with ID ${newOrder._id} has been placed successfully`,
     });
-  } catch (err) {
-    throw new CustomError('Failure sending mail to the user', 500);
+  } catch (error) {
+    throw new CustomError('Failed to send order confirmation email to the user', 500);
   }
 
   sendResponse(res, 201, 'Order created successfully', newOrder);

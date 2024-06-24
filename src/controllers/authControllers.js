@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import User from '../models/user.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
-import sendMail from '../services/sendMail.js';
+import sendEmail from '../services/sendEmail.js';
 import { setCookieOptions, clearCookieOptions } from '../utils/cookieOptions.js';
 import { sendResponse } from '../utils/helpers.js';
 
@@ -105,20 +105,20 @@ export const forgotPassword = handleAsync(async (req, res) => {
 
   const messageOptions = {
     recipient: email,
-    subject: 'Password reset mail',
+    subject: 'Password reset email',
     text: `To reset password, copy paste this URL in browser and hit ENTER: ${resetPasswordUrl}`,
   };
 
   try {
-    await sendMail(messageOptions);
+    await sendEmail(messageOptions);
   } catch (error) {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpiry = undefined;
     await user.save();
-    throw new CustomError('Failure sending mail to the user', 500);
+    throw new CustomError('Failed to send reset password email to the user', 500);
   }
 
-  sendResponse(res, 200, 'Password reset mail sent successfully');
+  sendResponse(res, 200, 'Password reset email sent successfully');
 });
 
 export const resetPassword = handleAsync(async (req, res) => {
