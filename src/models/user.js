@@ -42,15 +42,15 @@ const userSchema = new Schema(
     },
     email: {
       type: String,
-      required: [true, 'Email address is required'],
       unique: true,
       immutable: true,
+      required: [true, 'Email address is required'],
       match: [emailRegex, 'Please provide a valid email address'],
     },
     phone: {
       type: String,
-      required: [true, 'Phone number is required'],
       unique: true,
+      required: [true, 'Phone number is required'],
       match: [phoneRegex, 'Please provide a valid phone number'],
     },
     password: {
@@ -90,7 +90,7 @@ const userSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
-    roleUpdatedBy: {
+    roleLastUpdatedBy: {
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
