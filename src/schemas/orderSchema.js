@@ -95,4 +95,4 @@ export const createOrderSchema = customJoi
         'any.only': `Invalid payment method. Valid options are: ${formatOptions(PAYMENT_METHODS)}`,
       }),
   })
-  .custom(stripEmptyKeys);
+  .custom(stripEmptyKeys, 'Custom validation to strip empty fields');

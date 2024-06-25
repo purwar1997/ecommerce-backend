@@ -56,7 +56,7 @@ export const signupSchema = customJoi
     password: newPasswordSchema,
     confirmPassword: confirmPasswordSchema,
   })
-  .custom(stripConfirmPassword);
+  .custom(stripConfirmPassword, 'Custom validation to strip confirm password field');
 
 export const loginSchema = customJoi.object({
   email: emailSchema,

@@ -38,7 +38,7 @@ export const updateUserSchema = customJoi
     }),
   })
   .with('password', 'confirmPassword')
-  .custom(stripConfirmPassword)
+  .custom(stripConfirmPassword, 'Custom validation to strip confirm password field')
   .messages({
     'object.with': 'Confirm password is required',
   });
