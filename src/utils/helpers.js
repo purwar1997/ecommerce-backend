@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { DISCOUNT_TYPES } from '../constants.js';
 
 export const serializeDocs = data => {
   if (!data) {
@@ -79,6 +80,18 @@ export const formatOptions = options => {
 export const stripConfirmPassword = value => {
   const { confirmPassword, ...rest } = value;
   return rest;
+};
+
+export const stripCouponDiscount = value => {
+  const { discountType } = coupon;
+
+  if (discountType === DISCOUNT_TYPES.FLAT) {
+    delete coupon.percentageDiscount;
+  } else {
+    delete coupon.flatDiscount;
+  }
+
+  return value;
 };
 
 export const stripEmptyKeys = obj => {

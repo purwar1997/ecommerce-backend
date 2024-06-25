@@ -37,3 +37,9 @@ export const MIN_SHIPPING_CHARGE = 30;
 export const GST_RATE = 0.18;
 export const MIN_RATING = 1;
 export const MAX_RATING = 5;
+export const MIN_FLAT_DISCOUNT = 10;
+export const MAX_FLAT_DISCOUNT = 1000;
+export const FLAT_DISCOUNT_MULTIPLE = 10;
+export const MIN_PERCENTAGE_DISCOUNT = 1;
+export const MAX_PERCENTAGE_DISCOUNT = 100;
+
