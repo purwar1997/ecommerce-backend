@@ -43,7 +43,7 @@ const orderSchema = new Schema(
     items: {
       type: [orderItemSchema],
       validate: {
-        validator: v => v.length > 0,
+        validator: items => items.length > 0,
         message: 'Items array must have at least one order item',
       },
     },
@@ -97,7 +97,7 @@ const orderSchema = new Schema(
         message: `Invalid payment method. Valid options are: ${formatOptions(PAYMENT_METHODS)}`,
       },
     },
-    orderStatus: {
+    status: {
       type: String,
       default: ORDER_STATUS.PENDING,
       enum: {
@@ -118,7 +118,7 @@ const orderSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
-    statusUpdatedBy: {
+    statusLastUpdatedBy: {
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
