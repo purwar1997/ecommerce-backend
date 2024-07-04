@@ -2,10 +2,11 @@ import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { couponCodeRegex } from '../utils/regex.js';
 import {
-  isObjectIdValid,
+  validateObjectId,
   roundToTwoDecimalPlaces,
   stripEmptyKeys,
   formatOptions,
+  validateOption,
 } from '../utils/helpers.js';
 import {
   MIN_QUANTITY,
@@ -17,7 +18,7 @@ import {
 } from '../constants.js';
 
 const orderItemSchema = Joi.object({
-  product: Joi.string().trim().required().custom(isObjectIdValid).messages({
+  product: Joi.string().trim().required().custom(validateObjectId).messages({
     'any.required': 'Product is required',
     'string.empty': 'Product cannot be empty',
     'string.base': 'Product must be a string',
@@ -76,23 +77,25 @@ export const createOrderSchema = customJoi
         'Coupon code must be 5-15 characters long, contain only uppercase letters and digits, and start with a letter',
     }),
 
-    shippingAddress: Joi.string().trim().required().custom(isObjectIdValid).messages({
+    shippingAddress: Joi.string().trim().required().custom(validateObjectId).messages({
       'any.required': 'Shipping address is required',
-      'string.empty': 'Shipping address cannot be empty',
       'string.base': 'Shipping address must be a string',
+      'string.empty': 'Shipping address cannot be empty',
       'any.invalid': 'Invalid value provided for address. Expected a valid ObjectId',
     }),
 
     paymentMethod: Joi.string()
       .trim()
       .lowercase()
-      .valid(...Object.values(PAYMENT_METHODS))
       .required()
+      .custom(validateOption(PAYMENT_METHODS))
       .messages({
         'any.required': 'Payment method is required',
-        'string.empty': 'Payment method cannot be empty',
         'string.base': 'Payment method must be a string',
-        'any.only': `Invalid payment method. Valid options are: ${formatOptions(PAYMENT_METHODS)}`,
+        'string.empty': 'Payment method cannot be empty',
+        'any.invalid': `Invalid payment method. Valid options are: ${formatOptions(
+          PAYMENT_METHODS
+        )}`,
       }),
   })
-  .custom(stripEmptyKeys, 'Custom validation to strip empty fields');
+  .custom(stripEmptyKeys, 'Custom sanitization to strip empty fields');

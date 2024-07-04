@@ -2,7 +2,7 @@ import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import {
   roundToTwoDecimalPlaces,
-  isObjectIdValid,
+  validateObjectId,
   removeExtraInnerSpaces,
 } from '../utils/helpers.js';
 import { MIN_PRICE, MAX_PRICE, MIN_STOCK, MAX_STOCK } from '../constants.js';
@@ -34,14 +34,14 @@ export const productSchema = customJoi.object({
       'number.max': `Products priced above ₹${MAX_PRICE} cannot be listed`,
     }),
 
-  brand: Joi.string().trim().required().custom(isObjectIdValid).messages({
+  brand: Joi.string().trim().required().custom(validateObjectId).messages({
     'any.required': 'Product brand is required',
     'string.empty': 'Product brand cannot be empty',
     'string.base': 'Product brand must be a string',
     'any.invalid': 'Invalid value provided for brand. Expected a valid ObjectId',
   }),
 
-  category: Joi.string().trim().required().custom(isObjectIdValid).messages({
+  category: Joi.string().trim().required().custom(validateObjectId).messages({
     'any.required': 'Product category is required',
     'string.empty': 'Product category cannot be empty',
     'string.base': 'Product category must be a string',

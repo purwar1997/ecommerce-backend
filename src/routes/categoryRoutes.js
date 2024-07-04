@@ -5,7 +5,7 @@ import {
   getCategoryById,
   updateCategory,
 } from '../controllers/categoryControllers.js';
-import { categorySchema } from '../schemas/categorySchema.js';
+import { categorySchema } from '../schemas/categorySchemas.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
 import { parseFormData } from '../middlewares/parseFormData.js';
 import { validateSchema } from '../middlewares/validateSchema.js';

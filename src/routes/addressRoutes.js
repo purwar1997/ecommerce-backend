@@ -7,7 +7,7 @@ import {
   deleteAddress,
   setDefaultAddress,
 } from '../controllers/addressControllers.js';
-import { addressSchema } from '../schemas/addressSchema.js';
+import { addressSchema } from '../schemas/addressSchemas.js';
 import { isAuthenticated } from '../middlewares/authMiddlewares.js';
 import { validateSchema } from '../middlewares/validateSchema.js';
 import { isPhoneValid } from '../middlewares/verifyCredentials.js';

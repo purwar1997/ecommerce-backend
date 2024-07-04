@@ -1,6 +1,6 @@
 import express from 'express';
 import { createOrder } from '../controllers/orderControllers.js';
-import { createOrderSchema } from '../schemas/orderSchema.js';
+import { createOrderSchema } from '../schemas/orderSchemas.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
 import { validateSchema } from '../middlewares/validateSchema.js';
 import {

@@ -5,7 +5,7 @@ import {
   getBrandById,
   updateBrand,
 } from '../controllers/brandControllers.js';
-import { brandSchema } from '../schemas/brandSchema.js';
+import { brandSchema } from '../schemas/brandSchemas.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
 import { parseFormData } from '../middlewares/parseFormData.js';
 import { validateSchema } from '../middlewares/validateSchema.js';

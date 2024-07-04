@@ -5,7 +5,7 @@ import {
   getProductReviewById,
   updateProductReview,
 } from '../controllers/reviewControllers.js';
-import { reviewSchema } from '../schemas/reviewSchema.js';
+import { reviewSchema } from '../schemas/reviewSchemas.js';
 import { isAuthenticated,  } from '../middlewares/authMiddlewares.js';
 import { validateSchema } from '../middlewares/validateSchema.js';
 
