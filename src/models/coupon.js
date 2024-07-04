@@ -39,8 +39,8 @@ const couponSchema = new Schema(
         },
         'Flat discount is required when discount type is flat',
       ],
-      min: [MIN_FLAT_DISCOUNT, `Flat discount must be at least ${MIN_FLAT_DISCOUNT}`],
-      max: [MAX_FLAT_DISCOUNT, `Flat discount must be at most ${MAX_FLAT_DISCOUNT}`],
+      min: [MIN_FLAT_DISCOUNT, `Flat discount must be at least ₹${MIN_FLAT_DISCOUNT}`],
+      max: [MAX_FLAT_DISCOUNT, `Flat discount must be at most ₹${MAX_FLAT_DISCOUNT}`],
       validate: {
         validator: discount => discount % FLAT_DISCOUNT_MULTIPLE === 0,
         message: `Flat discount must be a multiple of ${FLAT_DISCOUNT_MULTIPLE}`,
@@ -71,7 +71,7 @@ const couponSchema = new Schema(
       type: Date,
       required: [true, 'Expiry date is required'],
       validate: {
-        validator: date => date > Date.now(),
+        validator: date => date > new Date(),
         message: 'Expiry date must be in the future',
       },
     },

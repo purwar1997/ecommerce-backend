@@ -12,8 +12,9 @@ import addressRouter from './routes/addressRoutes.js';
 import categoryRouter from './routes/categoryRoutes.js';
 import brandRouter from './routes/brandRoutes.js';
 import productRouter from './routes/productRoutes.js';
-import reviewRouter from './routes/reviewRoutes.js';
+import couponRouter from './routes/couponRoutes.js';
 import orderRouter from './routes/orderRoutes.js';
+import reviewRouter from './routes/reviewRoutes.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 
 const app = express();
@@ -54,8 +55,9 @@ app.use('/api/v1', addressRouter);
 app.use('/api/v1', categoryRouter);
 app.use('/api/v1', brandRouter);
 app.use('/api/v1', productRouter);
-app.use('/api/v1', reviewRouter);
+app.use('/api/v1', couponRouter);
 app.use('/api/v1', orderRouter);
+app.use('/api/v1', reviewRouter);
 
 app.use(errorHandler);
 
