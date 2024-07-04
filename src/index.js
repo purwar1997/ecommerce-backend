@@ -10,7 +10,7 @@ import app from './app.js';
       throw error;
     });
 
-    app.listen(config.PORT, () => {
+    app.listen(config.server.port, () => {
       console.log(`Server is running on http://localhost:${config.server.port}`);
     });
   } catch (error) {
