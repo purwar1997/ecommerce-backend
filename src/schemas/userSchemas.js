@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { nameRegex, phoneRegex, passwordRegex } from '../utils/regex.js';
-import { stripConfirmPassword, formatOptions } from '../utils/helpers.js';
+import { formatOptions, validateOption } from '../utils/helpers.js';
 import { ROLES } from '../constants.js';
 
 export const updateUserSchema = customJoi
@@ -33,12 +33,11 @@ export const updateUserSchema = customJoi
         'Password must be 6-20 characters long and should contain atleast one digit, one letter and one special character',
     }),
 
-    confirmPassword: Joi.any().valid(Joi.ref('password')).messages({
+    confirmPassword: Joi.any().valid(Joi.ref('password')).strip().messages({
       'any.only': "Confirm password doesn't match with password",
     }),
   })
   .with('password', 'confirmPassword')
-  .custom(stripConfirmPassword, 'Custom validation to strip confirm password field')
   .messages({
     'object.with': 'Confirm password is required',
   });
@@ -47,12 +46,12 @@ export const updateRoleSchema = customJoi.object({
   role: Joi.string()
     .trim()
     .lowercase()
-    .valid(...Object.values(ROLES))
     .required()
+    .custom(validateOption(ROLES))
     .messages({
       'any.required': 'Role is required',
       'string.empty': 'Role cannot be empty',
       'string.base': 'Role must be a string',
-      'any.only': `Invalid role. Valid options are: ${formatOptions(ROLES)}`,
+      'any.invalid': `Invalid role. Valid options are: ${formatOptions(ROLES)}`,
     }),
 });

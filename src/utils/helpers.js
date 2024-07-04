@@ -77,12 +77,7 @@ export const formatOptions = options => {
 
 // Custom joi sanitizers
 
-export const stripConfirmPassword = value => {
-  const { confirmPassword, ...rest } = value;
-  return rest;
-};
-
-export const stripCouponDiscount = value => {
+export const stripCouponDiscount = coupon => {
   const { discountType } = coupon;
 
   if (discountType === DISCOUNT_TYPES.FLAT) {
@@ -91,7 +86,7 @@ export const stripCouponDiscount = value => {
     delete coupon.flatDiscount;
   }
 
-  return value;
+  return coupon;
 };
 
 export const stripEmptyKeys = obj => {
@@ -126,8 +121,24 @@ export const removeExtraInnerSpaces = (value, helpers) => {
 
 // Custom joi validators
 
-export const isObjectIdValid = (value, helpers) => {
+export const validateObjectId = (value, helpers) => {
   if (!mongoose.Types.ObjectId.isValid(value)) {
+    return helpers.error('any.invalid', { value });
+  }
+
+  return value;
+};
+
+export const validateOption = options => (value, helpers) => {
+  if (typeof value !== 'string') {
+    return helpers.error('string.base', { value });
+  }
+
+  if (!value) {
+    return helpers.error('string.empty', { value });
+  }
+
+  if (!Object.values(options).includes(value)) {
     return helpers.error('any.invalid', { value });
   }
 

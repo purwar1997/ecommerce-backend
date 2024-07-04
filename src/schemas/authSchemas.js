@@ -1,7 +1,6 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { nameRegex, phoneRegex, passwordRegex } from '../utils/regex.js';
-import { stripConfirmPassword } from '../utils/helpers.js';
 
 const emailSchema = Joi.string()
   .trim()
@@ -23,40 +22,38 @@ const newPasswordSchema = Joi.string().pattern(passwordRegex).required().message
     'Password must be 6-20 characters long and should contain atleast one digit, one letter and one special character',
 });
 
-const confirmPasswordSchema = Joi.any().valid(Joi.ref('password')).required().messages({
+const confirmPasswordSchema = Joi.any().valid(Joi.ref('password')).required().strip().messages({
   'any.required': 'Confirm password is required',
   'any.only': "Confirm password doesn't match with password",
 });
 
-export const signupSchema = customJoi
-  .object({
-    firstname: Joi.string().trim().pattern(nameRegex).max(50).required().messages({
-      'any.required': 'First name is required',
-      'string.empty': 'First name cannot be empty',
-      'string.base': 'First name must be a string',
-      'string.pattern.base': 'First name must contain only letters',
-      'string.max': 'First name cannot exceed 50 characters',
-    }),
+export const signupSchema = customJoi.object({
+  firstname: Joi.string().trim().pattern(nameRegex).max(50).required().messages({
+    'any.required': 'First name is required',
+    'string.empty': 'First name cannot be empty',
+    'string.base': 'First name must be a string',
+    'string.pattern.base': 'First name must contain only letters',
+    'string.max': 'First name cannot exceed 50 characters',
+  }),
 
-    lastname: Joi.string().trim().pattern(nameRegex).max(50).allow('').messages({
-      'string.base': 'Last name must be a string',
-      'string.pattern.base': 'Last name must contain only letters',
-      'string.max': 'Last name cannot exceed 50 characters',
-    }),
+  lastname: Joi.string().trim().pattern(nameRegex).max(50).allow('').messages({
+    'string.base': 'Last name must be a string',
+    'string.pattern.base': 'Last name must contain only letters',
+    'string.max': 'Last name cannot exceed 50 characters',
+  }),
 
-    email: emailSchema,
+  email: emailSchema,
 
-    phone: Joi.string().trim().pattern(phoneRegex).required().messages({
-      'any.required': 'Phone number is required',
-      'string.empty': 'Phone number cannot be empty',
-      'string.base': 'Phone number must be a string',
-      'string.pattern.base': 'Please provide a valid phone number',
-    }),
+  phone: Joi.string().trim().pattern(phoneRegex).required().messages({
+    'any.required': 'Phone number is required',
+    'string.empty': 'Phone number cannot be empty',
+    'string.base': 'Phone number must be a string',
+    'string.pattern.base': 'Please provide a valid phone number',
+  }),
 
-    password: newPasswordSchema,
-    confirmPassword: confirmPasswordSchema,
-  })
-  .custom(stripConfirmPassword, 'Custom validation to strip confirm password field');
+  password: newPasswordSchema,
+  confirmPassword: confirmPasswordSchema,
+});
 
 export const loginSchema = customJoi.object({
   email: emailSchema,
