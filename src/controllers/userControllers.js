@@ -40,7 +40,7 @@ export const deleteAccount = handleAsync(async (req, res) => {
 
   await User.findByIdAndUpdate(
     userId,
-    { isDeleted: true, deletedBy: userId, deletedAt: Date.now() },
+    { isDeleted: true, deletedBy: userId, deletedAt: new Date() },
     { runValidators: true }
   );
 
@@ -78,7 +78,7 @@ export const updateUserRole = handleAsync(async (req, res) => {
 
   const user = await User.findOneAndUpdate(
     { _id: userId, isDeleted: false },
-    { role, roleUpdatedBy: req.user._id, roleUpdatedAt: Date.now() },
+    { role, roleLastUpdatedBy: req.user._id, roleUpdatedAt: new Date() },
     { runValidators: true, new: true }
   );
 
@@ -94,7 +94,7 @@ export const deleteUser = handleAsync(async (req, res) => {
 
   const user = await User.findOneAndUpdate(
     { _id: userId, isDeleted: false },
-    { isDeleted: true, deletedBy: req.user._id, deletedAt: Date.now() },
+    { isDeleted: true, deletedBy: req.user._id, deletedAt: new Date() },
     { runValidators: true, new: true }
   );
 
@@ -133,7 +133,7 @@ export const adminSelfDemote = handleAsync(async (req, res) => {
 
   const admin = await User.findByIdAndUpdate(
     userId,
-    { role: 'user', roleUpdatedBy: userId, roleUpdatedAt: Date.now() },
+    { role: 'user', roleLastUpdatedBy: userId, roleUpdatedAt: new Date() },
     { runValidators: true, new: true }
   );
 
@@ -158,7 +158,7 @@ export const adminSelfDelete = handleAsync(async (req, res) => {
 
   await User.findByIdAndUpdate(
     userId,
-    { isDeleted: true, deletedBy: userId, deletedAt: Date.now() },
+    { isDeleted: true, deletedBy: userId, deletedAt: new Date() },
     { runValidators: true, new: true }
   );
 

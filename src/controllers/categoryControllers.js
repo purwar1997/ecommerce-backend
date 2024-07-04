@@ -16,7 +16,7 @@ export const addNewCategory = handleAsync(async (req, res) => {
 
   if (category) {
     throw new CustomError(
-      'Category by this title already exists. Please set a different category title',
+      'Category by this title already exists. Please provide a different category title',
       409
     );
   }

@@ -39,7 +39,7 @@ export const validateCoupon = handleAsync(async (req, _res, next) => {
   if (couponCode) {
     const coupon = await Coupon.findOne({
       code: couponCode,
-      expiryDate: { $gt: Date.now() },
+      expiryDate: { $gt: new Date() },
     });
 
     if (!coupon) {

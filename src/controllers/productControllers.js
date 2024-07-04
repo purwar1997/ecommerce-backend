@@ -10,7 +10,7 @@ export const addNewProduct = handleAsync(async (req, res) => {
 
   if (product) {
     throw new CustomError(
-      'Product title must be unique within the same brand and category. Please set a different product title',
+      'Product title must be unique within the same brand and category. Please provide a different product title',
       409
     );
   }

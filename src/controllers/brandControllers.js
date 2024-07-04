@@ -16,7 +16,7 @@ export const addNewBrand = handleAsync(async (req, res) => {
 
   if (brand) {
     throw new CustomError(
-      'Brand by this name already exists. Please set a different brand name',
+      'Brand by this name already exists. Please provide a different brand name',
       409
     );
   }
