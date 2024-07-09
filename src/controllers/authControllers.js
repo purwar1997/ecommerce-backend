@@ -57,7 +57,7 @@ export const signup = handleAsync(async (req, res) => {
 
   newUser.password = undefined;
 
-  sendResponse(res, 201, 'User created successfully', newUser);
+  sendResponse(res, 201, 'User signed up successfully', newUser);
 });
 
 export const login = handleAsync(async (req, res) => {
@@ -137,7 +137,7 @@ export const resetPassword = handleAsync(async (req, res) => {
   }
 
   if (user.isDeleted) {
-    throw new CustomError('User account has been deleted', 409);
+    throw new CustomError('User account has been deleted', 404);
   }
 
   user.password = password;
@@ -146,5 +146,5 @@ export const resetPassword = handleAsync(async (req, res) => {
 
   await user.save();
 
-  sendResponse(res, 200, 'Password has been reset sucessfully');
+  sendResponse(res, 200, 'Password has been reset successfully');
 });

@@ -23,7 +23,7 @@ export const updateProfile = handleAsync(async (req, res) => {
   if (anotherUser) {
     throw new CustomError(
       'This phone number is being used by another user. Please set a different phone number',
-      400
+      409
     );
   }
 
@@ -95,7 +95,7 @@ export const deleteUser = handleAsync(async (req, res) => {
   const user = await User.findOneAndUpdate(
     { _id: userId, isDeleted: false },
     { isDeleted: true, deletedBy: req.user._id, deletedAt: new Date() },
-    { runValidators: true, new: true }
+    { runValidators: true }
   );
 
   if (!user) {
@@ -106,50 +106,50 @@ export const deleteUser = handleAsync(async (req, res) => {
 });
 
 export const getOtherAdmins = handleAsync(async (req, res) => {
-  const admins = await User.find({
+  const otherAdmins = await User.find({
     role: 'admin',
     isDeleted: false,
     _id: { $ne: req.user._id },
   });
 
-  sendResponse(res, 200, 'Admins other than current admin fetched successfully', admins);
+  sendResponse(res, 200, 'Admins other than current admin fetched successfully', otherAdmins);
 });
 
 export const adminSelfDemote = handleAsync(async (req, res) => {
   const userId = req.user._id;
 
-  const otherAdmins = await User.find({
+  const adminCount = await User.countDocuments({
     role: 'admin',
     isDeleted: false,
     _id: { $ne: userId },
   });
 
-  if (!otherAdmins.length) {
+  if (!adminCount) {
     throw new CustomError(
       'You are the only admin. Promote another user before demoting yourself',
       409
     );
   }
 
-  const admin = await User.findByIdAndUpdate(
+  const demotedAdmin = await User.findByIdAndUpdate(
     userId,
     { role: 'user', roleLastUpdatedBy: userId, roleUpdatedAt: new Date() },
     { runValidators: true, new: true }
   );
 
-  sendResponse(res, 200, 'Admin role demoted to user successfully', admin);
+  sendResponse(res, 200, 'Admin role demoted to user successfully', demotedAdmin);
 });
 
 export const adminSelfDelete = handleAsync(async (req, res) => {
   const userId = req.user._id;
 
-  const otherAdmins = await User.find({
+  const adminCount = await User.countDocuments({
     role: 'admin',
     isDeleted: false,
     _id: { $ne: userId },
   });
 
-  if (!otherAdmins.length) {
+  if (!adminCount) {
     throw new CustomError(
       'You are the only admin. Promote another user before deleting yourself',
       409
@@ -159,7 +159,7 @@ export const adminSelfDelete = handleAsync(async (req, res) => {
   await User.findByIdAndUpdate(
     userId,
     { isDeleted: true, deletedBy: userId, deletedAt: new Date() },
-    { runValidators: true, new: true }
+    { runValidators: true }
   );
 
   res.clearCookie('token', clearCookieOptions);

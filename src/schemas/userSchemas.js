@@ -8,8 +8,8 @@ export const updateUserSchema = customJoi
   .object({
     firstname: Joi.string().trim().pattern(nameRegex).max(50).required().messages({
       'any.required': 'First name is required',
-      'string.empty': 'First name cannot be empty',
       'string.base': 'First name must be a string',
+      'string.empty': 'First name cannot be empty',
       'string.pattern.base': 'First name must contain only letters',
       'string.max': 'First name cannot exceed 50 characters',
     }),
@@ -22,8 +22,8 @@ export const updateUserSchema = customJoi
 
     phone: Joi.string().trim().pattern(phoneRegex).required().messages({
       'any.required': 'Phone number is required',
-      'string.empty': 'Phone number cannot be empty',
       'string.base': 'Phone number must be a string',
+      'string.empty': 'Phone number cannot be empty',
       'string.pattern.base': 'Please provide a valid phone number',
     }),
 
@@ -50,8 +50,8 @@ export const updateRoleSchema = customJoi.object({
     .custom(validateOption(ROLES))
     .messages({
       'any.required': 'Role is required',
-      'string.empty': 'Role cannot be empty',
       'string.base': 'Role must be a string',
+      'string.empty': 'Role cannot be empty',
       'any.invalid': `Invalid role. Valid options are: ${formatOptions(ROLES)}`,
     }),
 });

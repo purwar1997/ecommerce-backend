@@ -33,9 +33,9 @@ export const addNewAddress = handleAsync(async (req, res) => {
     );
   }
 
-  const addresses = await Address.find({ user: userId, isDeleted: false });
+  const addressCount = await Address.countDocuments({ user: userId, isDeleted: false });
 
-  if (!addresses.length) {
+  if (!addressCount) {
     address.isDefault = true;
   }
 
@@ -48,10 +48,19 @@ export const updateAddress = handleAsync(async (req, res) => {
   const { addressId } = req.params;
   const updates = req.body;
 
-  if (!updates.isDefault) {
-    const otherAddresses = await Address.find({ isDeleted: false, _id: { $ne: addressId } });
+  const address = await Address.findOne({ _id: addressId, isDeleted: false });
 
-    if (!otherAddresses.length) {
+  if (!address) {
+    throw new CustomError('Address not found', 404);
+  }
+
+  if (!updates.isDefault) {
+    const addressCount = await Address.countDocuments({
+      isDeleted: false,
+      _id: { $ne: addressId },
+    });
+
+    if (!addressCount) {
       throw new CustomError(
         'Please set another address as the default before changing this address to non-default',
         409
@@ -67,15 +76,10 @@ export const updateAddress = handleAsync(async (req, res) => {
     );
   }
 
-  const updatedAddress = await Address.findOneAndUpdate(
-    { _id: addressId, isDeleted: false },
-    updates,
-    { runValidators: true, new: true }
-  );
-
-  if (!updatedAddress) {
-    throw new CustomError('Address not found', 404);
-  }
+  const updatedAddress = await Address.findByIdAndUpdate(addressId, updates, {
+    runValidators: true,
+    new: true,
+  });
 
   sendResponse(res, 200, 'Address updated successfully', updatedAddress);
 });
@@ -106,21 +110,21 @@ export const deleteAddress = handleAsync(async (req, res) => {
 export const setDefaultAddress = handleAsync(async (req, res) => {
   const { addressId } = req.params;
 
+  const address = await Address.findOne({ _id: addressId, isDeleted: false });
+
+  if (!address) {
+    throw new CustomError('Address not found', 404);
+  }
+
   await Address.findOneAndUpdate(
     { user: req.user._id, isDefault: true },
     { isDefault: false },
     { runValidators: true }
   );
 
-  const defaultAddress = await Address.findOneAndUpdate(
-    { _id: addressId, isDeleted: false },
-    { isDefault: true },
-    { runValidators: true, new: true }
-  );
+  address.isDefault = true;
 
-  if (!defaultAddress) {
-    throw new CustomError('Address not found', 404);
-  }
+  const defaultAddress = await address.save();
 
   sendResponse(res, 200, 'Address has been set as the default successfully', defaultAddress);
 });

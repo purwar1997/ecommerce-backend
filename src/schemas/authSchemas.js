@@ -9,15 +9,15 @@ const emailSchema = Joi.string()
   .required()
   .messages({
     'any.required': 'Email address is required',
-    'string.empty': 'Email address cannot be empty',
     'string.base': 'Email address must be a string',
+    'string.empty': 'Email address cannot be empty',
     'string.email': 'Please provide a valid email address',
   });
 
 const newPasswordSchema = Joi.string().pattern(passwordRegex).required().messages({
   'any.required': 'Password is required',
-  'string.empty': 'Password cannot be empty',
   'string.base': 'Password must be string',
+  'string.empty': 'Password cannot be empty',
   'string.pattern.base':
     'Password must be 6-20 characters long and should contain atleast one digit, one letter and one special character',
 });
@@ -30,8 +30,8 @@ const confirmPasswordSchema = Joi.any().valid(Joi.ref('password')).required().st
 export const signupSchema = customJoi.object({
   firstname: Joi.string().trim().pattern(nameRegex).max(50).required().messages({
     'any.required': 'First name is required',
-    'string.empty': 'First name cannot be empty',
     'string.base': 'First name must be a string',
+    'string.empty': 'First name cannot be empty',
     'string.pattern.base': 'First name must contain only letters',
     'string.max': 'First name cannot exceed 50 characters',
   }),
@@ -46,8 +46,8 @@ export const signupSchema = customJoi.object({
 
   phone: Joi.string().trim().pattern(phoneRegex).required().messages({
     'any.required': 'Phone number is required',
-    'string.empty': 'Phone number cannot be empty',
     'string.base': 'Phone number must be a string',
+    'string.empty': 'Phone number cannot be empty',
     'string.pattern.base': 'Please provide a valid phone number',
   }),
 
@@ -60,8 +60,8 @@ export const loginSchema = customJoi.object({
 
   password: Joi.string().required().messages({
     'any.required': 'Password is required',
-    'string.empty': 'Password cannot be empty',
     'string.base': 'Password must be a string',
+    'string.empty': 'Password cannot be empty',
   }),
 });
 
