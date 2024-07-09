@@ -1,4 +1,4 @@
-export const DATABASE_NAME = 'ecommerce_db';
+export const DATABASE_NAME = 'shopease_db';
 export const JWT_EXPIRY = '24h';
 
 export const ROLES = Object.freeze({
@@ -49,4 +49,3 @@ export const MAX_FLAT_DISCOUNT = 1000;
 export const FLAT_DISCOUNT_MULTIPLE = 10;
 export const MIN_PERCENTAGE_DISCOUNT = 1;
 export const MAX_PERCENTAGE_DISCOUNT = 100;
-
