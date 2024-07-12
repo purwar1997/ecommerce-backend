@@ -35,8 +35,7 @@ export const signup = handleAsync(async (req, res) => {
         phone,
         password,
         isDeleted: false,
-        deletedBy: undefined,
-        deletedAt: undefined,
+        $unset: { deletedAt: 1, deletedBy: 1 },
       },
       { runValidators: true, new: true }
     );
