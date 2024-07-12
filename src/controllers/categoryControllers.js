@@ -72,9 +72,9 @@ export const updateCategory = handleAsync(async (req, res) => {
     );
   }
 
-  const response = await uploadImage(UPLOAD_FOLDERS.CATEGORY_IMAGES, req.file, categoryId);
-
   await deleteImage(category.image.publicId);
+
+  const response = await uploadImage(UPLOAD_FOLDERS.CATEGORY_IMAGES, req.file, categoryId);
 
   const updatedCategory = await Category.findByIdAndUpdate(
     categoryId,
