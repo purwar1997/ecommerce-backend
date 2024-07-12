@@ -4,7 +4,7 @@ import CustomError from '../utils/customError.js';
 
 const sendEmail = async options => {
   try {
-    const info = await transporter.sendEmail({
+    const info = await transporter.sendMail({
       from: config.smtp.senderAddress,
       to: options.recipient,
       subject: options.subject,
