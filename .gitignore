@@ -9,3 +9,6 @@ nodemon.json
 
 # Log files
 src/log/
+
+# File uploads
+src/uploads/

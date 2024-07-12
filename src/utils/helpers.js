@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import pluralize from 'pluralize';
 import { DISCOUNT_TYPES } from '../constants.js';
 
 export const serializeDocs = data => {
@@ -45,6 +46,28 @@ export const lowercaseFirstLetter = str => {
   return str.at(0).toLowerCase() + str.slice(1);
 };
 
+export const capitalizeFirstLetter = str => {
+  if (!str) {
+    return str;
+  }
+
+  return str.at(0).toUpperCase() + str.slice(1);
+};
+
+export const formatBytes = (bytes, decimals = 2) => {
+  if (bytes === 0) {
+    return '0 Bytes';
+  }
+
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+};
+
 export const formatCastError = error => {
   if (!(error instanceof mongoose.Error.CastError)) {
     return error.message;
@@ -73,6 +96,22 @@ export const formatOptions = options => {
   const lastOption = options.pop();
 
   return `${options.join(', ')} and ${lastOption}`;
+};
+
+export const singularize = str => {
+  if (!str) {
+    return str;
+  }
+
+  return pluralize.singular(str);
+};
+
+export const parseDate = currentDate => {
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth() + 1;
+  const date = currentDate.getDate();
+
+  return `${year}/${month}/${date}`;
 };
 
 // Custom joi sanitizers

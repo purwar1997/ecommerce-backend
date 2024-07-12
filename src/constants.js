@@ -1,4 +1,5 @@
 export const DATABASE_NAME = 'shopease_db';
+export const CLOUD_NAME = 'dlqnx5pot';
 export const JWT_EXPIRY = '24h';
 
 export const ROLES = Object.freeze({
@@ -30,6 +31,20 @@ export const COUPON_STATES = Object.freeze({
   DEACTIVATE: 'deactivate',
 });
 
+export const UPLOAD_FOLDERS = Object.freeze({
+  USER_AVATARS: 'user_avatars',
+  CATEGORY_IMAGES: 'category_images',
+  BRAND_LOGOS: 'brand_logos',
+  PRODUCT_IMAGES: 'product_images',
+});
+
+export const UPLOADED_FILES = Object.freeze({
+  USER_AVATAR: 'avatar',
+  CATEGORY_IMAGE: 'image',
+  BRAND_LOGO: 'logo',
+  PRODUCT_IMAGE: 'image',
+});
+
 export const PRODUCTS_PER_PAGE = 15;
 export const ORDERS_PER_PAGE = 5;
 export const USERS_PER_PAGE = 5;
@@ -49,3 +64,5 @@ export const MAX_FLAT_DISCOUNT = 1000;
 export const FLAT_DISCOUNT_MULTIPLE = 10;
 export const MIN_PERCENTAGE_DISCOUNT = 1;
 export const MAX_PERCENTAGE_DISCOUNT = 100;
+export const MAX_FILES = 1;
+export const MAX_FILE_SIZE = 50 * 1024 * 1024;

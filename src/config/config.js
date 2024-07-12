@@ -23,6 +23,10 @@ const config = {
     emailKey: process.env.EMAIL_VERIFICATION_KEY,
     phoneKey: process.env.PHONE_VERIFICATION_KEY,
   },
+  cloudinary: {
+    apiKey: process.env.CLOUDINARY_API_KEY,
+    apiSecret: process.env.CLOUDINARY_API_SECRET,
+  },
 };
 
 const requiredConfig = [
