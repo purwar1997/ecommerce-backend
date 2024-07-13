@@ -14,7 +14,8 @@ import {
   adminSelfDemote,
   adminSelfDelete,
 } from '../controllers/userControllers.js';
-import { updateUserSchema, updateRoleSchema, paginationSchema } from '../schemas/userSchemas.js';
+import { updateUserSchema, updateRoleSchema } from '../schemas/userSchemas.js';
+import { paginationSchema } from '../schemas/commonSchemas.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
 import { validatePayload, validateQueryParams } from '../middlewares/requestValidators.js';
 import { isPhoneValid } from '../middlewares/verifyCredentials.js';
