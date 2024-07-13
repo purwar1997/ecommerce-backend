@@ -1,6 +1,6 @@
 import express from 'express';
 import {
-  getUserDetails,
+  getProfile,
   updateProfile,
   deleteAccount,
   addProfilePhoto,
@@ -25,8 +25,8 @@ import { ROLES, UPLOAD_FOLDERS, UPLOADED_FILES } from '../constants.js';
 const router = express.Router();
 
 router
-  .route('/user')
-  .get(isAuthenticated, getUserDetails)
+  .route('/users/self')
+  .get(isAuthenticated, getProfile)
   .put(isAuthenticated, validateSchema(updateUserSchema), isPhoneValid, updateProfile)
   .delete(isAuthenticated, deleteAccount);
 

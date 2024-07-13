@@ -6,10 +6,10 @@ import { clearCookieOptions } from '../utils/cookieOptions.js';
 import { uploadImage, deleteImage } from '../services/cloudinaryAPIs.js';
 import { UPLOAD_FOLDERS, USERS_PER_PAGE } from '../constants.js';
 
-export const getUserDetails = handleAsync(async (req, res) => {
-  const user = await User.findById(req.user._id).select({ cart: 0, wishlist: 0 });
+export const getProfile = handleAsync(async (req, res) => {
+  const { user } = req;
 
-  sendResponse(res, 200, 'User details fetched successfully', user);
+  sendResponse(res, 200, 'Profile fetched successfully', user);
 });
 
 export const updateProfile = handleAsync(async (req, res) => {
