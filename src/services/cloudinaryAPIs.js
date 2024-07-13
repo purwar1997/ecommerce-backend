@@ -2,15 +2,15 @@ import cloudinary from '../config/cloudinary.config.js';
 import CustomError from '../utils/customError.js';
 import { parseDate } from '../utils/helpers.js';
 
-const generatePublicId = docId => {
+const generatePublicId = (folder, docId) => {
   const timestamp = parseDate(new Date());
-  return `${timestamp}/${docId}`;
+  return `${folder}/${timestamp}/${docId}`;
 };
 
 export const uploadImage = async (folder, file, docId) => {
   const options = {
-    public_id: generatePublicId(docId),
-    folder,
+    public_id: generatePublicId(folder, docId),
+    asset_folder: folder,
   };
 
   try {
