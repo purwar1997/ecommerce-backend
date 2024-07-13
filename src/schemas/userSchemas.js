@@ -55,3 +55,11 @@ export const updateRoleSchema = customJoi.object({
       'any.invalid': `Invalid role. Valid options are: ${formatOptions(ROLES)}`,
     }),
 });
+
+export const paginationSchema = Joi.object({
+  page: Joi.number().integer().positive().empty('').default(1).messages({
+    'number.base': 'Page must be a number',
+    'number.integer': 'Page must be an integer',
+    'number.positive': 'Page must be positive number',
+  }),
+});
