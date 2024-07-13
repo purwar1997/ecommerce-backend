@@ -14,9 +14,9 @@ import {
   adminSelfDemote,
   adminSelfDelete,
 } from '../controllers/userControllers.js';
-import { updateUserSchema, updateRoleSchema } from '../schemas/userSchemas.js';
+import { updateUserSchema, updateRoleSchema, paginationSchema } from '../schemas/userSchemas.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
-import { validateSchema } from '../middlewares/validateSchema.js';
+import { validatePayload, validateQueryParams } from '../middlewares/requestValidators.js';
 import { isPhoneValid } from '../middlewares/verifyCredentials.js';
 import { parseFormData } from '../middlewares/parseFormData.js';
 import { checkAdminSelfUpdate, checkAdminSelfDelete } from '../middlewares/checkAdmin.js';
@@ -27,7 +27,7 @@ const router = express.Router();
 router
   .route('/users/self')
   .get(isAuthenticated, getProfile)
-  .put(isAuthenticated, validateSchema(updateUserSchema), isPhoneValid, updateProfile)
+  .put(isAuthenticated, validatePayload(updateUserSchema), isPhoneValid, updateProfile)
   .delete(isAuthenticated, deleteAccount);
 
 router
@@ -47,7 +47,14 @@ router
     updateProfilePhoto
   );
 
-router.route('/admin/users').get(isAuthenticated, authorizeRole(ROLES.ADMIN), getUsers);
+router
+  .route('/admin/users')
+  .get(
+    isAuthenticated,
+    authorizeRole(ROLES.ADMIN),
+    validateQueryParams(paginationSchema),
+    getUsers
+  );
 
 router
   .route('/admin/users/:userId')
@@ -56,7 +63,7 @@ router
     isAuthenticated,
     authorizeRole(ROLES.ADMIN),
     checkAdminSelfUpdate,
-    validateSchema(updateRoleSchema),
+    validatePayload(updateRoleSchema),
     updateUserRole
   )
   .delete(isAuthenticated, authorizeRole(ROLES.ADMIN), checkAdminSelfDelete, deleteUser);
