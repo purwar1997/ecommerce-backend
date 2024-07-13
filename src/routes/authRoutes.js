@@ -13,15 +13,15 @@ import {
   resetPasswordSchema,
 } from '../schemas/authSchemas.js';
 import { isAuthenticated } from '../middlewares/authMiddlewares.js';
-import { validateSchema } from '../middlewares/validateSchema.js';
+import { validatePayload } from '../middlewares/requestValidators.js';
 import { isEmailValid, isPhoneValid } from '../middlewares/verifyCredentials.js';
 
 const router = express.Router();
 
-router.route('/signup').post(validateSchema(signupSchema), isEmailValid, isPhoneValid, signup);
-router.route('/login').post(validateSchema(loginSchema), login);
+router.route('/signup').post(validatePayload(signupSchema), isEmailValid, isPhoneValid, signup);
+router.route('/login').post(validatePayload(loginSchema), login);
 router.route('/logout').post(isAuthenticated, logout);
-router.route('/password/forgot').post(validateSchema(forgotPasswordSchema), forgotPassword);
-router.route('/password/reset/:token').put(validateSchema(resetPasswordSchema), resetPassword);
+router.route('/password/forgot').post(validatePayload(forgotPasswordSchema), forgotPassword);
+router.route('/password/reset/:token').put(validatePayload(resetPasswordSchema), resetPassword);
 
 export default router;

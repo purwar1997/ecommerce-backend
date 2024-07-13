@@ -11,7 +11,7 @@ import {
 } from '../controllers/couponControllers.js';
 import { couponSchema, couponStateSchema } from '../schemas/couponSchemas.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
-import { validateSchema } from '../middlewares/validateSchema.js';
+import { validatePayload } from '../middlewares/requestValidators.js';
 import { ROLES } from '../constants.js';
 
 const router = express.Router();
@@ -23,12 +23,12 @@ router.route('/coupons/validity').get(isAuthenticated, checkCouponValidity);
 router
   .route('/admin/coupons')
   .get(isAuthenticated, authorizeRole(ROLES.ADMIN), getCoupons)
-  .post(isAuthenticated, authorizeRole(ROLES.ADMIN), validateSchema(couponSchema), createCoupon);
+  .post(isAuthenticated, authorizeRole(ROLES.ADMIN), validatePayload(couponSchema), createCoupon);
 
 router
   .route('/admin/coupons/:couponId')
   .get(isAuthenticated, authorizeRole(ROLES.ADMIN), getCouponById)
-  .put(isAuthenticated, authorizeRole(ROLES.ADMIN), validateSchema(couponSchema), updateCoupon)
+  .put(isAuthenticated, authorizeRole(ROLES.ADMIN), validatePayload(couponSchema), updateCoupon)
   .delete(isAuthenticated, authorizeRole(ROLES.ADMIN), deleteCoupon);
 
 router
@@ -36,7 +36,7 @@ router
   .patch(
     isAuthenticated,
     authorizeRole(ROLES.ADMIN),
-    validateSchema(couponStateSchema),
+    validatePayload(couponStateSchema),
     changeCouponState
   );
 
