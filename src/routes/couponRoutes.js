@@ -9,20 +9,28 @@ import {
   deleteCoupon,
   changeCouponState,
 } from '../controllers/couponControllers.js';
-import { couponSchema, couponStateSchema } from '../schemas/couponSchemas.js';
+import { couponSchema, couponStateSchema, couponCodeSchema } from '../schemas/couponSchemas.js';
+import { paginationSchema } from '../schemas/commonSchemas.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
-import { validatePayload } from '../middlewares/requestValidators.js';
+import { validatePayload, validateQueryParams } from '../middlewares/requestValidators.js';
 import { ROLES } from '../constants.js';
 
 const router = express.Router();
 
 router.route('/coupons').get(isAuthenticated, getValidCoupons);
 
-router.route('/coupons/validity').get(isAuthenticated, checkCouponValidity);
+router
+  .route('/coupons/validity')
+  .get(isAuthenticated, validateQueryParams(couponCodeSchema), checkCouponValidity);
 
 router
   .route('/admin/coupons')
-  .get(isAuthenticated, authorizeRole(ROLES.ADMIN), getCoupons)
+  .get(
+    isAuthenticated,
+    authorizeRole(ROLES.ADMIN),
+    validateQueryParams(paginationSchema),
+    getCoupons
+  )
   .post(isAuthenticated, authorizeRole(ROLES.ADMIN), validatePayload(couponSchema), createCoupon);
 
 router

@@ -16,21 +16,14 @@ export const getValidCoupons = handleAsync(async (_req, res) => {
 export const checkCouponValidity = handleAsync(async (req, res) => {
   const { code } = req.query;
 
-  if (!code) {
-    throw new CustomError('Coupon code is required', 400);
-  }
-
-  const coupon = await Coupon.findOne({
-    code,
-    expiryDate: { $gt: new Date() },
-  });
+  const coupon = await Coupon.findOne({ code, isActive: true });
 
   if (!coupon) {
-    throw new CustomError('Coupon invalid or expired', 400);
+    throw new CustomError('Coupon does not exist', 404);
   }
 
-  if (!coupon.isActive) {
-    throw new CustomError('Coupon is currently inactive', 409);
+  if (coupon.expiryDate < new Date()) {
+    throw new CustomError('Coupon has been expired', 400);
   }
 
   sendResponse(res, 200, 'Provided coupon is valid', { valid: true, coupon });
@@ -50,9 +43,9 @@ export const getCoupons = handleAsync(async (req, res) => {
 export const createCoupon = handleAsync(async (req, res) => {
   const { code } = req.body;
 
-  const coupon = await Coupon.findOne({ code });
+  const existingCoupon = await Coupon.findOne({ code });
 
-  if (coupon) {
+  if (existingCoupon) {
     throw new CustomError(
       'Coupon by this code already exists. Please provide a different a coupon code',
       409
@@ -86,9 +79,9 @@ export const updateCoupon = handleAsync(async (req, res) => {
     throw new CustomError('Coupon not found', 404);
   }
 
-  coupon = await Coupon.findOne({ code, _id: { $ne: couponId } });
+  const existingCoupon = await Coupon.findOne({ code, _id: { $ne: couponId } });
 
-  if (coupon) {
+  if (existingCoupon) {
     throw new CustomError(
       'Coupon by this code already exists. Please provide a different coupon code',
       409

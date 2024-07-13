@@ -91,5 +91,10 @@ export const couponStateSchema = customJoi.object({
     }),
 });
 
-
-
+export const couponCodeSchema = Joi.object({
+  code: Joi.string().trim().uppercase().required().messages({
+    'any.required': 'Coupon code is required',
+    'string.base': 'Coupon code must be a string',
+    'string.empty': 'Coupon code cannot be empty',
+  }),
+});

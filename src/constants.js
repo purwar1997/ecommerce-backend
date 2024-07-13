@@ -66,3 +66,5 @@ export const MIN_PERCENTAGE_DISCOUNT = 1;
 export const MAX_PERCENTAGE_DISCOUNT = 100;
 export const MAX_FILES = 1;
 export const MAX_FILE_SIZE = 50 * 1024 * 1024;
+export const MIN_SAFE_INTEGER = Number.MIN_SAFE_INTEGER;
+export const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER;
