@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { couponCodeRegex } from '../utils/regex.js';
+import { createIDSchema } from './commonSchemas.js';
 import {
   validateObjectId,
   roundToTwoDecimalPlaces,
@@ -99,3 +100,7 @@ export const createOrderSchema = customJoi
       }),
   })
   .custom(stripEmptyKeys, 'Custom sanitization to strip empty fields');
+
+export const orderIdSchema = Joi.object({
+  orderId: createIDSchema('Order ID'),
+});

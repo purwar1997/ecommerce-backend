@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { removeExtraInnerSpaces } from '../utils/helpers.js';
+import { createIDSchema } from './commonSchemas.js';
 
 export const brandSchema = customJoi.object({
   name: Joi.string().trim().max(50).required().custom(removeExtraInnerSpaces).messages({
@@ -9,4 +10,8 @@ export const brandSchema = customJoi.object({
     'string.empty': 'Brand name cannot be empty',
     'string.max': 'Brand name cannot exceed 50 characters',
   }),
+});
+
+export const brandIdSchema = Joi.object({
+  brandId: createIDSchema('Brand ID'),
 });

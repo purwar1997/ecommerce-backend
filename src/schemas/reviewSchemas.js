@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { removeExtraInnerSpaces } from '../utils/helpers.js';
+import { createIDSchema } from './commonSchemas.js';
 import { MIN_RATING, MAX_RATING } from '../constants.js';
 
 export const reviewSchema = customJoi.object({
@@ -30,4 +31,8 @@ export const reviewSchema = customJoi.object({
     'string.base': 'Review body must be a string',
     'string.max': 'Review body cannot exceed 800 characters',
   }),
+});
+
+export const reviewIdSchema = Joi.object({
+  reviewId: createIDSchema('Review ID'),
 });

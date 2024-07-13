@@ -5,16 +5,16 @@ import {
   addNewCategory,
   updateCategory,
 } from '../controllers/categoryControllers.js';
-import { categorySchema } from '../schemas/categorySchemas.js';
+import { categorySchema, categoryIdSchema } from '../schemas/categorySchemas.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
 import { parseFormData } from '../middlewares/parseFormData.js';
-import { validatePayload } from '../middlewares/requestValidators.js';
+import { validatePayload, validatePathParams } from '../middlewares/requestValidators.js';
 import { ROLES, UPLOAD_FOLDERS, UPLOADED_FILES } from '../constants.js';
 
 const router = express.Router();
 
 router.route('/categories').get(getCategories);
-router.route('/categories/:categoryId').get(getCategoryById);
+router.route('/categories/:categoryId').get(validatePathParams(categoryIdSchema), getCategoryById);
 
 router
   .route('/admin/categories')
@@ -31,6 +31,7 @@ router
   .post(
     isAuthenticated,
     authorizeRole(ROLES.ADMIN),
+    validatePathParams(categoryIdSchema),
     parseFormData(UPLOAD_FOLDERS.CATEGORY_IMAGES, UPLOADED_FILES.CATEGORY_IMAGE),
     validatePayload(categorySchema),
     updateCategory

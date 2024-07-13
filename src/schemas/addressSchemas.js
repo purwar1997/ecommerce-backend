@@ -2,6 +2,7 @@ import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { fullnameRegex, phoneRegex, postalCodeRegex } from '../utils/regex.js';
 import { removeExtraInnerSpaces } from '../utils/helpers.js';
+import { createIDSchema } from './commonSchemas.js';
 
 export const addressSchema = customJoi.object({
   fullname: Joi.string()
@@ -70,4 +71,8 @@ export const addressSchema = customJoi.object({
   isDefault: Joi.boolean().default(false).messages({
     'boolean.base': 'isDefault must be a boolean value',
   }),
+});
+
+export const addressIdSchema = Joi.object({
+  addressId: createIDSchema('Address ID'),
 });

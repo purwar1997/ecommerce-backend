@@ -2,6 +2,7 @@ import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { couponCodeRegex } from '../utils/regex.js';
 import { formatOptions, validateOption } from '../utils/helpers.js';
+import { paginationSchema, createIDSchema } from './commonSchemas.js';
 import {
   DISCOUNT_TYPES,
   FLAT_DISCOUNT_MULTIPLE,
@@ -97,4 +98,12 @@ export const couponCodeSchema = Joi.object({
     'string.base': 'Coupon code must be a string',
     'string.empty': 'Coupon code cannot be empty',
   }),
+});
+
+export const getCouponsSchema = Joi.object({
+  page: paginationSchema,
+});
+
+export const couponIdSchema = Joi.object({
+  couponId: createIDSchema('Coupon ID'),
 });

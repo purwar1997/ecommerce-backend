@@ -7,9 +7,9 @@ import {
   deleteAddress,
   setDefaultAddress,
 } from '../controllers/addressControllers.js';
-import { addressSchema } from '../schemas/addressSchemas.js';
+import { addressSchema, addressIdSchema } from '../schemas/addressSchemas.js';
 import { isAuthenticated } from '../middlewares/authMiddlewares.js';
-import { validatePayload } from '../middlewares/requestValidators.js';
+import { validatePayload, validatePathParams } from '../middlewares/requestValidators.js';
 import { isPhoneValid } from '../middlewares/verifyCredentials.js';
 
 const router = express.Router();
@@ -21,10 +21,18 @@ router
 
 router
   .route('/addresses/:addressId')
-  .get(isAuthenticated, getAddressById)
-  .put(isAuthenticated, validatePayload(addressSchema), isPhoneValid, updateAddress)
-  .delete(isAuthenticated, deleteAddress);
+  .get(isAuthenticated, validatePathParams(addressIdSchema), getAddressById)
+  .put(
+    isAuthenticated,
+    validatePathParams(addressIdSchema),
+    validatePayload(addressSchema),
+    isPhoneValid,
+    updateAddress
+  )
+  .delete(isAuthenticated, validatePathParams(addressIdSchema), deleteAddress);
 
-router.route('/addresses/:addressId/default').put(isAuthenticated, setDefaultAddress);
+router
+  .route('/addresses/:addressId/default')
+  .put(isAuthenticated, validatePathParams(addressIdSchema), setDefaultAddress);
 
 export default router;

@@ -5,6 +5,7 @@ import {
   validateObjectId,
   removeExtraInnerSpaces,
 } from '../utils/helpers.js';
+import { paginationSchema, createIDSchema } from './commonSchemas.js';
 import { MIN_PRICE, MAX_PRICE, MIN_STOCK, MAX_STOCK } from '../constants.js';
 
 export const productSchema = customJoi.object({
@@ -60,4 +61,12 @@ export const productSchema = customJoi.object({
       'number.min': `Stock must be greater than or equal to ${MIN_STOCK}`,
       'number.max': `Stock cannot exceed ${MAX_STOCK} units`,
     }),
+});
+
+export const getProductsSchema = Joi.object({
+  page: paginationSchema,
+});
+
+export const productIdSchema = Joi.object({
+  productId: createIDSchema('Product ID'),
 });

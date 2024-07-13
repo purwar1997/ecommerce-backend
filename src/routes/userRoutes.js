@@ -14,10 +14,18 @@ import {
   adminSelfDemote,
   adminSelfDelete,
 } from '../controllers/userControllers.js';
-import { updateUserSchema, updateRoleSchema } from '../schemas/userSchemas.js';
-import { paginationSchema } from '../schemas/commonSchemas.js';
+import {
+  userIdSchema,
+  updateUserSchema,
+  updateRoleSchema,
+  getUsersSchema,
+} from '../schemas/userSchemas.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
-import { validatePayload, validateQueryParams } from '../middlewares/requestValidators.js';
+import {
+  validatePayload,
+  validateQueryParams,
+  validatePathParams,
+} from '../middlewares/requestValidators.js';
 import { isPhoneValid } from '../middlewares/verifyCredentials.js';
 import { parseFormData } from '../middlewares/parseFormData.js';
 import { checkAdminSelfUpdate, checkAdminSelfDelete } from '../middlewares/checkAdmin.js';
@@ -50,24 +58,26 @@ router
 
 router
   .route('/admin/users')
-  .get(
-    isAuthenticated,
-    authorizeRole(ROLES.ADMIN),
-    validateQueryParams(paginationSchema),
-    getUsers
-  );
+  .get(isAuthenticated, authorizeRole(ROLES.ADMIN), validateQueryParams(getUsersSchema), getUsers);
 
 router
   .route('/admin/users/:userId')
-  .get(isAuthenticated, authorizeRole(ROLES.ADMIN), getUserById)
+  .get(isAuthenticated, authorizeRole(ROLES.ADMIN), validatePathParams(userIdSchema), getUserById)
   .put(
     isAuthenticated,
     authorizeRole(ROLES.ADMIN),
     checkAdminSelfUpdate,
+    validatePathParams(userIdSchema),
     validatePayload(updateRoleSchema),
     updateUserRole
   )
-  .delete(isAuthenticated, authorizeRole(ROLES.ADMIN), checkAdminSelfDelete, deleteUser);
+  .delete(
+    isAuthenticated,
+    authorizeRole(ROLES.ADMIN),
+    checkAdminSelfDelete,
+    validatePathParams(userIdSchema),
+    deleteUser
+  );
 
 router.route('/admin/admins').get(isAuthenticated, authorizeRole(ROLES.ADMIN), getOtherAdmins);
 

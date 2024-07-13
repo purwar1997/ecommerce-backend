@@ -183,3 +183,17 @@ export const validateOption = options => (value, helpers) => {
 
   return value;
 };
+
+export const validatePathId = (value, helpers) => {
+  const path = ':' + helpers.state.path[0];
+
+  if (value === path) {
+    return helpers.error('string.empty', { value });
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(value)) {
+    return helpers.error('any.invalid', { value });
+  }
+
+  return value;
+};

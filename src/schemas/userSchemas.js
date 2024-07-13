@@ -2,6 +2,7 @@ import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { nameRegex, phoneRegex, passwordRegex } from '../utils/regex.js';
 import { formatOptions, validateOption } from '../utils/helpers.js';
+import { createIDSchema, paginationSchema } from './commonSchemas.js';
 import { ROLES } from '../constants.js';
 
 export const updateUserSchema = customJoi
@@ -54,4 +55,12 @@ export const updateRoleSchema = customJoi.object({
       'string.empty': 'Role cannot be empty',
       'any.invalid': `Invalid role. Valid options are: ${formatOptions(ROLES)}`,
     }),
+});
+
+export const getUsersSchema = Joi.object({
+  page: paginationSchema,
+});
+
+export const userIdSchema = Joi.object({
+  userId: createIDSchema('User ID'),
 });
