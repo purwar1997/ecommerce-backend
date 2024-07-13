@@ -3,7 +3,8 @@ import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import { sendResponse } from '../utils/helpers.js';
 import { clearCookieOptions } from '../utils/cookieOptions.js';
-import { USERS_PER_PAGE } from '../constants.js';
+import { uploadImage, deleteImage } from '../services/cloudinaryAPIs.js';
+import { UPLOAD_FOLDERS, USERS_PER_PAGE } from '../constants.js';
 
 export const getUserDetails = handleAsync(async (req, res) => {
   const user = await User.findById(req.user._id).select({ cart: 0, wishlist: 0 });
@@ -47,6 +48,48 @@ export const deleteAccount = handleAsync(async (req, res) => {
   res.clearCookie('token', clearCookieOptions);
 
   sendResponse(res, 200, 'Account deleted successfully');
+});
+
+export const addProfilePhoto = handleAsync(async (req, res) => {
+  const { user } = req;
+
+  const response = await uploadImage(UPLOAD_FOLDERS.USER_AVATARS, req.file, user._id);
+
+  user.avatar.url = response.secure_url;
+  user.avatar.publicId = response.public_id;
+
+  const updatedUser = await user.save();
+
+  sendResponse(res, 200, 'Profile photo added successfully', updatedUser);
+});
+
+export const updateProfilePhoto = handleAsync(async (req, res) => {
+  const { user } = req;
+
+  await deleteImage(user.avatar.publicId);
+
+  const response = await uploadImage(UPLOAD_FOLDERS.USER_AVATARS, req.file, user._id);
+
+  user.avatar.url = response.secure_url;
+  user.avatar.publicId = response.public_id;
+
+  const updatedUser = await user.save();
+
+  sendResponse(res, 200, 'Profile photo updated successfully', updatedUser);
+});
+
+export const removeProfilePhoto = handleAsync(async (req, res) => {
+  const { user } = req;
+
+  await deleteImage(user.avatar.publicId);
+
+  const updatedUser = await User.findByIdAndUpdate(
+    user._id,
+    { $unset: { avatar: 1 } },
+    { runValidators: true, new: true }
+  );
+
+  sendResponse(res, 200, 'Profile photo removed successfully', updatedUser);
 });
 
 export const getUsers = handleAsync(async (req, res) => {
