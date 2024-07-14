@@ -3,15 +3,7 @@ import customJoi from '../utils/customJoi.js';
 import { couponCodeRegex } from '../utils/regex.js';
 import { formatOptions, validateOption } from '../utils/helpers.js';
 import { paginationSchema, createIDSchema } from './commonSchemas.js';
-import {
-  DISCOUNT_TYPES,
-  FLAT_DISCOUNT_MULTIPLE,
-  MAX_FLAT_DISCOUNT,
-  MIN_FLAT_DISCOUNT,
-  MIN_PERCENTAGE_DISCOUNT,
-  MAX_PERCENTAGE_DISCOUNT,
-  COUPON_STATES,
-} from '../constants.js';
+import { DISCOUNT_TYPES, DISCOUNT, COUPON_STATES } from '../constants.js';
 
 export const couponSchema = customJoi.object({
   code: Joi.string().trim().uppercase().pattern(couponCodeRegex).required().messages({
@@ -35,9 +27,9 @@ export const couponSchema = customJoi.object({
     }),
 
   flatDiscount: Joi.number()
-    .min(MIN_FLAT_DISCOUNT)
-    .max(MAX_FLAT_DISCOUNT)
-    .multiple(FLAT_DISCOUNT_MULTIPLE)
+    .min(DISCOUNT.MIN_FLAT)
+    .max(DISCOUNT.MAX_FLAT)
+    .multiple(DISCOUNT.FLAT_MULTIPLE)
     .unsafe()
     .when('discountType', {
       is: DISCOUNT_TYPES.FLAT,
@@ -48,15 +40,15 @@ export const couponSchema = customJoi.object({
       'any.required': 'Flat discount is required when discount type is flat',
       'any.unknown': 'Flat discount not allowed when discount type is percentage',
       'number.base': 'Flat discount must be a number',
-      'number.min': `Flat discount must be at least ₹${MIN_FLAT_DISCOUNT}`,
-      'number.max': `Flat discount must be at most ₹${MAX_FLAT_DISCOUNT}`,
-      'number.multiple': `Flat discount must be a multiple of ${FLAT_DISCOUNT_MULTIPLE}`,
+      'number.min': `Flat discount must be at least ₹${DISCOUNT.MIN_FLAT}`,
+      'number.max': `Flat discount must be at most ₹${DISCOUNT.MAX_FLAT}`,
+      'number.multiple': `Flat discount must be a multiple of ${DISCOUNT.FLAT_MULTIPLE}`,
     }),
 
   percentageDiscount: Joi.number()
     .integer()
-    .min(MIN_PERCENTAGE_DISCOUNT)
-    .max(MAX_PERCENTAGE_DISCOUNT)
+    .min(DISCOUNT.MIN_PERCENTAGE)
+    .max(DISCOUNT.MAX_PERCENTAGE)
     .unsafe()
     .when('discountType', {
       is: DISCOUNT_TYPES.PERCENTAGE,
@@ -68,8 +60,8 @@ export const couponSchema = customJoi.object({
       'any.unknown': 'Percentage discount not allowed when discount type is flat',
       'number.base': 'Percentage discount must be a number',
       'number.integer': 'Percentage discount must be an integer',
-      'number.min': `Percentage discount must be at least ${MIN_PERCENTAGE_DISCOUNT}%`,
-      'number.max': `Percentage discount must be at most ${MAX_PERCENTAGE_DISCOUNT}%`,
+      'number.min': `Percentage discount must be at least ${DISCOUNT.MIN_PERCENTAGE}%`,
+      'number.max': `Percentage discount must be at most ${DISCOUNT.MAX_PERCENTAGE}%`,
     }),
 
   expiryDate: Joi.date().iso().greater('now').required().messages({

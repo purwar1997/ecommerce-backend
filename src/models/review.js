@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { MIN_RATING, MAX_RATING } from '../constants.js';
+import { RATING } from '../constants.js';
 
 const Schema = mongoose.Schema;
 
@@ -8,8 +8,8 @@ const reviewSchema = new Schema(
     rating: {
       type: Number,
       required: [true, 'Rating is required'],
-      min: [MIN_RATING, `Rating must be at least ${MIN_RATING}`],
-      max: [MAX_RATING, `Rating must be at most ${MAX_RATING}`],
+      min: [RATING.MIN, `Rating must be at least ${RATING.MIN}`],
+      max: [RATING.MAX, `Rating must be at most ${RATING.MAX}`],
       validate: {
         validator: Number.isInteger,
         message: 'Rating must be an integer',

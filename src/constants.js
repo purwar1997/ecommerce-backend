@@ -1,6 +1,11 @@
-export const DATABASE_NAME = 'shopease_db';
-export const CLOUD_NAME = 'dlqnx5pot';
-export const JWT_EXPIRY = '24h';
+export const STORAGE = Object.freeze({
+  DATABASE_NAME: 'shopease_db',
+  CLOUD_NAME: 'dlqnx5pot',
+});
+
+export const JWT = Object.freeze({
+  EXPIRY: '24h',
+});
 
 export const ROLES = Object.freeze({
   USER: 'user',
@@ -45,26 +50,55 @@ export const UPLOADED_FILES = Object.freeze({
   PRODUCT_IMAGE: 'image',
 });
 
-export const PRODUCTS_PER_PAGE = 15;
-export const ORDERS_PER_PAGE = 5;
-export const USERS_PER_PAGE = 5;
-export const COUPONS_PER_PAGE = 5;
-export const MIN_PRICE = 10;
-export const MAX_PRICE = 100000;
-export const MIN_STOCK = 1;
-export const MAX_STOCK = 10000;
-export const MIN_QUANTITY = 1;
-export const MAX_QUANTITY = 10;
-export const MIN_SHIPPING_CHARGE = 30;
-export const GST_RATE = 0.18;
-export const MIN_RATING = 1;
-export const MAX_RATING = 5;
-export const MIN_FLAT_DISCOUNT = 10;
-export const MAX_FLAT_DISCOUNT = 1000;
-export const FLAT_DISCOUNT_MULTIPLE = 10;
-export const MIN_PERCENTAGE_DISCOUNT = 1;
-export const MAX_PERCENTAGE_DISCOUNT = 100;
-export const MAX_FILES = 1;
-export const MAX_FILE_SIZE = 50 * 1024 * 1024;
-export const MIN_SAFE_INTEGER = Number.MIN_SAFE_INTEGER;
-export const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER;
+export const PAGINATION = Object.freeze({
+  PRODUCTS_PER_PAGE: 15,
+  ORDERS_PER_PAGE: 5,
+  USERS_PER_PAGE: 5,
+  COUPONS_PER_PAGE: 5,
+});
+
+export const PRICE = Object.freeze({
+  MIN: 10,
+  MAX: 100000,
+});
+
+export const STOCK = Object.freeze({
+  MIN: 1,
+  MAX: 10000,
+});
+
+export const QUANTITY = Object.freeze({
+  MIN: 1,
+  MAX: 10,
+});
+
+export const RATING = Object.freeze({
+  MIN: 1,
+  MAX: 5,
+});
+
+export const SHIPPING_CHARGE = Object.freeze({
+  MIN: 30,
+});
+
+export const GST = Object.freeze({
+  RATE: 0.18,
+});
+
+export const DISCOUNT = Object.freeze({
+  MIN_FLAT: 10,
+  MAX_FLAT: 1000,
+  FLAT_MULTIPLE: 10,
+  MIN_PERCENTAGE: 1,
+  MAX_PERCENTAGE: 100,
+});
+
+export const FILE_UPLOAD = Object.freeze({
+  MAX_FILES: 1,
+  MAX_FILE_SIZE: 20 * 1024 * 1024,
+});
+
+export const SAFE_INTEGER = Object.freeze({
+  MIN: Number.MIN_SAFE_INTEGER,
+  MAX: Number.MAX_SAFE_INTEGER,
+});

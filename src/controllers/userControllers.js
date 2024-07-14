@@ -4,7 +4,7 @@ import CustomError from '../utils/customError.js';
 import { sendResponse } from '../utils/helpers.js';
 import { clearCookieOptions } from '../utils/cookieOptions.js';
 import { uploadImage, deleteImage } from '../services/cloudinaryAPIs.js';
-import { UPLOAD_FOLDERS, USERS_PER_PAGE } from '../constants.js';
+import { UPLOAD_FOLDERS, PAGINATION } from '../constants.js';
 
 export const getProfile = handleAsync(async (req, res) => {
   const { user } = req;
@@ -97,8 +97,8 @@ export const getUsers = handleAsync(async (req, res) => {
 
   const users = await User.find({ isDeleted: false })
     .sort({ createdAt: -1 })
-    .skip((page - 1) * USERS_PER_PAGE)
-    .limit(USERS_PER_PAGE);
+    .skip((page - 1) * PAGINATION.USERS_PER_PAGE)
+    .limit(PAGINATION.USERS_PER_PAGE);
 
   sendResponse(res, 200, 'Users fetched successfully', users);
 });

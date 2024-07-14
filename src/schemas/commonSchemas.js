@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import { validatePathId } from '../utils/helpers.js';
-import { MAX_SAFE_INTEGER } from '../constants.js';
+import { SAFE_INTEGER } from '../constants.js';
 
 export const createIDSchema = path =>
   Joi.string()
@@ -15,7 +15,7 @@ export const createIDSchema = path =>
 export const paginationSchema = Joi.number()
   .integer()
   .min(1)
-  .max(MAX_SAFE_INTEGER)
+  .max(SAFE_INTEGER.MAX)
   .empty('')
   .default(1)
   .unsafe()
@@ -23,5 +23,5 @@ export const paginationSchema = Joi.number()
     'number.base': 'Page must be a number',
     'number.integer': 'Page must be an integer',
     'number.min': 'Page must be at least 1',
-    'number.max': `Page must be less than or equal to ${MAX_SAFE_INTEGER}`,
+    'number.max': `Page must be less than or equal to ${SAFE_INTEGER.MAX}`,
   });

@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import { capitalizeFirstLetter, singularize, formatBytes } from '../utils/helpers.js';
-import { MAX_FILES, MAX_FILE_SIZE } from '../constants.js';
+import { FILE_UPLOAD } from '../constants.js';
 
 const ensureUploadDirExists = dir => {
   if (!fs.existsSync(dir)) {
@@ -25,8 +25,8 @@ export const parseFormData = (folder, filename) =>
     const options = {
       uploadDir,
       keepExtensions: true,
-      maxFiles: MAX_FILES,
-      maxFileSize: MAX_FILE_SIZE,
+      maxFiles: FILE_UPLOAD.MAX_FILES,
+      maxFileSize: FILE_UPLOAD.MAX_FILE_SIZE,
       filter: function ({ mimetype }) {
         const valid = mimetype && mimetype.includes('image');
 
@@ -54,7 +54,7 @@ export const parseFormData = (folder, filename) =>
         case 1015:
           return next(
             new CustomError(
-              `Upload limit exceeded. Only ${MAX_FILES} ${
+              `Upload limit exceeded. Only ${FILE_UPLOAD.MAX_FILES} ${
                 MAX_FILES > 1 ? 'files are' : 'file is'
               } allowed`,
               400
@@ -64,7 +64,9 @@ export const parseFormData = (folder, filename) =>
         case 1009:
           return next(
             new CustomError(
-              `File size limit exceeded. Maximum allowed size is ${formatBytes(MAX_FILE_SIZE)}`,
+              `File size limit exceeded. Maximum allowed size is ${formatBytes(
+                FILE_UPLOAD.MAX_FILE_SIZE
+              )}`,
               400
             )
           );

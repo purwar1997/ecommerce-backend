@@ -9,14 +9,7 @@ import {
   formatOptions,
   validateOption,
 } from '../utils/helpers.js';
-import {
-  MIN_QUANTITY,
-  MAX_QUANTITY,
-  MIN_PRICE,
-  MAX_PRICE,
-  MIN_SHIPPING_CHARGE,
-  PAYMENT_METHODS,
-} from '../constants.js';
+import { QUANTITY, PRICE, SHIPPING_CHARGE, PAYMENT_METHODS } from '../constants.js';
 
 const orderItemSchema = Joi.object({
   product: Joi.string().trim().required().custom(validateObjectId).messages({
@@ -28,29 +21,29 @@ const orderItemSchema = Joi.object({
 
   quantity: Joi.number()
     .integer()
-    .min(MIN_QUANTITY)
-    .max(MAX_QUANTITY)
+    .min(QUANTITY.MIN)
+    .max(QUANTITY.MAX)
     .required()
     .unsafe()
     .messages({
       'any.required': 'Quantity is required',
       'number.base': 'Quantity must be a number',
       'number.integer': 'Quantity must be an integer',
-      'number.min': `Quantity must be at least ${MIN_QUANTITY}`,
-      'number.max': `Quantity must be at most ${MAX_QUANTITY}`,
+      'number.min': `Quantity must be at least ${QUANTITY.MIN}`,
+      'number.max': `Quantity must be at most ${QUANTITY.MAX}`,
     }),
 
   price: Joi.number()
-    .min(MIN_PRICE)
-    .max(MAX_PRICE)
+    .min(PRICE.MIN)
+    .max(PRICE.MAX)
     .required()
     .unsafe()
     .custom(roundToTwoDecimalPlaces)
     .messages({
       'any.required': 'Price is required',
       'number.base': 'Price must be a number',
-      'number.min': `Price must be at least ₹${MIN_PRICE}`,
-      'number.max': `Price must be at most ₹${MAX_PRICE}`,
+      'number.min': `Price must be at least ₹${PRICE.MIN}`,
+      'number.max': `Price must be at most ₹${PRICE.MAX}`,
     }),
 }).messages({
   'object.base': 'Each order item must be an object with product, quantity and price fields',
@@ -65,14 +58,14 @@ export const createOrderSchema = customJoi
     }),
 
     shippingCharges: Joi.number()
-      .min(MIN_SHIPPING_CHARGE)
+      .min(SHIPPING_CHARGE.MIN)
       .required()
       .unsafe()
       .custom(roundToTwoDecimalPlaces)
       .messages({
         'any.required': 'Shipping charges are required',
         'number.base': 'Shipping charges must be a number',
-        'number.min': `Shipping charges must be at least ₹${MIN_SHIPPING_CHARGE}`,
+        'number.min': `Shipping charges must be at least ₹${SHIPPING_CHARGE.MIN}`,
       }),
 
     couponCode: Joi.string().trim().pattern(couponCodeRegex).allow('').messages({

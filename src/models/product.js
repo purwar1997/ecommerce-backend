@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { roundOneDecimal, roundTwoDecimals } from '../utils/helpers.js';
 import { imageUrlRegex } from '../utils/regex.js';
-import { MIN_PRICE, MAX_PRICE, MAX_STOCK } from '../constants.js';
+import { PRICE, STOCK } from '../constants.js';
 
 const Schema = mongoose.Schema;
 
@@ -20,8 +20,8 @@ const productSchema = new Schema(
     price: {
       type: Number,
       required: [true, 'Product price is required'],
-      min: [MIN_PRICE, `Products priced below ₹${MIN_PRICE} cannot be listed`],
-      max: [MAX_PRICE, `Products priced above ₹${MAX_PRICE} cannot be listed`],
+      min: [PRICE.MIN, `Products priced below ₹${PRICE.MIN} cannot be listed`],
+      max: [PRICE.MAX, `Products priced above ₹${PRICE.MAX} cannot be listed`],
       set: roundTwoDecimals,
     },
     brand: {
@@ -38,7 +38,7 @@ const productSchema = new Schema(
       type: Number,
       required: [true, 'Product stock is required'],
       min: [0, 'Stock cannot be negative'],
-      max: [MAX_STOCK, `Stock cannot exceed ${MAX_STOCK} units`],
+      max: [STOCK.MAX, `Stock cannot exceed ${STOCK.MAX} units`],
       validate: {
         validator: Number.isInteger,
         message: 'Stock must be an integer',

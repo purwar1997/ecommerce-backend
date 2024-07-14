@@ -2,21 +2,21 @@ import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { removeExtraInnerSpaces } from '../utils/helpers.js';
 import { createIDSchema } from './commonSchemas.js';
-import { MIN_RATING, MAX_RATING } from '../constants.js';
+import { RATING } from '../constants.js';
 
 export const reviewSchema = customJoi.object({
   rating: Joi.number()
     .integer()
-    .min(MIN_RATING)
-    .max(MAX_RATING)
+    .min(RATING.MIN)
+    .max(RATING.MAX)
     .required()
     .unsafe()
     .messages({
       'any.required': 'Rating is required',
       'number.base': 'Rating must be a number',
       'number.integer': 'Rating must be an integer',
-      'number.min': `Rating must be at least ${MIN_RATING}`,
-      'number.max': `Rating must be at most ${MAX_RATING}`,
+      'number.min': `Rating must be at least ${RATING.MIN}`,
+      'number.max': `Rating must be at most ${RATING.MAX}`,
     }),
 
   headline: Joi.string().trim().max(100).required().custom(removeExtraInnerSpaces).messages({

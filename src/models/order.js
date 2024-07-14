@@ -1,15 +1,7 @@
 import mongoose from 'mongoose';
 import { roundTwoDecimals, formatOptions } from '../utils/helpers.js';
 import { couponCodeRegex } from '../utils/regex.js';
-import {
-  MIN_QUANTITY,
-  MAX_QUANTITY,
-  MIN_PRICE,
-  MAX_PRICE,
-  MIN_SHIPPING_CHARGE,
-  ORDER_STATUS,
-  PAYMENT_METHODS,
-} from '../constants.js';
+import { QUANTITY, PRICE, SHIPPING_CHARGE, ORDER_STATUS, PAYMENT_METHODS } from '../constants.js';
 
 const Schema = mongoose.Schema;
 
@@ -22,8 +14,8 @@ const orderItemSchema = new Schema({
   quantity: {
     type: Number,
     required: [true, 'Quantity is required'],
-    min: [MIN_QUANTITY, `Quantity must be at least ${MIN_QUANTITY}`],
-    max: [MAX_QUANTITY, `Quantity must be at most ${MAX_QUANTITY}`],
+    min: [QUANTITY.MIN, `Quantity must be at least ${QUANTITY.MIN}`],
+    max: [QUANTITY.MAX, `Quantity must be at most ${QUANTITY.MAX}`],
     validate: {
       validator: Number.isInteger,
       message: 'Quantity must be an integer',
@@ -32,8 +24,8 @@ const orderItemSchema = new Schema({
   price: {
     type: Number,
     required: [true, 'Price is required'],
-    min: [MIN_PRICE, `Price must be at least ₹${MIN_PRICE}`],
-    max: [MAX_PRICE, `Price must be at most ₹${MAX_PRICE}`],
+    min: [PRICE.MIN, `Price must be at least ₹${PRICE.MIN}`],
+    max: [PRICE.MAX, `Price must be at most ₹${PRICE.MAX}`],
     set: roundTwoDecimals,
   },
 });
@@ -50,7 +42,7 @@ const orderSchema = new Schema(
     orderAmount: {
       type: Number,
       required: [true, 'Order amount is required'],
-      min: [MIN_PRICE, `Order amount must be at least ₹${MIN_PRICE}`],
+      min: [PRICE.MIN, `Order amount must be at least ₹${PRICE.MIN}`],
       set: roundTwoDecimals,
     },
     discount: {
@@ -62,7 +54,7 @@ const orderSchema = new Schema(
     shippingCharges: {
       type: Number,
       required: [true, 'Shipping charges are required'],
-      min: [MIN_SHIPPING_CHARGE, `Shipping charges must be at least ₹${MIN_SHIPPING_CHARGE}`],
+      min: [SHIPPING_CHARGE.MIN, `Shipping charges must be at least ₹${SHIPPING_CHARGE.MIN}`],
       set: roundTwoDecimals,
     },
     taxAmount: {

@@ -6,7 +6,7 @@ import {
   removeExtraInnerSpaces,
 } from '../utils/helpers.js';
 import { paginationSchema, createIDSchema } from './commonSchemas.js';
-import { MIN_PRICE, MAX_PRICE, MIN_STOCK, MAX_STOCK } from '../constants.js';
+import { PRICE, STOCK } from '../constants.js';
 
 export const productSchema = customJoi.object({
   title: Joi.string().trim().max(100).required().custom(removeExtraInnerSpaces).messages({
@@ -24,16 +24,16 @@ export const productSchema = customJoi.object({
   }),
 
   price: Joi.number()
-    .min(MIN_PRICE)
-    .max(MAX_PRICE)
+    .min(PRICE.MIN)
+    .max(PRICE.MAX)
     .required()
     .unsafe()
     .custom(roundToTwoDecimalPlaces)
     .messages({
       'any.required': 'Product price is required',
       'number.base': 'Price must be a number',
-      'number.min': `Products priced below ₹${MIN_PRICE} cannot be listed`,
-      'number.max': `Products priced above ₹${MAX_PRICE} cannot be listed`,
+      'number.min': `Products priced below ₹${PRICE.MIN} cannot be listed`,
+      'number.max': `Products priced above ₹${PRICE.MAX} cannot be listed`,
     }),
 
   brand: Joi.string().trim().required().custom(validateObjectId).messages({
@@ -52,16 +52,16 @@ export const productSchema = customJoi.object({
 
   stock: Joi.number()
     .integer()
-    .min(MIN_STOCK)
-    .max(MAX_STOCK)
+    .min(STOCK.MIN)
+    .max(STOCK.MAX)
     .required()
     .unsafe()
     .messages({
       'any.required': 'Product stock is required',
       'number.base': 'Stock must be a number',
       'number.integer': 'Stock must be an integer',
-      'number.min': `Stock must be greater than or equal to ${MIN_STOCK}`,
-      'number.max': `Stock cannot exceed ${MAX_STOCK} units`,
+      'number.min': `Stock must be greater than or equal to ${STOCK.MIN}`,
+      'number.max': `Stock cannot exceed ${STOCK.MAX} units`,
     }),
 });
 

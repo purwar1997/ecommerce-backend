@@ -1,14 +1,7 @@
 import mongoose from 'mongoose';
 import { couponCodeRegex } from '../utils/regex.js';
 import { formatOptions } from '../utils/helpers.js';
-import {
-  DISCOUNT_TYPES,
-  MIN_FLAT_DISCOUNT,
-  MAX_FLAT_DISCOUNT,
-  FLAT_DISCOUNT_MULTIPLE,
-  MIN_PERCENTAGE_DISCOUNT,
-  MAX_PERCENTAGE_DISCOUNT,
-} from '../constants.js';
+import { DISCOUNT_TYPES, DISCOUNT } from '../constants.js';
 
 const Schema = mongoose.Schema;
 
@@ -39,11 +32,11 @@ const couponSchema = new Schema(
         },
         'Flat discount is required when discount type is flat',
       ],
-      min: [MIN_FLAT_DISCOUNT, `Flat discount must be at least ₹${MIN_FLAT_DISCOUNT}`],
-      max: [MAX_FLAT_DISCOUNT, `Flat discount must be at most ₹${MAX_FLAT_DISCOUNT}`],
+      min: [DISCOUNT.MIN_FLAT, `Flat discount must be at least ₹${DISCOUNT.MIN_FLAT}`],
+      max: [DISCOUNT.MAX_FLAT, `Flat discount must be at most ₹${DISCOUNT.MAX_FLAT}`],
       validate: {
-        validator: discount => discount % FLAT_DISCOUNT_MULTIPLE === 0,
-        message: `Flat discount must be a multiple of ${FLAT_DISCOUNT_MULTIPLE}`,
+        validator: discount => discount % DISCOUNT.FLAT_MULTIPLE === 0,
+        message: `Flat discount must be a multiple of ${DISCOUNT.FLAT_MULTIPLE}`,
       },
     },
     percentageDiscount: {
@@ -55,12 +48,12 @@ const couponSchema = new Schema(
         'Percentage discount is required when discount type is percentage',
       ],
       min: [
-        MIN_PERCENTAGE_DISCOUNT,
-        `Percentage discount must be at least ${MIN_PERCENTAGE_DISCOUNT}%`,
+        DISCOUNT.MIN_PERCENTAGE,
+        `Percentage discount must be at least ${DISCOUNT.MIN_PERCENTAGE}%`,
       ],
       max: [
-        MAX_PERCENTAGE_DISCOUNT,
-        `Percentage discount must be at most ${MAX_PERCENTAGE_DISCOUNT}%`,
+        DISCOUNT.MAX_PERCENTAGE,
+        `Percentage discount must be at most ${DISCOUNT.MAX_PERCENTAGE}%`,
       ],
       validate: {
         validator: Number.isInteger,

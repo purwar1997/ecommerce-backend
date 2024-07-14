@@ -4,7 +4,7 @@ import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import sendEmail from '../services/sendEmail.js';
 import { sendResponse } from '../utils/helpers.js';
-import { GST_RATE, DISCOUNT_TYPES } from '../constants.js';
+import { GST, DISCOUNT_TYPES } from '../constants.js';
 
 export const createOrder = handleAsync(async (req, res) => {
   const { items, shippingCharges } = req.body;
@@ -31,7 +31,7 @@ export const createOrder = handleAsync(async (req, res) => {
     }
   }
 
-  const taxAmount = orderAmount * GST_RATE + shippingCharges * GST_RATE;
+  const taxAmount = orderAmount * GST.RATE + shippingCharges * GST.RATE;
   const totalAmount = orderAmount - discount + shippingCharges + taxAmount;
 
   const newOrder = await Order.create({

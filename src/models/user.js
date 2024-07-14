@@ -5,7 +5,7 @@ import crypto from 'crypto';
 import config from '../config/config.js';
 import { nameRegex, emailRegex, phoneRegex, imageUrlRegex } from '../utils/regex.js';
 import { formatOptions } from '../utils/helpers.js';
-import { MIN_QUANTITY, MAX_QUANTITY, ROLES, JWT_EXPIRY } from '../constants.js';
+import { QUANTITY, ROLES, JWT } from '../constants.js';
 
 const Schema = mongoose.Schema;
 
@@ -18,8 +18,8 @@ const cartItemSchema = new Schema({
   quantity: {
     type: Number,
     required: [true, 'Quantity is required'],
-    min: [MIN_QUANTITY, `Quantity must be at least ${MIN_QUANTITY}`],
-    max: [MAX_QUANTITY, `Quantity must be at most ${MAX_QUANTITY}`],
+    min: [QUANTITY.MIN, `Quantity must be at least ${QUANTITY.MIN}`],
+    max: [QUANTITY.MAX, `Quantity must be at most ${QUANTITY.MAX}`],
     validate: {
       validator: Number.isInteger,
       message: 'Quantity must be an integer',
@@ -151,7 +151,7 @@ userSchema.methods = {
 
   generateJWTToken() {
     const jwtToken = jwt.sign({ userId: this._id }, config.auth.jwtSecretKey, {
-      expiresIn: JWT_EXPIRY,
+      expiresIn: JWT.EXPIRY,
     });
 
     return jwtToken;
