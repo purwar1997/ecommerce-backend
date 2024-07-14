@@ -69,6 +69,7 @@ router
   .patch(
     isAuthenticated,
     authorizeRole(ROLES.ADMIN),
+    validatePathParams(couponIdSchema),
     validatePayload(couponStateSchema),
     changeCouponState
   );

@@ -14,11 +14,11 @@ export const createIDSchema = path =>
 
 export const paginationSchema = Joi.number()
   .integer()
-  .unsafe()
   .min(1)
   .max(MAX_SAFE_INTEGER)
   .empty('')
   .default(1)
+  .unsafe()
   .messages({
     'number.base': 'Page must be a number',
     'number.integer': 'Page must be an integer',

@@ -27,6 +27,7 @@ export const productSchema = customJoi.object({
     .min(MIN_PRICE)
     .max(MAX_PRICE)
     .required()
+    .unsafe()
     .custom(roundToTwoDecimalPlaces)
     .messages({
       'any.required': 'Product price is required',
@@ -54,6 +55,7 @@ export const productSchema = customJoi.object({
     .min(MIN_STOCK)
     .max(MAX_STOCK)
     .required()
+    .unsafe()
     .messages({
       'any.required': 'Product stock is required',
       'number.base': 'Stock must be a number',

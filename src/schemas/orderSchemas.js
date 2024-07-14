@@ -31,6 +31,7 @@ const orderItemSchema = Joi.object({
     .min(MIN_QUANTITY)
     .max(MAX_QUANTITY)
     .required()
+    .unsafe()
     .messages({
       'any.required': 'Quantity is required',
       'number.base': 'Quantity must be a number',
@@ -43,6 +44,7 @@ const orderItemSchema = Joi.object({
     .min(MIN_PRICE)
     .max(MAX_PRICE)
     .required()
+    .unsafe()
     .custom(roundToTwoDecimalPlaces)
     .messages({
       'any.required': 'Price is required',
@@ -65,6 +67,7 @@ export const createOrderSchema = customJoi
     shippingCharges: Joi.number()
       .min(MIN_SHIPPING_CHARGE)
       .required()
+      .unsafe()
       .custom(roundToTwoDecimalPlaces)
       .messages({
         'any.required': 'Shipping charges are required',

@@ -38,6 +38,7 @@ export const couponSchema = customJoi.object({
     .min(MIN_FLAT_DISCOUNT)
     .max(MAX_FLAT_DISCOUNT)
     .multiple(FLAT_DISCOUNT_MULTIPLE)
+    .unsafe()
     .when('discountType', {
       is: DISCOUNT_TYPES.FLAT,
       then: Joi.required(),
@@ -56,6 +57,7 @@ export const couponSchema = customJoi.object({
     .integer()
     .min(MIN_PERCENTAGE_DISCOUNT)
     .max(MAX_PERCENTAGE_DISCOUNT)
+    .unsafe()
     .when('discountType', {
       is: DISCOUNT_TYPES.PERCENTAGE,
       then: Joi.required(),

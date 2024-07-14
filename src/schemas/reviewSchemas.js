@@ -10,6 +10,7 @@ export const reviewSchema = customJoi.object({
     .min(MIN_RATING)
     .max(MAX_RATING)
     .required()
+    .unsafe()
     .messages({
       'any.required': 'Rating is required',
       'number.base': 'Rating must be a number',
