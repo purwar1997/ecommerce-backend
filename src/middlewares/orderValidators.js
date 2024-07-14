@@ -37,13 +37,14 @@ export const validateCoupon = handleAsync(async (req, _res, next) => {
   const { couponCode } = req.body;
 
   if (couponCode) {
-    const coupon = await Coupon.findOne({
-      code: couponCode,
-      expiryDate: { $gt: new Date() },
-    });
+    const coupon = await Coupon.findOne({ code: couponCode, isActive: true });
 
     if (!coupon) {
-      throw new CustomError('Coupon invalid or expired', 400);
+      throw new CustomError('Coupon does not exist', 404);
+    }
+
+    if (coupon.expiryDate < new Date()) {
+      throw new CustomError('Coupon has been expired', 410);
     }
 
     req.coupon = coupon;

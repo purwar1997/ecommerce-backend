@@ -1,6 +1,5 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
-import { couponCodeRegex } from '../utils/regex.js';
 import { createIDSchema } from './commonSchemas.js';
 import {
   validateObjectId,
@@ -68,10 +67,8 @@ export const createOrderSchema = customJoi
         'number.min': `Shipping charges must be at least ₹${SHIPPING_CHARGE.MIN}`,
       }),
 
-    couponCode: Joi.string().trim().pattern(couponCodeRegex).allow('').messages({
+    couponCode: Joi.string().trim().uppercase().allow('').messages({
       'string.base': 'Coupon code must be a string',
-      'string.pattern.base':
-        'Coupon code must be 5-15 characters long, contain only uppercase letters and digits, and start with a letter',
     }),
 
     shippingAddress: Joi.string().trim().required().custom(validateObjectId).messages({
