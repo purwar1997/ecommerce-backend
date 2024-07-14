@@ -23,7 +23,7 @@ export const checkCouponValidity = handleAsync(async (req, res) => {
   }
 
   if (coupon.expiryDate < new Date()) {
-    throw new CustomError('Coupon has been expired', 400);
+    throw new CustomError('Coupon has been expired', 410);
   }
 
   sendResponse(res, 200, 'Provided coupon is valid', { valid: true, coupon });
@@ -92,6 +92,7 @@ export const updateCoupon = handleAsync(async (req, res) => {
     couponId,
     {
       ...req.body,
+      isActive: coupon.expiryDate < new Date() ? true : coupon.isActive,
       lastUpdatedBy: req.user._id,
       $unset:
         discountType === DISCOUNT_TYPES.FLAT ? { percentageDiscount: 1 } : { flatDiscount: 1 },
