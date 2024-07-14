@@ -1,7 +1,7 @@
 {
-  "name": "ecommerce-backend",
+  "name": "shopease-backend",
   "version": "1.0.0",
-  "description": "Backend part of ecommerce application",
+  "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
