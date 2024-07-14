@@ -71,7 +71,7 @@ export const getCouponById = handleAsync(async (req, res) => {
 
 export const updateCoupon = handleAsync(async (req, res) => {
   const { couponId } = req.params;
-  const { code, discountType } = req.body;
+  const { code, discountType, expiryDate } = req.body;
 
   let coupon = await Coupon.findById(couponId);
 
@@ -92,7 +92,7 @@ export const updateCoupon = handleAsync(async (req, res) => {
     couponId,
     {
       ...req.body,
-      isActive: coupon.expiryDate < new Date() ? true : coupon.isActive,
+      isActive: coupon.expiryDate < new Date() && expiryDate > new Date() ? true : coupon.isActive,
       lastUpdatedBy: req.user._id,
       $unset:
         discountType === DISCOUNT_TYPES.FLAT ? { percentageDiscount: 1 } : { flatDiscount: 1 },
