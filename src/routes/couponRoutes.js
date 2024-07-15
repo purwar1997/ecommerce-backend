@@ -16,6 +16,7 @@ import {
   getCouponsSchema,
   couponIdSchema,
 } from '../schemas/couponSchemas.js';
+import { isHttpMethodAllowed } from '../middlewares/isHttpMethodAllowed.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
 import {
   validatePayload,
@@ -34,35 +35,21 @@ router
 
 router
   .route('/admin/coupons')
-  .get(
-    isAuthenticated,
-    authorizeRole(ROLES.ADMIN),
-    validateQueryParams(getCouponsSchema),
-    getCoupons
-  )
-  .post(isAuthenticated, authorizeRole(ROLES.ADMIN), validatePayload(couponSchema), createCoupon);
+  .all(isHttpMethodAllowed, isAuthenticated, authorizeRole(ROLES.ADMIN))
+  .get(validateQueryParams(getCouponsSchema), getCoupons)
+  .post(validatePayload(couponSchema), createCoupon);
 
 router
   .route('/admin/coupons/:couponId')
-  .get(
+  .all(
+    isHttpMethodAllowed,
     isAuthenticated,
     authorizeRole(ROLES.ADMIN),
-    validatePathParams(couponIdSchema),
-    getCouponById
+    validatePathParams(couponIdSchema)
   )
-  .put(
-    isAuthenticated,
-    authorizeRole(ROLES.ADMIN),
-    validatePathParams(couponIdSchema),
-    validatePayload(couponSchema),
-    updateCoupon
-  )
-  .delete(
-    isAuthenticated,
-    authorizeRole(ROLES.ADMIN),
-    validatePathParams(couponIdSchema),
-    deleteCoupon
-  );
+  .get(getCouponById)
+  .put(validatePayload(couponSchema), updateCoupon)
+  .delete(deleteCoupon);
 
 router
   .route('/admin/coupons/:couponId/state')

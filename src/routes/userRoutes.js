@@ -20,6 +20,7 @@ import {
   updateRoleSchema,
   getUsersSchema,
 } from '../schemas/userSchemas.js';
+import { isHttpMethodAllowed } from '../middlewares/isHttpMethodAllowed.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
 import {
   validatePayload,
@@ -35,18 +36,16 @@ const router = express.Router();
 
 router
   .route('/users/self')
-  .get(isAuthenticated, getProfile)
-  .put(isAuthenticated, validatePayload(updateUserSchema), isPhoneValid, updateProfile)
-  .delete(isAuthenticated, deleteAccount);
+  .all(isHttpMethodAllowed, isAuthenticated)
+  .get(getProfile)
+  .put(validatePayload(updateUserSchema), isPhoneValid, updateProfile)
+  .delete(deleteAccount);
 
 router
   .route('/users/self/avatar')
-  .post(
-    isAuthenticated,
-    parseFormData(UPLOAD_FOLDERS.USER_AVATARS, UPLOADED_FILES.USER_AVATAR),
-    addProfilePhoto
-  )
-  .delete(isAuthenticated, removeProfilePhoto);
+  .all(isHttpMethodAllowed, isAuthenticated)
+  .post(parseFormData(UPLOAD_FOLDERS.USER_AVATARS, UPLOADED_FILES.USER_AVATAR), addProfilePhoto)
+  .delete(removeProfilePhoto);
 
 router
   .route('/users/self/avatar/update')
@@ -62,28 +61,22 @@ router
 
 router
   .route('/admin/users/:userId')
-  .get(isAuthenticated, authorizeRole(ROLES.ADMIN), validatePathParams(userIdSchema), getUserById)
+  .all(isHttpMethodAllowed, isAuthenticated, authorizeRole(ROLES.ADMIN))
+  .get(validatePathParams(userIdSchema), getUserById)
   .put(
-    isAuthenticated,
-    authorizeRole(ROLES.ADMIN),
     checkAdminSelfUpdate,
     validatePathParams(userIdSchema),
     validatePayload(updateRoleSchema),
     updateUserRole
   )
-  .delete(
-    isAuthenticated,
-    authorizeRole(ROLES.ADMIN),
-    checkAdminSelfDelete,
-    validatePathParams(userIdSchema),
-    deleteUser
-  );
+  .delete(checkAdminSelfDelete, validatePathParams(userIdSchema), deleteUser);
 
 router.route('/admin/admins').get(isAuthenticated, authorizeRole(ROLES.ADMIN), getOtherAdmins);
 
 router
   .route('/admin/self')
-  .put(isAuthenticated, authorizeRole(ROLES.ADMIN), adminSelfDemote)
-  .delete(isAuthenticated, authorizeRole(ROLES.ADMIN), adminSelfDelete);
+  .all(isHttpMethodAllowed, isAuthenticated, authorizeRole(ROLES.ADMIN))
+  .put(adminSelfDemote)
+  .delete(adminSelfDelete);
 
 export default router;

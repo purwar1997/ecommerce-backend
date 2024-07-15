@@ -7,6 +7,7 @@ import {
 } from '../controllers/reviewControllers.js';
 import { reviewSchema, reviewIdSchema } from '../schemas/reviewSchemas.js';
 import { productIdSchema } from '../schemas/productSchemas.js';
+import { isHttpMethodAllowed } from '../middlewares/isHttpMethodAllowed.js';
 import { isAuthenticated } from '../middlewares/authMiddlewares.js';
 import { validatePayload, validatePathParams } from '../middlewares/requestValidators.js';
 
@@ -24,12 +25,8 @@ router
 
 router
   .route('/reviews/:reviewId')
-  .get(isAuthenticated, validatePathParams(reviewIdSchema), getProductReviewById)
-  .put(
-    isAuthenticated,
-    validatePathParams(reviewIdSchema),
-    validatePayload(reviewSchema),
-    updateProductReview
-  );
+  .all(isHttpMethodAllowed, isAuthenticated, validatePathParams(reviewIdSchema))
+  .get(getProductReviewById)
+  .put(validatePayload(reviewSchema), updateProductReview);
 
 export default router;

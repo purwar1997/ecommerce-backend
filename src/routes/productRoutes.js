@@ -1,6 +1,7 @@
 import express from 'express';
 import { addNewProduct } from '../controllers/productControllers.js';
 import { productSchema, productIdSchema, getProductsSchema } from '../schemas/productSchemas.js';
+import { isHttpMethodAllowed } from '../middlewares/isHttpMethodAllowed.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
 import { parseFormData } from '../middlewares/parseFormData.js';
 import {
@@ -17,23 +18,20 @@ router.route('/products/:productId').get(validatePathParams(productIdSchema));
 
 router
   .route('/admin/products')
-  .post(
-    isAuthenticated,
-    authorizeRole(ROLES.ADMIN),
-    parseFormData,
-    validatePayload(productSchema),
-    addNewProduct
-  );
+  .all(isHttpMethodAllowed, isAuthenticated, authorizeRole(ROLES.ADMIN))
+  .get()
+  .post(parseFormData, validatePayload(productSchema), addNewProduct);
 
 router
   .route('/admin/products/:productId')
-  .post(
+  .all(
+    isHttpMethodAllowed,
     isAuthenticated,
     authorizeRole(ROLES.ADMIN),
-    validatePathParams(productIdSchema),
-    parseFormData,
-    validatePayload(productSchema)
+    validatePathParams(productIdSchema)
   )
-  .delete(isAuthenticated, authorizeRole(ROLES.ADMIN), validatePathParams(productIdSchema));
+  .get()
+  .post(parseFormData, validatePayload(productSchema))
+  .delete();
 
 export default router;
