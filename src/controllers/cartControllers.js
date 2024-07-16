@@ -40,4 +40,20 @@ export const addItemToCart = handleAsync(async (req, res) => {
   sendResponse(res, 200, 'Item added to cart successfully', product);
 });
 
+export const removeItemFromCart = handleAsync(async (req, res) => {
+  const { productId } = req.body;
+  const { user } = req;
 
+  const productExistsInCart = user.cart.find(cartItem => cartItem.product === productId);
+
+  if (!productExistsInCart) {
+    throw new CustomError('Item not found in cart', 404);
+  }
+
+  const index = user.cart.findIndex(cartItem => cartItem.product === productId);
+  user.cart.splice(index, 1);
+
+  await user.save();
+
+  sendResponse(res, 200, 'Item removed from cart successfully', productId);
+});
