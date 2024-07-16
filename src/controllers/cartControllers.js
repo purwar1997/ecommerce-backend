@@ -37,7 +37,12 @@ export const addItemToCart = handleAsync(async (req, res) => {
 
   await user.save();
 
-  sendResponse(res, 200, 'Item added to cart successfully', product);
+  const result = {
+    product,
+    quantity: productExistsInCart ? productExistsInCart.quantity : 1,
+  };
+
+  sendResponse(res, 200, 'Item added to cart successfully', result);
 });
 
 export const removeItemFromCart = handleAsync(async (req, res) => {
@@ -47,7 +52,7 @@ export const removeItemFromCart = handleAsync(async (req, res) => {
   const productExistsInCart = user.cart.find(cartItem => cartItem.product === productId);
 
   if (!productExistsInCart) {
-    throw new CustomError('Item not found in cart', 404);
+    throw new CustomError('Item not found in cart', 409);
   }
 
   const index = user.cart.findIndex(cartItem => cartItem.product === productId);
@@ -56,4 +61,31 @@ export const removeItemFromCart = handleAsync(async (req, res) => {
   await user.save();
 
   sendResponse(res, 200, 'Item removed from cart successfully', productId);
+});
+
+export const updateItemQuantity = handleAsync(async (req, res) => {
+  const { productId } = req.body;
+  const { user } = req;
+
+  const product = await Product.findOne({ _id: productId, isDeleted: false });
+
+  if (!product) {
+    throw new CustomError('Product not found', 404);
+  }
+
+  const productExistsInCart = user.cart.find(cartItem => cartItem.product === productId);
+
+  if (!productExistsInCart) {
+    throw new CustomError('Item not found in cart', 409);
+  }
+
+  productExistsInCart.quantity = quantity;
+  const index = user.cart.findIndex(cartItem => cartItem.product === productId);
+  user.cart.splice(index, 1, productExistsInCart);
+
+  await user.save();
+
+  const result = { product, quantity };
+
+  sendResponse(res, 200, 'Item quantity updated successfully', result);
 });

@@ -1,8 +1,13 @@
 import express from 'express';
-import { getCart, addItemToCart, removeItemFromCart } from '../controllers/cartControllers.js';
+import {
+  getCart,
+  addItemToCart,
+  removeItemFromCart,
+  updateItemQuantity,
+} from '../controllers/cartControllers.js';
 import { isAuthenticated } from '../middlewares/authMiddlewares.js';
 import { validatePayload } from '../middlewares/requestValidators.js';
-import { productIdSchema } from '../schemas/cartSchemas.js';
+import { productIdSchema, updateQuantitySchema } from '../schemas/cartSchemas.js';
 
 const router = express.Router();
 
@@ -12,5 +17,9 @@ router.route('/cart/add').post(isAuthenticated, validatePayload(productIdSchema)
 router
   .route('/cart/remove')
   .put(isAuthenticated, validatePayload(productIdSchema), removeItemFromCart);
+
+router
+  .route('/cart/update/quantity')
+  .put(isAuthenticated, validatePayload(updateQuantitySchema), updateItemQuantity);
 
 export default router;
