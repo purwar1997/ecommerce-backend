@@ -6,7 +6,7 @@ export const isHttpMethodAllowed = handleAsync((req, res, next) => {
   const allowedMethods = expectedHttpActions[req.path];
 
   if (!allowedMethods || !allowedMethods.length) {
-    throw new CustomError(`No allowed methods defined for this route: ${req.path}`, 500);
+    throw new CustomError(`No allowed methods defined for path: ${req.path}`, 500);
   }
 
   if (!allowedMethods.includes(req.method)) {
