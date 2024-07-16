@@ -102,3 +102,11 @@ export const SAFE_INTEGER = Object.freeze({
   MIN: Number.MIN_SAFE_INTEGER,
   MAX: Number.MAX_SAFE_INTEGER,
 });
+
+export const PRODUCT_SORT_OPTIONS = Object.freeze({
+  RECOMMENDED: 'recommended',
+  RATING: 'rating',
+  PRICE_LOW_TO_HIGH: 'price_asc',
+  PRICE_HIGH_TO_LOW: 'price_desc',
+  NEWLY_ADDED: 'new',
+});

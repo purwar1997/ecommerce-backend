@@ -158,6 +158,14 @@ export const removeExtraInnerSpaces = (value, helpers) => {
   return value.replace(/\s+/g, ' ');
 };
 
+export const parseCommaSeparatedStrings = (value, helpers) => {
+  if (typeof value !== 'string') {
+    return helpers.error('string.base', { value });
+  }
+
+  return value.split(',').map(str => str.trim());
+};
+
 // Custom joi validators
 
 export const validateObjectId = (value, helpers) => {

@@ -4,9 +4,12 @@ import {
   roundToTwoDecimalPlaces,
   validateObjectId,
   removeExtraInnerSpaces,
+  parseCommaSeparatedStrings,
+  validateOption,
+  formatOptions,
 } from '../utils/helpers.js';
 import { paginationSchema, createIDSchema } from './commonSchemas.js';
-import { PRICE, STOCK } from '../constants.js';
+import { PRICE, STOCK, RATING, PRODUCT_SORT_OPTIONS } from '../constants.js';
 
 export const productSchema = customJoi.object({
   title: Joi.string().trim().max(100).required().custom(removeExtraInnerSpaces).messages({
@@ -65,7 +68,46 @@ export const productSchema = customJoi.object({
     }),
 });
 
-export const getProductsSchema = Joi.object({
+export const productQuerySchema = Joi.object({
+  categories: Joi.string()
+    .trim()
+    .empty('')
+    .default([])
+    .custom(parseCommaSeparatedStrings)
+    .messages({
+      'string.base': 'Categories must be a string',
+    }),
+
+  brands: Joi.string().trim().empty('').default([]).custom(parseCommaSeparatedStrings).messages({
+    'string.base': 'Brands must be a string',
+  }),
+
+  rating: Joi.number()
+    .integer()
+    .min(RATING.MIN)
+    .max(RATING.MAX)
+    .empty('')
+    .unsafe()
+    .messages({
+      'number.base': 'Rating must be a number',
+      'number.integer': 'Rating must be an integer',
+      'number.min': `Rating must be at least ${RATING.MIN}`,
+      'number.max': `Rating must be at most ${RATING.MAX}`,
+    }),
+
+  sort: Joi.string()
+    .trim()
+    .lowercase()
+    .empty('')
+    .default(PRODUCT_SORT_OPTIONS.RECOMMENDED)
+    .custom(validateOption(PRODUCT_SORT_OPTIONS))
+    .messages({
+      'string.base': 'Sort must be a string',
+      'any.invalid': `Invalid sort value. Valid options are: ${formatOptions(
+        PRODUCT_SORT_OPTIONS
+      )}`,
+    }),
+
   page: paginationSchema,
 });
 
