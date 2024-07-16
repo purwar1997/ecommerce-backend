@@ -1,5 +1,11 @@
 import express from 'express';
-import { getProducts, getProductById, addNewProduct } from '../controllers/productControllers.js';
+import {
+  getProducts,
+  getProductById,
+  adminGetProducts,
+  addNewProduct,
+  adminGetProductById,
+} from '../controllers/productControllers.js';
 import { productSchema, productIdSchema, productQuerySchema } from '../schemas/productSchemas.js';
 import { isHttpMethodAllowed } from '../middlewares/isHttpMethodAllowed.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
@@ -19,7 +25,7 @@ router.route('/products/:productId').get(validatePathParams(productIdSchema), ge
 router
   .route('/admin/products')
   .all(isHttpMethodAllowed, isAuthenticated, authorizeRole(ROLES.ADMIN))
-  .get()
+  .get(validateQueryParams(productQuerySchema), adminGetProducts)
   .post(parseFormData, validatePayload(productSchema), addNewProduct);
 
 router
