@@ -18,7 +18,7 @@ import {
   validatePathParams,
   validateQueryParams,
 } from '../middlewares/requestValidators.js';
-import { ROLES, UPLOAD_FOLDERS, UPLOADED_FILES } from '../constants.js';
+import { ROLES, UPLOAD_FOLDERS, UPLOAD_FILES } from '../constants.js';
 
 const router = express.Router();
 
@@ -30,7 +30,7 @@ router
   .all(isHttpMethodAllowed, isAuthenticated, authorizeRole(ROLES.ADMIN))
   .get(validateQueryParams(productQuerySchema), adminGetProducts)
   .post(
-    parseFormData(UPLOAD_FOLDERS.PRODUCT_IMAGES, UPLOADED_FILES.PRODUCT_IMAGE),
+    parseFormData(UPLOAD_FOLDERS.PRODUCT_IMAGES, UPLOAD_FILES.PRODUCT_IMAGE),
     validatePayload(productSchema),
     addNewProduct
   );
@@ -45,7 +45,7 @@ router
   )
   .get(adminGetProductById)
   .post(
-    parseFormData(UPLOAD_FOLDERS.PRODUCT_IMAGES, UPLOADED_FILES.PRODUCT_IMAGE),
+    parseFormData(UPLOAD_FOLDERS.PRODUCT_IMAGES, UPLOAD_FILES.PRODUCT_IMAGE),
     validatePayload(productSchema),
     updateProduct
   )

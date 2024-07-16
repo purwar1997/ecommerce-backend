@@ -9,7 +9,7 @@ import { brandSchema, brandIdSchema } from '../schemas/brandSchemas.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
 import { parseFormData } from '../middlewares/parseFormData.js';
 import { validatePayload, validatePathParams } from '../middlewares/requestValidators.js';
-import { ROLES, UPLOAD_FOLDERS, UPLOADED_FILES } from '../constants.js';
+import { ROLES, UPLOAD_FOLDERS, UPLOAD_FILES } from '../constants.js';
 
 const router = express.Router();
 
@@ -21,7 +21,7 @@ router
   .post(
     isAuthenticated,
     authorizeRole(ROLES.ADMIN),
-    parseFormData(UPLOAD_FOLDERS.BRAND_LOGOS, UPLOADED_FILES.BRAND_LOGO),
+    parseFormData(UPLOAD_FOLDERS.BRAND_LOGOS, UPLOAD_FILES.BRAND_LOGO),
     validatePayload(brandSchema),
     addNewBrand
   );
@@ -32,7 +32,7 @@ router
     isAuthenticated,
     authorizeRole(ROLES.ADMIN),
     validatePathParams(brandIdSchema),
-    parseFormData(UPLOAD_FOLDERS.BRAND_LOGOS, UPLOADED_FILES.BRAND_LOGO),
+    parseFormData(UPLOAD_FOLDERS.BRAND_LOGOS, UPLOAD_FILES.BRAND_LOGO),
     validatePayload(brandSchema),
     updateBrand
   );

@@ -18,7 +18,7 @@ import {
   userIdSchema,
   updateUserSchema,
   updateRoleSchema,
-  getUsersSchema,
+  userQuerySchema,
 } from '../schemas/userSchemas.js';
 import { isHttpMethodAllowed } from '../middlewares/isHttpMethodAllowed.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
@@ -30,7 +30,7 @@ import {
 import { isPhoneValid } from '../middlewares/verifyCredentials.js';
 import { parseFormData } from '../middlewares/parseFormData.js';
 import { checkAdminSelfUpdate, checkAdminSelfDelete } from '../middlewares/checkAdmin.js';
-import { ROLES, UPLOAD_FOLDERS, UPLOADED_FILES } from '../constants.js';
+import { ROLES, UPLOAD_FOLDERS, UPLOAD_FILES } from '../constants.js';
 
 const router = express.Router();
 
@@ -44,20 +44,20 @@ router
 router
   .route('/users/self/avatar')
   .all(isHttpMethodAllowed, isAuthenticated)
-  .post(parseFormData(UPLOAD_FOLDERS.USER_AVATARS, UPLOADED_FILES.USER_AVATAR), addProfilePhoto)
+  .post(parseFormData(UPLOAD_FOLDERS.USER_AVATARS, UPLOAD_FILES.USER_AVATAR), addProfilePhoto)
   .delete(removeProfilePhoto);
 
 router
   .route('/users/self/avatar/update')
   .post(
     isAuthenticated,
-    parseFormData(UPLOAD_FOLDERS.USER_AVATARS, UPLOADED_FILES.USER_AVATAR),
+    parseFormData(UPLOAD_FOLDERS.USER_AVATARS, UPLOAD_FILES.USER_AVATAR),
     updateProfilePhoto
   );
 
 router
   .route('/admin/users')
-  .get(isAuthenticated, authorizeRole(ROLES.ADMIN), validateQueryParams(getUsersSchema), getUsers);
+  .get(isAuthenticated, authorizeRole(ROLES.ADMIN), validateQueryParams(userQuerySchema), getUsers);
 
 router
   .route('/admin/users/:userId')

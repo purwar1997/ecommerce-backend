@@ -9,7 +9,7 @@ import { categorySchema, categoryIdSchema } from '../schemas/categorySchemas.js'
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
 import { parseFormData } from '../middlewares/parseFormData.js';
 import { validatePayload, validatePathParams } from '../middlewares/requestValidators.js';
-import { ROLES, UPLOAD_FOLDERS, UPLOADED_FILES } from '../constants.js';
+import { ROLES, UPLOAD_FOLDERS, UPLOAD_FILES } from '../constants.js';
 
 const router = express.Router();
 
@@ -21,7 +21,7 @@ router
   .post(
     isAuthenticated,
     authorizeRole(ROLES.ADMIN),
-    parseFormData(UPLOAD_FOLDERS.CATEGORY_IMAGES, UPLOADED_FILES.CATEGORY_IMAGE),
+    parseFormData(UPLOAD_FOLDERS.CATEGORY_IMAGES, UPLOAD_FILES.CATEGORY_IMAGE),
     validatePayload(categorySchema),
     addNewCategory
   );
@@ -32,7 +32,7 @@ router
     isAuthenticated,
     authorizeRole(ROLES.ADMIN),
     validatePathParams(categoryIdSchema),
-    parseFormData(UPLOAD_FOLDERS.CATEGORY_IMAGES, UPLOADED_FILES.CATEGORY_IMAGE),
+    parseFormData(UPLOAD_FOLDERS.CATEGORY_IMAGES, UPLOAD_FILES.CATEGORY_IMAGE),
     validatePayload(categorySchema),
     updateCategory
   );

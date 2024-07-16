@@ -43,7 +43,7 @@ export const UPLOAD_FOLDERS = Object.freeze({
   PRODUCT_IMAGES: 'product_images',
 });
 
-export const UPLOADED_FILES = Object.freeze({
+export const UPLOAD_FILES = Object.freeze({
   USER_AVATAR: 'avatar',
   CATEGORY_IMAGE: 'image',
   BRAND_LOGO: 'logo',

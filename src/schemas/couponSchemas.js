@@ -94,7 +94,7 @@ export const couponCodeSchema = Joi.object({
   }),
 });
 
-export const getCouponsSchema = Joi.object({
+export const couponQuerySchema = Joi.object({
   page: paginationSchema,
 });
 

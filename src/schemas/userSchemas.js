@@ -57,7 +57,7 @@ export const updateRoleSchema = customJoi.object({
     }),
 });
 
-export const getUsersSchema = Joi.object({
+export const userQuerySchema = Joi.object({
   page: paginationSchema,
 });
 
