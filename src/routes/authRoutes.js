@@ -18,10 +18,16 @@ import { isEmailValid, isPhoneValid } from '../middlewares/verifyCredentials.js'
 
 const router = express.Router();
 
-router.route('/signup').post(validatePayload(signupSchema), isEmailValid, isPhoneValid, signup);
-router.route('/login').post(validatePayload(loginSchema), login);
-router.route('/logout').post(isAuthenticated, logout);
-router.route('/password/forgot').post(validatePayload(forgotPasswordSchema), forgotPassword);
-router.route('/password/reset/:token').put(validatePayload(resetPasswordSchema), resetPassword);
+router
+  .route('/auth/signup')
+  .post(validatePayload(signupSchema), isEmailValid, isPhoneValid, signup);
+
+router.route('/auth/login').post(validatePayload(loginSchema), login);
+router.route('/auth/logout').post(isAuthenticated, logout);
+router.route('/auth/password/forgot').post(validatePayload(forgotPasswordSchema), forgotPassword);
+
+router
+  .route('/auth/password/reset/:token')
+  .put(validatePayload(resetPasswordSchema), resetPassword);
 
 export default router;

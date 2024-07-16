@@ -6,15 +6,7 @@ import path from 'path';
 import { createStream } from 'rotating-file-stream';
 import { v4 as uuidv4 } from 'uuid';
 import generator from './utils/generator.js';
-import authRouter from './routes/authRoutes.js';
-import userRouter from './routes/userRoutes.js';
-import addressRouter from './routes/addressRoutes.js';
-import categoryRouter from './routes/categoryRoutes.js';
-import brandRouter from './routes/brandRoutes.js';
-import productRouter from './routes/productRoutes.js';
-import couponRouter from './routes/couponRoutes.js';
-import orderRouter from './routes/orderRoutes.js';
-import reviewRouter from './routes/reviewRoutes.js';
+import apiRouter from './routes/index.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 
 const app = express();
@@ -48,17 +40,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
-app.use('/api/v1/auth', authRouter);
-app.use('/api/v1', userRouter);
-app.use('/api/v1', addressRouter);
-app.use('/api/v1', categoryRouter);
-app.use('/api/v1', brandRouter);
-app.use('/api/v1', productRouter);
-app.use('/api/v1', couponRouter);
-app.use('/api/v1', orderRouter);
-app.use('/api/v1', reviewRouter);
-
+app.use('/api/v1', apiRouter);
 app.use(errorHandler);
 
 export default app;

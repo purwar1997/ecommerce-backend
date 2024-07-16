@@ -1,0 +1,24 @@
+import express from 'express';
+import authRouter from './authRoutes.js';
+import userRouter from './userRoutes.js';
+import addressRouter from './addressRoutes.js';
+import categoryRouter from './categoryRoutes.js';
+import brandRouter from './brandRoutes.js';
+import productRouter from './productRoutes.js';
+import couponRouter from './couponRoutes.js';
+import orderRouter from './orderRoutes.js';
+import reviewRouter from './reviewRoutes.js';
+
+const router = express.Router();
+
+router.use(authRouter);
+router.use(userRouter);
+router.use(addressRouter);
+router.use(categoryRouter);
+router.use(brandRouter);
+router.use(productRouter);
+router.use(couponRouter);
+router.use(orderRouter);
+router.use(reviewRouter);
+
+export default router;
