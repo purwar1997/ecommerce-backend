@@ -7,6 +7,7 @@ import {
   adminGetProductById,
   updateProduct,
   deleteProduct,
+  restoreDeletedProduct,
 } from '../controllers/productControllers.js';
 import { productSchema, productIdSchema, productQuerySchema } from '../schemas/productSchemas.js';
 import { isHttpMethodAllowed } from '../middlewares/isHttpMethodAllowed.js';
@@ -49,5 +50,14 @@ router
     updateProduct
   )
   .delete(deleteProduct);
+
+router
+  .route('/admin/products/:productId/restore')
+  .put(
+    isAuthenticated,
+    authorizeRole(ROLES.ADMIN),
+    validatePathParams(productIdSchema),
+    restoreDeletedProduct
+  );
 
 export default router;

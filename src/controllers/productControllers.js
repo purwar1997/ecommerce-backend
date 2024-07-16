@@ -185,7 +185,11 @@ export const deleteProduct = handleAsync(async (req, res) => {
 
   const deletedProduct = await Product.findOneAndUpdate(
     { _id: productId, isDeleted: false },
-    { isDeleted: true, deletedBy: req.user._id, deletedAt: new Date() },
+    {
+      isDeleted: true,
+      deletedBy: req.user._id,
+      deletedAt: new Date(),
+    },
     { runValidators: true }
   );
 
@@ -193,7 +197,24 @@ export const deleteProduct = handleAsync(async (req, res) => {
     throw new CustomError('Product not found', 404);
   }
 
-  await deleteImage(deletedProduct.image.publicId);
-
   sendResponse(res, 200, 'Product deleted successfully');
+});
+
+export const restoreDeletedProduct = handleAsync(async (req, res) => {
+  const { productId } = req.params;
+
+  const restoredProduct = await Product.findByIdAndUpdate(
+    productId,
+    {
+      isDeleted: false,
+      $unset: { deletedBy: 1, deletedAt: 1 },
+    },
+    { runValidators: true, new: true }
+  );
+
+  if (!restoredProduct) {
+    throw new CustomError('Product not found', 404);
+  }
+
+  sendResponse(res, 200, 'Product restored successfully', restoredProduct);
 });
