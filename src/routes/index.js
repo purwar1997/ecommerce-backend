@@ -11,7 +11,7 @@ import reviewRouter from './reviewRoutes.js';
 
 const router = express.Router();
 
-router.use(authRouter);
+router.use('/auth', authRouter);
 router.use(userRouter);
 router.use(addressRouter);
 router.use(categoryRouter);
