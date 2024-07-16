@@ -1,5 +1,5 @@
 import express from 'express';
-import { getProducts, addNewProduct } from '../controllers/productControllers.js';
+import { getProducts, getProductById, addNewProduct } from '../controllers/productControllers.js';
 import { productSchema, productIdSchema, productQuerySchema } from '../schemas/productSchemas.js';
 import { isHttpMethodAllowed } from '../middlewares/isHttpMethodAllowed.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
@@ -14,7 +14,7 @@ import { ROLES } from '../constants.js';
 const router = express.Router();
 
 router.route('/products').get(validateQueryParams(productQuerySchema), getProducts);
-router.route('/products/:productId').get(validatePathParams(productIdSchema));
+router.route('/products/:productId').get(validatePathParams(productIdSchema), getProductById);
 
 router
   .route('/admin/products')

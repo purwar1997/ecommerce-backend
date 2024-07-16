@@ -46,7 +46,17 @@ export const getProducts = handleAsync(async (req, res) => {
   sendResponse(res, 200, 'Products fetched successfully', products);
 });
 
-export const getProductById = handleAsync(async (req, res) => {});
+export const getProductById = handleAsync(async (req, res) => {
+  const { productId } = req.params;
+
+  const product = await Product.findOne({ _id: productId, isDeleted: false });
+
+  if (!product) {
+    throw new CustomError('Product not found', 404);
+  }
+
+  sendResponse(res, 200, 'Product fetched by ID successfully', product);
+});
 
 export const addNewProduct = handleAsync(async (req, res) => {
   const { title, brand, category } = req.body;
