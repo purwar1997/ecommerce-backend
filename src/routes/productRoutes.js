@@ -5,6 +5,8 @@ import {
   adminGetProducts,
   addNewProduct,
   adminGetProductById,
+  updateProduct,
+  deleteProduct,
 } from '../controllers/productControllers.js';
 import { productSchema, productIdSchema, productQuerySchema } from '../schemas/productSchemas.js';
 import { isHttpMethodAllowed } from '../middlewares/isHttpMethodAllowed.js';
@@ -40,8 +42,12 @@ router
     authorizeRole(ROLES.ADMIN),
     validatePathParams(productIdSchema)
   )
-  .get()
-  .post(parseFormData, validatePayload(productSchema))
-  .delete();
+  .get(adminGetProductById)
+  .post(
+    parseFormData(UPLOAD_FOLDERS.PRODUCT_IMAGES, UPLOADED_FILES.PRODUCT_IMAGE),
+    validatePayload(productSchema),
+    updateProduct
+  )
+  .delete(deleteProduct);
 
 export default router;

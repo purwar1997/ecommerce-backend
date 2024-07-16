@@ -6,7 +6,7 @@ import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import { sendResponse } from '../utils/helpers.js';
 import { productSortRules } from '../utils/sortRules.js';
-import { uploadImage } from '../services/cloudinaryAPIs.js';
+import { deleteImage, uploadImage } from '../services/cloudinaryAPIs.js';
 import { PAGINATION, UPLOAD_FOLDERS } from '../constants.js';
 
 export const getProducts = handleAsync(async (req, res) => {
@@ -106,7 +106,7 @@ export const addNewProduct = handleAsync(async (req, res) => {
 
   if (existingProduct) {
     throw new CustomError(
-      'Product title must be unique within the same brand and category. Please provide a different product title',
+      'Product title must be unique within the same brand and category. To proceed, please change either the product title, category or brand',
       409
     );
   }
@@ -141,5 +141,59 @@ export const adminGetProductById = handleAsync(async (req, res) => {
 });
 
 export const updateProduct = handleAsync(async (req, res) => {
-  // const
+  const { productId } = req.params;
+  const { title, brand, category } = req.body;
+
+  const product = await Product.findById(productId);
+
+  if (!product) {
+    throw new CustomError('Product not found', 404);
+  }
+
+  const existingProduct = await Product.findOne({
+    title,
+    brand,
+    category,
+    _id: { $ne: productId },
+  });
+
+  if (existingProduct) {
+    throw new CustomError(
+      'Product title must be unique within the same brand and category. To proceed, please change either the product title, category or brand',
+      409
+    );
+  }
+
+  await deleteImage(product.image.publicId);
+
+  const response = await uploadImage(UPLOAD_FOLDERS.PRODUCT_IMAGES, req.file, productId);
+
+  const updatedProduct = await Product.findByIdAndUpdate(productId, {
+    ...req.body,
+    image: {
+      url: response.secure_url,
+      publicId: response.public_id,
+    },
+    lastUpdatedBy: req.user._id,
+  });
+
+  sendResponse(res, 200, 'Product updated successfully', updatedProduct);
+});
+
+export const deleteProduct = handleAsync(async (req, res) => {
+  const { productId } = req.params;
+
+  const deletedProduct = await Product.findOneAndUpdate(
+    { _id: productId, isDeleted: false },
+    { isDeleted: true, deletedBy: req.user._id, deletedAt: new Date() },
+    { runValidators: true }
+  );
+
+  if (!deletedProduct) {
+    throw new CustomError('Product not found', 404);
+  }
+
+  await deleteImage(deletedProduct.image.publicId);
+
+  sendResponse(res, 200, 'Product deleted successfully');
 });
