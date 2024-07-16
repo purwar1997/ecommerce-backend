@@ -15,7 +15,7 @@ import {
   validatePathParams,
   validateQueryParams,
 } from '../middlewares/requestValidators.js';
-import { ROLES } from '../constants.js';
+import { ROLES, UPLOAD_FOLDERS, UPLOADED_FILES } from '../constants.js';
 
 const router = express.Router();
 
@@ -26,7 +26,11 @@ router
   .route('/admin/products')
   .all(isHttpMethodAllowed, isAuthenticated, authorizeRole(ROLES.ADMIN))
   .get(validateQueryParams(productQuerySchema), adminGetProducts)
-  .post(parseFormData, validatePayload(productSchema), addNewProduct);
+  .post(
+    parseFormData(UPLOAD_FOLDERS.PRODUCT_IMAGES, UPLOADED_FILES.PRODUCT_IMAGE),
+    validatePayload(productSchema),
+    addNewProduct
+  );
 
 router
   .route('/admin/products/:productId')

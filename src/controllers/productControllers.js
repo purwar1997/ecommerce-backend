@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Product from '../models/product.js';
 import Category from '../models/category.js';
 import Brand from '../models/brand.js';
@@ -5,7 +6,8 @@ import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import { sendResponse } from '../utils/helpers.js';
 import { productSortRules } from '../utils/sortRules.js';
-import { PAGINATION } from '../constants.js';
+import { uploadImage } from '../services/cloudinaryAPIs.js';
+import { PAGINATION, UPLOAD_FOLDERS } from '../constants.js';
 
 export const getProducts = handleAsync(async (req, res) => {
   const { categories, brands, rating, sort, page } = req.query;
@@ -97,6 +99,35 @@ export const adminGetProducts = handleAsync(async (req, res) => {
   sendResponse(res, 200, 'Products fetched successfully', products);
 });
 
+export const addNewProduct = handleAsync(async (req, res) => {
+  const { title, brand, category } = req.body;
+
+  const existingProduct = await Product.findOne({ title, brand, category });
+
+  if (existingProduct) {
+    throw new CustomError(
+      'Product title must be unique within the same brand and category. Please provide a different product title',
+      409
+    );
+  }
+
+  const productId = new mongoose.Types.ObjectId();
+
+  const response = await uploadImage(UPLOAD_FOLDERS.PRODUCT_IMAGES, req.file, productId);
+
+  const newProduct = await Product.create({
+    _id: productId,
+    ...req.body,
+    image: {
+      url: response.secure_url,
+      publicId: response.public_id,
+    },
+    createdBy: req.user._id,
+  });
+
+  sendResponse(res, 201, 'Product added successfully', newProduct);
+});
+
 export const adminGetProductById = handleAsync(async (req, res) => {
   const { productId } = req.params;
 
@@ -109,19 +140,6 @@ export const adminGetProductById = handleAsync(async (req, res) => {
   sendResponse(res, 200, 'Product fetched by ID successfully', product);
 });
 
-export const addNewProduct = handleAsync(async (req, res) => {
-  const { title, brand, category } = req.body;
-
-  const product = await Product.findOne({ title, brand, category });
-
-  if (product) {
-    throw new CustomError(
-      'Product title must be unique within the same brand and category. Please provide a different product title',
-      409
-    );
-  }
-
-  const newProduct = await Product.create({ ...req.body, createdBy: req.user._id });
-
-  sendResponse(res, 201, 'Product added successfully', newProduct);
+export const updateProduct = handleAsync(async (req, res) => {
+  // const
 });
