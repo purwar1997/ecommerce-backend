@@ -4,6 +4,7 @@ import {
   addItemToCart,
   removeItemFromCart,
   updateItemQuantity,
+  moveItemToWishlist,
 } from '../controllers/cartControllers.js';
 import { isAuthenticated } from '../middlewares/authMiddlewares.js';
 import { validatePayload } from '../middlewares/requestValidators.js';
@@ -21,5 +22,9 @@ router
 router
   .route('/cart/update/quantity')
   .put(isAuthenticated, validatePayload(updateQuantitySchema), updateItemQuantity);
+
+router
+  .route('/cart/move')
+  .put(isAuthenticated, validatePayload(productIdSchema), moveItemToWishlist);
 
 export default router;

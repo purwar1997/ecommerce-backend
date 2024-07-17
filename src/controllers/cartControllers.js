@@ -89,3 +89,33 @@ export const updateItemQuantity = handleAsync(async (req, res) => {
 
   sendResponse(res, 200, 'Item quantity updated successfully', result);
 });
+
+export const moveItemToWishlist = handleAsync(async (req, res) => {
+  const { productId } = req.body;
+  const { user } = req;
+
+  const product = await Product.findOne({ _id: productId, isDeleted: false });
+
+  if (!product) {
+    throw new CustomError('Product not found', 404);
+  }
+
+  const productExistsInCart = user.cart.find(cartItem => cartItem.product === productId);
+
+  if (!productExistsInCart) {
+    throw new CustomError('Item not found in cart', 409);
+  }
+
+  const index = user.cart.findIndex(cartItem => cartItem.product === productId);
+  user.cart.splice(index, 1, productExistsInCart);
+
+  const productExistsInWishlist = user.wishlist.includes(productId);
+
+  if (!productExistsInWishlist) {
+    user.wishlist.push(productId);
+  }
+
+  await user.save();
+
+  sendResponse(res, 200, 'Item moved from cart to wishlist successfully', product);
+});
