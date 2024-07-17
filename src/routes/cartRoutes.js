@@ -5,6 +5,7 @@ import {
   removeItemFromCart,
   updateItemQuantity,
   moveItemToWishlist,
+  clearCart,
 } from '../controllers/cartControllers.js';
 import { isAuthenticated } from '../middlewares/authMiddlewares.js';
 import { validatePayload } from '../middlewares/requestValidators.js';
@@ -26,5 +27,7 @@ router
 router
   .route('/cart/move')
   .put(isAuthenticated, validatePayload(productIdSchema), moveItemToWishlist);
+
+router.route('/cart/clear').put(isAuthenticated, clearCart);
 
 export default router;
