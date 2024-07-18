@@ -8,7 +8,7 @@ export const productIdSchema = customJoi.object({
     'any.required': 'Product ID is required',
     'string.base': 'Product ID must be a string',
     'string.empty': 'Product ID cannot be empty',
-    'any.invalid': 'Invalid ID format. Expected a valid objectID',
+    'any.invalid': 'Invalid ID format. Expected a valid objectId',
   }),
 });
 
@@ -17,7 +17,7 @@ export const updateQuantitySchema = customJoi.object({
     'any.required': 'Product ID is required',
     'string.base': 'Product ID must be a string',
     'string.empty': 'Product ID cannot be empty',
-    'any.invalid': 'Invalid ID format. Expected a valid objectID',
+    'any.invalid': 'Invalid ID format. Expected a valid objectId',
   }),
 
   quantity: Joi.number()

@@ -2,14 +2,14 @@ import Joi from 'joi';
 import { validatePathId } from '../utils/helpers.js';
 import { SAFE_INTEGER } from '../constants.js';
 
-export const createIDSchema = path =>
+export const getPathIDSchema = path =>
   Joi.string()
     .trim()
     .custom(validatePathId)
     .messages({
       'string.base': `${path} must be a string`,
       'string.empty': `${path} is required`,
-      'any.invalid': `Invalid ID format. ${path} must be a valid ObjectId`,
+      'any.invalid': `Invalid ID format. Expected a valid objectId`,
     });
 
 export const paginationSchema = Joi.number()

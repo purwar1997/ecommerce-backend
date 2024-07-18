@@ -8,7 +8,7 @@ import {
   validateOption,
   formatOptions,
 } from '../utils/helpers.js';
-import { paginationSchema, createIDSchema } from './commonSchemas.js';
+import { paginationSchema, getPathIDSchema } from './commonSchemas.js';
 import { PRICE, STOCK, RATING, PRODUCT_SORT_OPTIONS } from '../constants.js';
 
 export const productSchema = customJoi.object({
@@ -43,14 +43,14 @@ export const productSchema = customJoi.object({
     'any.required': 'Product brand is required',
     'string.empty': 'Product brand cannot be empty',
     'string.base': 'Product brand must be a string',
-    'any.invalid': 'Invalid value provided for brand. Expected a valid ObjectId',
+    'any.invalid': 'Invalid value provided for brand. Expected a valid objectId',
   }),
 
   category: Joi.string().trim().required().custom(validateObjectId).messages({
     'any.required': 'Product category is required',
     'string.empty': 'Product category cannot be empty',
     'string.base': 'Product category must be a string',
-    'any.invalid': 'Invalid value provided for category. Expected a valid ObjectId',
+    'any.invalid': 'Invalid value provided for category. Expected a valid objectId',
   }),
 
   stock: Joi.number()
@@ -112,5 +112,5 @@ export const productQuerySchema = Joi.object({
 });
 
 export const productIdSchema = Joi.object({
-  productId: createIDSchema('Product ID'),
+  productId: getPathIDSchema('Product ID'),
 });

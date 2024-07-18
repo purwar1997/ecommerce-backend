@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
-import { createIDSchema } from './commonSchemas.js';
+import { getPathIDSchema } from './commonSchemas.js';
 import {
   validateObjectId,
   roundToTwoDecimalPlaces,
@@ -15,7 +15,7 @@ const orderItemSchema = Joi.object({
     'any.required': 'Product is required',
     'string.empty': 'Product cannot be empty',
     'string.base': 'Product must be a string',
-    'any.invalid': 'Invalid value provided for product. Expected a valid ObjectId',
+    'any.invalid': 'Invalid value provided for product. Expected a valid objectId',
   }),
 
   quantity: Joi.number()
@@ -75,7 +75,7 @@ export const createOrderSchema = customJoi
       'any.required': 'Shipping address is required',
       'string.base': 'Shipping address must be a string',
       'string.empty': 'Shipping address cannot be empty',
-      'any.invalid': 'Invalid value provided for address. Expected a valid ObjectId',
+      'any.invalid': 'Invalid value provided for address. Expected a valid objectId',
     }),
 
     paymentMethod: Joi.string()
@@ -95,5 +95,5 @@ export const createOrderSchema = customJoi
   .custom(stripEmptyKeys, 'Custom sanitization to strip empty fields');
 
 export const orderIdSchema = Joi.object({
-  orderId: createIDSchema('Order ID'),
+  orderId: getPathIDSchema('Order ID'),
 });

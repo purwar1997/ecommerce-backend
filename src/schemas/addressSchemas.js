@@ -2,7 +2,7 @@ import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { fullnameRegex, phoneRegex, postalCodeRegex } from '../utils/regex.js';
 import { removeExtraInnerSpaces } from '../utils/helpers.js';
-import { createIDSchema } from './commonSchemas.js';
+import { getPathIDSchema } from './commonSchemas.js';
 
 export const addressSchema = customJoi.object({
   fullname: Joi.string()
@@ -74,5 +74,5 @@ export const addressSchema = customJoi.object({
 });
 
 export const addressIdSchema = Joi.object({
-  addressId: createIDSchema('Address ID'),
+  addressId: getPathIDSchema('Address ID'),
 });

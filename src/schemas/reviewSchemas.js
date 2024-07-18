@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { removeExtraInnerSpaces } from '../utils/helpers.js';
-import { createIDSchema } from './commonSchemas.js';
+import { getPathIDSchema } from './commonSchemas.js';
 import { RATING } from '../constants.js';
 
 export const reviewSchema = customJoi.object({
@@ -35,5 +35,5 @@ export const reviewSchema = customJoi.object({
 });
 
 export const reviewIdSchema = Joi.object({
-  reviewId: createIDSchema('Review ID'),
+  reviewId: getPathIDSchema('Review ID'),
 });

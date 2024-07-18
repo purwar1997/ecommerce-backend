@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { removeExtraInnerSpaces } from '../utils/helpers.js';
-import { createIDSchema } from './commonSchemas.js';
+import { getPathIDSchema } from './commonSchemas.js';
 
 export const brandSchema = customJoi.object({
   name: Joi.string().trim().max(50).required().custom(removeExtraInnerSpaces).messages({
@@ -13,5 +13,5 @@ export const brandSchema = customJoi.object({
 });
 
 export const brandIdSchema = Joi.object({
-  brandId: createIDSchema('Brand ID'),
+  brandId: getPathIDSchema('Brand ID'),
 });
