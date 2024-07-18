@@ -4,11 +4,12 @@ import Order from '../models/order.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import { sendResponse } from '../utils/helpers.js';
+import { ORDER_STATUS } from '../constants.js';
 
 export const getProductReviews = handleAsync(async (req, res) => {
   const { productId } = req.params;
 
-  const product = await Product.findOne({ _id: productId, isDeleted: false });
+  const product = await Product.findById(productId);
 
   if (!product) {
     throw new CustomError('Product not found', 404);
@@ -23,6 +24,18 @@ export const addProductReview = handleAsync(async (req, res) => {
   const { productId } = req.params;
   const userId = req.user._id;
 
+  const product = await Product.findById(productId);
+
+  if (!product) {
+    throw new CustomError('Product not found', 404);
+  }
+
+  const existingReview = await Review.findOne({ product: productId, user: userId });
+
+  if (existingReview) {
+    throw new CustomError('You have already reviewed this product', 409);
+  }
+
   const order = await Order.findOne({
     user: userId,
     items: {
@@ -34,7 +47,7 @@ export const addProductReview = handleAsync(async (req, res) => {
     throw new CustomError('Only the user who has bought this product can add a review', 403);
   }
 
-  if (order.status !== 'delivered') {
+  if (order.status !== ORDER_STATUS.DELIVERED) {
     throw new CustomError(
       'Reviews for products can only be submitted after the order has been delivered',
       403
@@ -42,8 +55,6 @@ export const addProductReview = handleAsync(async (req, res) => {
   }
 
   const addedReview = await Review.create({ ...req.body, product: productId, user: userId });
-
-  const product = await Product.findById(productId);
 
   product.avgRating =
     (product.avgRating * product.reviewCount + req.body.rating) / (product.reviewCount + 1);

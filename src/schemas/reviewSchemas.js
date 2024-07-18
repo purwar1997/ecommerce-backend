@@ -9,8 +9,8 @@ export const reviewSchema = customJoi.object({
     .integer()
     .min(RATING.MIN)
     .max(RATING.MAX)
-    .required()
     .unsafe()
+    .required()
     .messages({
       'any.required': 'Rating is required',
       'number.base': 'Rating must be a number',
@@ -21,15 +21,15 @@ export const reviewSchema = customJoi.object({
 
   headline: Joi.string().trim().max(100).required().custom(removeExtraInnerSpaces).messages({
     'any.required': 'Review headline is required',
-    'string.empty': 'Review headline cannot be empty',
     'string.base': 'Review headline must be a string',
+    'string.empty': 'Review headline cannot be empty',
     'string.max': 'Review headline cannot exceed 100 characters',
   }),
 
   body: Joi.string().trim().max(800).required().custom(removeExtraInnerSpaces).messages({
     'any.required': 'Review body is required',
-    'string.empty': 'Review body cannot be empty',
     'string.base': 'Review body must be a string',
+    'string.empty': 'Review body cannot be empty',
     'string.max': 'Review body cannot exceed 800 characters',
   }),
 });
