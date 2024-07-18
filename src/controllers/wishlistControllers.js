@@ -79,5 +79,14 @@ export const moveItemToCart = handleAsync(async (req, res) => {
     user.cart.push({ product: productId, quantity: 1 });
   }
 
-  sendResponse(res, 200, 'Item moved to cart successfully', product);
+  sendResponse(res, 200, 'Item moved from wishlist to cart successfully', product);
+});
+
+export const clearWishlist = handleAsync(async (req, res) => {
+  const { user } = req;
+
+  user.wishlist = [];
+  await user.save();
+
+  sendResponse(res, 200, 'Wishlist cleared successfully');
 });
