@@ -110,3 +110,8 @@ export const PRODUCT_SORT_OPTIONS = Object.freeze({
   PRICE_HIGH_TO_LOW: 'price_desc',
   NEWLY_ADDED: 'new',
 });
+
+export const COUPON_SORT_OPTIONS = Object.freeze({
+  EXPIRY_ASC: 'expiry_asc',
+  EXPIRY_DESC: 'expiry_desc',
+});

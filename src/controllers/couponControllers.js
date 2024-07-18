@@ -2,6 +2,7 @@ import Coupon from '../models/coupon.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import { sendResponse } from '../utils/helpers.js';
+import { couponSortRules } from '../utils/sortRules.js';
 import { PAGINATION, DISCOUNT_TYPES, COUPON_STATES } from '../constants.js';
 
 export const getValidCoupons = handleAsync(async (_req, res) => {
@@ -30,12 +31,13 @@ export const checkCouponValidity = handleAsync(async (req, res) => {
 });
 
 export const getCoupons = handleAsync(async (req, res) => {
-  const { page } = req.query;
+  const { sort, page } = req.query;
 
-  const coupons = await Coupon.find()
-    .sort({ createdAt: -1 })
-    .skip((page - 1) * PAGINATION.COUPONS_PER_PAGE)
-    .limit(PAGINATION.COUPONS_PER_PAGE);
+  const sortRule = couponSortRules[sort];
+  const offset = (page - 1) * PAGINATION.COUPONS_PER_PAGE;
+  const limit = PAGINATION.COUPONS_PER_PAGE;
+
+  const coupons = await Coupon.find().sort(sortRule).skip(offset).limit(limit);
 
   sendResponse(res, 200, 'Coupons fetched successfully', coupons);
 });

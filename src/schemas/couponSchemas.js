@@ -3,7 +3,7 @@ import customJoi from '../utils/customJoi.js';
 import { couponCodeRegex } from '../utils/regex.js';
 import { formatOptions, validateOption } from '../utils/helpers.js';
 import { paginationSchema, getPathIDSchema } from './commonSchemas.js';
-import { DISCOUNT_TYPES, DISCOUNT, COUPON_STATES } from '../constants.js';
+import { DISCOUNT_TYPES, DISCOUNT, COUPON_STATES, COUPON_SORT_OPTIONS } from '../constants.js';
 
 export const couponSchema = customJoi.object({
   code: Joi.string().trim().uppercase().pattern(couponCodeRegex).required().messages({
@@ -95,6 +95,19 @@ export const couponCodeSchema = Joi.object({
 });
 
 export const couponQuerySchema = Joi.object({
+  sort: Joi.string()
+    .trim()
+    .lowercase()
+    .empty('')
+    .default(COUPON_SORT_OPTIONS.EXPIRY_DESC)
+    .custom(validateOption(COUPON_SORT_OPTIONS))
+    .messages({
+      'string.base': 'Sort option must be a string',
+      'any.invalid': `Provided an invalid sort value. Valid options are: ${formatOptions(
+        COUPON_SORT_OPTIONS
+      )}`,
+    }),
+
   page: paginationSchema,
 });
 

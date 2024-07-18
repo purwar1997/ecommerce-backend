@@ -102,8 +102,8 @@ export const productQuerySchema = Joi.object({
     .default(PRODUCT_SORT_OPTIONS.RECOMMENDED)
     .custom(validateOption(PRODUCT_SORT_OPTIONS))
     .messages({
-      'string.base': 'Sort must be a string',
-      'any.invalid': `Invalid sort value. Valid options are: ${formatOptions(
+      'string.base': 'Sort option must be a string',
+      'any.invalid': `Provided an invalid sort value. Valid options are: ${formatOptions(
         PRODUCT_SORT_OPTIONS
       )}`,
     }),
