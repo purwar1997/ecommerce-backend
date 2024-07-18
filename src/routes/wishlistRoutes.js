@@ -3,6 +3,7 @@ import {
   getWishlist,
   addItemToWishlist,
   removeItemFromWishlist,
+  moveItemToCart,
 } from '../controllers/wishlistControllers.js';
 import { isAuthenticated } from '../middlewares/authMiddlewares.js';
 import { validatePayload } from '../middlewares/requestValidators.js';
@@ -19,5 +20,9 @@ router
 router
   .route('/wishlist/remove')
   .put(isAuthenticated, validatePayload(productIdSchema), removeItemFromWishlist);
+
+router
+  .route('/wishlist/move')
+  .put(isAuthenticated, validatePayload(productIdSchema), moveItemToCart);
 
 export default router;
