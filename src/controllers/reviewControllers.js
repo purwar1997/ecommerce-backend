@@ -26,6 +26,10 @@ export const getProductReviews = handleAsync(async (req, res) => {
     .skip(offset)
     .limit(limit);
 
+  const reviewCount = await Review.countDocuments({ product: productId });
+
+  res.set('X-Total-Count', reviewCount);
+
   sendResponse(res, 200, 'Reviews fetched successfully', reviews);
 });
 

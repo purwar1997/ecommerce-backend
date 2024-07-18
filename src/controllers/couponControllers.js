@@ -38,6 +38,9 @@ export const getCoupons = handleAsync(async (req, res) => {
   const limit = PAGINATION.COUPONS_PER_PAGE;
 
   const coupons = await Coupon.find().sort(sortRule).skip(offset).limit(limit);
+  const couponCount = await Coupon.countDocuments();
+
+  res.set('X-Total-Count', couponCount);
 
   sendResponse(res, 200, 'Coupons fetched successfully', coupons);
 });

@@ -95,10 +95,14 @@ export const removeProfilePhoto = handleAsync(async (req, res) => {
 export const getUsers = handleAsync(async (req, res) => {
   const { page } = req.query;
 
-  const users = await User.find({ isDeleted: false })
-    .sort({ createdAt: -1 })
-    .skip((page - 1) * PAGINATION.USERS_PER_PAGE)
-    .limit(PAGINATION.USERS_PER_PAGE);
+  const sortRule = { createdAt: -1 };
+  const offset = (page - 1) * PAGINATION.USERS_PER_PAGE;
+  const limit = PAGINATION.USERS_PER_PAGE;
+
+  const users = await User.find({ isDeleted: false }).sort(sortRule).skip(offset).limit(limit);
+  const userCount = await User.countDocuments({ isDeleted: false });
+
+  res.set('X-Total-Count', userCount);
 
   sendResponse(res, 200, 'Users fetched successfully', users);
 });
