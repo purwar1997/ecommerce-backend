@@ -5,17 +5,25 @@ import {
   getProductReviewById,
   updateProductReview,
 } from '../controllers/reviewControllers.js';
-import { reviewSchema, reviewIdSchema } from '../schemas/reviewSchemas.js';
+import { reviewSchema, reviewIdSchema, reviewQuerySchema } from '../schemas/reviewSchemas.js';
 import { productIdSchema } from '../schemas/productSchemas.js';
 import { isHttpMethodAllowed } from '../middlewares/isHttpMethodAllowed.js';
 import { isAuthenticated } from '../middlewares/authMiddlewares.js';
-import { validatePayload, validatePathParams } from '../middlewares/requestValidators.js';
+import {
+  validatePayload,
+  validatePathParams,
+  validateQueryParams,
+} from '../middlewares/requestValidators.js';
 
 const router = express.Router();
 
 router
   .route('/products/:productId/reviews')
-  .get(validatePathParams(productIdSchema), getProductReviews)
+  .get(
+    validatePathParams(productIdSchema),
+    validateQueryParams(reviewQuerySchema),
+    getProductReviews
+  )
   .post(
     isAuthenticated,
     validatePathParams(productIdSchema),

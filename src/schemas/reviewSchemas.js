@@ -1,8 +1,8 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
-import { removeExtraInnerSpaces } from '../utils/helpers.js';
-import { getPathIDSchema } from './commonSchemas.js';
-import { RATING } from '../constants.js';
+import { formatOptions, removeExtraInnerSpaces, validateOption } from '../utils/helpers.js';
+import { getPathIDSchema, paginationSchema } from './commonSchemas.js';
+import { RATING, REVIEW_SORT_OPTIONS } from '../constants.js';
 
 export const reviewSchema = customJoi.object({
   rating: Joi.number()
@@ -32,6 +32,23 @@ export const reviewSchema = customJoi.object({
     'string.empty': 'Review body cannot be empty',
     'string.max': 'Review body cannot exceed 800 characters',
   }),
+});
+
+export const reviewQuerySchema = Joi.object({
+  sort: Joi.string()
+    .trim()
+    .lowercase()
+    .empty('')
+    .default(REVIEW_SORT_OPTIONS.TOP_REVIEWS)
+    .custom(validateOption(REVIEW_SORT_OPTIONS))
+    .messages({
+      'string.base': 'Sort option must be a string',
+      'any.invalid': `Provided an invalid sort value. Valid options are: ${formatOptions(
+        REVIEW_SORT_OPTIONS
+      )}`,
+    }),
+
+  page: paginationSchema,
 });
 
 export const reviewIdSchema = Joi.object({

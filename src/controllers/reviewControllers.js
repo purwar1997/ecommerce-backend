@@ -4,10 +4,12 @@ import Order from '../models/order.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import { sendResponse } from '../utils/helpers.js';
-import { ORDER_STATUS } from '../constants.js';
+import { reviewSortRules } from '../utils/sortRules.js';
+import { PAGINATION, ORDER_STATUS } from '../constants.js';
 
 export const getProductReviews = handleAsync(async (req, res) => {
   const { productId } = req.params;
+  const { sort, page } = req.query;
 
   const product = await Product.findById(productId);
 
@@ -15,7 +17,14 @@ export const getProductReviews = handleAsync(async (req, res) => {
     throw new CustomError('Product not found', 404);
   }
 
-  const reviews = await Review.find({ product: productId });
+  const sortRule = reviewSortRules[sort];
+  const offset = (page - 1) * PAGINATION.REVIEWS_PER_PAGE;
+  const limit = PAGINATION.REVIEWS_PER_PAGE;
+
+  const reviews = await Review.find({ product: productId })
+    .sort(sortRule)
+    .skip(offset)
+    .limit(limit);
 
   sendResponse(res, 200, 'Reviews fetched successfully', reviews);
 });

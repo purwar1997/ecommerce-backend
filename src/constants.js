@@ -55,6 +55,7 @@ export const PAGINATION = Object.freeze({
   ORDERS_PER_PAGE: 5,
   USERS_PER_PAGE: 5,
   COUPONS_PER_PAGE: 5,
+  REVIEWS_PER_PAGE: 5,
 });
 
 export const PRICE = Object.freeze({
@@ -114,4 +115,9 @@ export const PRODUCT_SORT_OPTIONS = Object.freeze({
 export const COUPON_SORT_OPTIONS = Object.freeze({
   EXPIRY_ASC: 'expiry_asc',
   EXPIRY_DESC: 'expiry_desc',
+});
+
+export const REVIEW_SORT_OPTIONS = Object.freeze({
+  TOP_REVIEWS: 'top',
+  MOST_RECENT: 'recent',
 });
