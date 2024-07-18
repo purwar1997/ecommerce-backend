@@ -36,3 +36,19 @@ export const addItemToWishlist = handleAsync(async (req, res) => {
 
   sendResponse(res, 200, 'Item added to wishlist successfully', product);
 });
+
+export const removeItemFromWishlist = handleAsync(async (req, res) => {
+  const { productId } = req.body;
+  const { user } = req;
+
+  const productExistsInWishlist = user.wishlist.includes(productId);
+
+  if (!productExistsInWishlist) {
+    throw new CustomError('Item not found in wishlist', 409);
+  }
+
+  user.wishlist = user.wishlist.filter(item => item !== productId);
+  await user.save();
+
+  sendResponse(res, 200, 'Item removed from wishlist successfully', productId);
+});
