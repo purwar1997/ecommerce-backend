@@ -14,13 +14,13 @@ export const getProducts = handleAsync(async (req, res) => {
 
   const filters = {};
 
-  if (categories.length > 0) {
+  if (categories && categories.length > 0) {
     const categoryList = await Category.find({ title: { $in: categories } });
     const categoryIDs = categoryList.map(category => category._id);
     filters.category = { $in: categoryIDs };
   }
 
-  if (brands.length > 0) {
+  if (brands && brands.length > 0) {
     const brandList = await Brand.find({ name: { $in: brands } });
     const brandIDs = brandList.map(brand => brand._id);
     filters.brand = { $in: brandIDs };
@@ -65,13 +65,13 @@ export const adminGetProducts = handleAsync(async (req, res) => {
 
   const filters = {};
 
-  if (categories.length > 0) {
+  if (categories && categories.length > 0) {
     const categoryList = await Category.find({ title: { $in: categories } });
     const categoryIDs = categoryList.map(category => category._id);
     filters.category = { $in: categoryIDs };
   }
 
-  if (brands.length > 0) {
+  if (brands && brands.length > 0) {
     const brandList = await Brand.find({ name: { $in: brands } });
     const brandIDs = brandList.map(brand => brand._id);
     filters.brand = { $in: brandIDs };
