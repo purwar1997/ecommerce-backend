@@ -53,7 +53,7 @@ router
 
 router
   .route('/admin/coupons/:couponId/state')
-  .patch(
+  .put(
     isAuthenticated,
     authorizeRole(ROLES.ADMIN),
     validatePathParams(couponIdSchema),
