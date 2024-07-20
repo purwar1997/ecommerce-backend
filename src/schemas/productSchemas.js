@@ -7,7 +7,6 @@ import {
   parseCommaSeparatedStrings,
   validateOption,
   formatOptions,
-  validateBoolean,
 } from '../utils/helpers.js';
 import { paginationSchema, getPathIDSchema } from './commonSchemas.js';
 import {
@@ -16,9 +15,10 @@ import {
   RATING,
   PRODUCT_SORT_OPTIONS,
   ADMIN_PRODUCT_SORT_OPTIONS,
+  FILTER_OPTIONS,
 } from '../constants.js';
 
-const categoryListSchema = Joi.string()
+const categoriesSchema = Joi.string()
   .trim()
   .empty('')
   .default([])
@@ -27,7 +27,7 @@ const categoryListSchema = Joi.string()
     'string.base': 'Categories must be a string',
   });
 
-const brandListSchema = Joi.string()
+const brandsSchema = Joi.string()
   .trim()
   .empty('')
   .default([])
@@ -107,8 +107,8 @@ export const productSchema = customJoi.object({
 });
 
 export const productQuerySchema = Joi.object({
-  categories: categoryListSchema,
-  brands: brandListSchema,
+  categories: categoriesSchema,
+  brands: brandsSchema,
   rating: ratingSchema,
 
   sort: Joi.string()
@@ -128,17 +128,33 @@ export const productQuerySchema = Joi.object({
 });
 
 export const adminProductQuerySchema = Joi.object({
-  categories: categoryListSchema,
-  brands: brandListSchema,
+  categories: categoriesSchema,
+  brands: brandsSchema,
   rating: ratingSchema,
 
-  availability: Joi.string().allow('').custom(validateBoolean).messages({
-    'any.invalid': 'Availability must be a boolean value',
-  }),
+  availability: Joi.string()
+    .trim()
+    .lowercase()
+    .allow('')
+    .custom(validateOption(FILTER_OPTIONS))
+    .messages({
+      'string.base': 'Availability must be a string',
+      'any.invalid': `Provided an invalid value for availability. Valid options are: ${formatOptions(
+        FILTER_OPTIONS
+      )}`,
+    }),
 
-  deleted: Joi.string().allow('').custom(validateBoolean).messages({
-    'any.invalid': 'Deleted must be a boolean value',
-  }),
+  deleted: Joi.string()
+    .trim()
+    .lowercase()
+    .allow('')
+    .custom(validateOption(FILTER_OPTIONS))
+    .messages({
+      'string.base': 'Deleted must be a string',
+      'any.invalid': `Provided an invalid value for deleted. Valid options are: ${formatOptions(
+        FILTER_OPTIONS
+      )}`,
+    }),
 
   sort: Joi.string()
     .trim()

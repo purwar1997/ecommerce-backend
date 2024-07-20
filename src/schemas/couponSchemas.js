@@ -7,9 +7,9 @@ import {
   DISCOUNT_TYPES,
   DISCOUNT,
   COUPON_STATES,
-  COUPON_STATUS,
   COUPON_SORT_OPTIONS,
-  COUPON_EXPIRY_WITHIN,
+  COUPON_EXPIRY_LIMIT,
+  FILTER_OPTIONS,
 } from '../constants.js';
 
 export const couponSchema = customJoi.object({
@@ -102,18 +102,18 @@ export const couponCodeSchema = Joi.object({
 });
 
 export const couponQuerySchema = Joi.object({
-  expiryWithin: Joi.number()
+  expiryLimit: Joi.number()
     .integer()
-    .min(COUPON_EXPIRY_WITHIN.MIN)
-    .max(COUPON_EXPIRY_WITHIN.MAX)
+    .min(COUPON_EXPIRY_LIMIT.MIN)
+    .max(COUPON_EXPIRY_LIMIT.MAX)
     .empty('')
-    .default(COUPON_EXPIRY_WITHIN.DEFAULT)
+    .default(COUPON_EXPIRY_LIMIT.DEFAULT)
     .unsafe()
     .messages({
-      'number.base': 'Expiry within must be a number',
-      'number.integer': 'Expiry within must be an integer',
-      'number.min': `Expiry within must be at least ${COUPON_EXPIRY_WITHIN.MIN}`,
-      'number.max': `Expiry within must be less than or equal to ${COUPON_EXPIRY_WITHIN.MAX}`,
+      'number.base': 'Expiry limit must be a number',
+      'number.integer': 'Expiry limit must be an integer',
+      'number.min': `Expiry limit must be at least ${COUPON_EXPIRY_LIMIT.MIN}`,
+      'number.max': `Expiry limit must be less than or equal to ${COUPON_EXPIRY_LIMIT.MAX}`,
     }),
 
   discountType: Joi.string()
@@ -128,15 +128,15 @@ export const couponQuerySchema = Joi.object({
       )}`,
     }),
 
-  status: Joi.string()
+  active: Joi.string()
     .trim()
-    .empty('')
-    .default([])
-    .custom(validateCommaSeparatedValues(COUPON_STATUS))
+    .lowercase()
+    .allow('')
+    .custom(validateOption(FILTER_OPTIONS))
     .messages({
-      'string.base': 'Coupon status must be a string',
-      'any.invalid': `Provided an invalid coupon status. Valid options are: ${formatOptions(
-        COUPON_STATUS
+      'string.base': 'Active must be a string',
+      'any.invalid': `Provided an invalid value for active. Valid options are: ${formatOptions(
+        FILTER_OPTIONS
       )}`,
     }),
 

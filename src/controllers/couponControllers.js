@@ -1,9 +1,9 @@
 import Coupon from '../models/coupon.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
-import { sendResponse } from '../utils/helpers.js';
+import { checkBoolean, sendResponse } from '../utils/helpers.js';
 import { couponSortRules } from '../utils/sortRules.js';
-import { PAGINATION, DISCOUNT_TYPES, COUPON_STATES, COUPON_STATUS } from '../constants.js';
+import { PAGINATION, DISCOUNT_TYPES, COUPON_STATES, FILTER_OPTIONS } from '../constants.js';
 
 export const getValidCoupons = handleAsync(async (_req, res) => {
   const coupons = await Coupon.find({
@@ -31,20 +31,19 @@ export const checkCouponValidity = handleAsync(async (req, res) => {
 });
 
 export const getCoupons = handleAsync(async (req, res) => {
-  const { expiryWithin, discountType, status, sort, page } = req.query;
+  const { expiryLimit, discountType, active, sort, page } = req.query;
   const filters = {};
 
   filters.expiryDate = {
-    $gt: new Date(),
-    $lt: new Date(Date.now() + expiryWithin * 24 * 60 * 60 * 1000),
+    $lt: new Date(Date.now() + expiryLimit * 24 * 60 * 60 * 1000),
   };
 
   if (discountType.length > 0) {
     filters.discountType = { $in: discountType };
   }
 
-  if (status.length === 1) {
-    filters.isActive = status[0] === COUPON_STATUS.ACTIVE;
+  if (checkBoolean(active)) {
+    filters.isActive = active === FILTER_OPTIONS.TRUE;
   }
 
   const sortRule = sort ? couponSortRules[sort] : { createdAt: -1 };

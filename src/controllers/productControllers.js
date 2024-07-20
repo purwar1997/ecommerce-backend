@@ -4,23 +4,23 @@ import Category from '../models/category.js';
 import Brand from '../models/brand.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
-import { sendResponse } from '../utils/helpers.js';
+import { sendResponse, checkBoolean } from '../utils/helpers.js';
 import { productSortRules, adminProductSortRules } from '../utils/sortRules.js';
 import { deleteImage, uploadImage } from '../services/cloudinaryAPIs.js';
-import { PAGINATION, UPLOAD_FOLDERS } from '../constants.js';
+import { PAGINATION, UPLOAD_FOLDERS, FILTER_OPTIONS } from '../constants.js';
 
 export const getProducts = handleAsync(async (req, res) => {
   const { categories, brands, rating, sort, page } = req.query;
 
   const filters = {};
 
-  if (categories && categories.length > 0) {
+  if (categories.length > 0) {
     const categoryList = await Category.find({ title: { $in: categories } });
     const categoryIDs = categoryList.map(category => category._id);
     filters.category = { $in: categoryIDs };
   }
 
-  if (brands && brands.length > 0) {
+  if (brands.length > 0) {
     const brandList = await Brand.find({ name: { $in: brands } });
     const brandIDs = brandList.map(brand => brand._id);
     filters.brand = { $in: brandIDs };
@@ -65,13 +65,13 @@ export const adminGetProducts = handleAsync(async (req, res) => {
 
   const filters = {};
 
-  if (categories && categories.length > 0) {
+  if (categories.length > 0) {
     const categoryList = await Category.find({ title: { $in: categories } });
     const categoryIDs = categoryList.map(category => category._id);
     filters.category = { $in: categoryIDs };
   }
 
-  if (brands && brands.length > 0) {
+  if (brands.length > 0) {
     const brandList = await Brand.find({ name: { $in: brands } });
     const brandIDs = brandList.map(brand => brand._id);
     filters.brand = { $in: brandIDs };
@@ -81,12 +81,12 @@ export const adminGetProducts = handleAsync(async (req, res) => {
     filters.avgRating = { $gte: rating };
   }
 
-  if (typeof availability === 'boolean') {
-    filters.stock = availability ? { $gt: 0 } : 0;
+  if (checkBoolean(availability)) {
+    filters.stock = availability === FILTER_OPTIONS.TRUE ? { $gt: 0 } : 0;
   }
 
-  if (typeof deleted === 'boolean') {
-    filters.isDeleted = deleted;
+  if (checkBoolean(deleted)) {
+    filters.isDeleted = deleted === FILTER_OPTIONS.TRUE;
   }
 
   const sortRule = adminProductSortRules[sort];

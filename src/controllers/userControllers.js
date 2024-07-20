@@ -97,7 +97,7 @@ export const getUsers = handleAsync(async (req, res) => {
   const { roles, sort, page } = req.query;
   const filters = {};
 
-  if (roles && roles.length > 0) {
+  if (roles.length > 0) {
     filters.role = { $in: roles };
   }
 

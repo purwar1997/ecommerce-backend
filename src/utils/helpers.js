@@ -114,6 +114,11 @@ export const parseDate = currentDate => {
   return `${year}/${month}/${date}`;
 };
 
+export const checkBoolean = str => {
+  str = str.trim().toLowerCase();
+  return str === 'true' || str === 'false';
+};
+
 // Custom joi sanitizers
 
 export const stripCouponDiscount = coupon => {
@@ -206,27 +211,6 @@ export const validatePathId = (value, helpers) => {
   return value;
 };
 
-export const validateBoolean = (value, helpers) => {
-  if (typeof value === 'string') {
-    value = value.trim().toLowerCase();
-  }
-
-  if (value === '') {
-    return '';
-  }
-
-  const truthyValues = ['true', 'yes', '1'];
-  const falsyValues = ['false', 'no', '0'];
-
-  if (truthyValues.includes(value)) {
-    return true;
-  } else if (falsyValues.includes(value)) {
-    return false;
-  } else {
-    return helpers.error('any.invalid', { value });
-  }
-};
-
 export const validateCommaSeparatedValues = options => (value, helpers) => {
   if (!value) {
     return helpers.error('string.empty', { value });
@@ -237,7 +221,7 @@ export const validateCommaSeparatedValues = options => (value, helpers) => {
 
   for (const value of valuesArray) {
     if (!options.includes(value)) {
-      return helpers.error('any.invalid', { valuesArray });
+      return helpers.error('any.invalid', { value });
     }
   }
 
