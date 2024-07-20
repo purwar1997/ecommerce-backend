@@ -3,7 +3,7 @@ import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import { sendResponse } from '../utils/helpers.js';
 import { couponSortRules } from '../utils/sortRules.js';
-import { PAGINATION, DISCOUNT_TYPES, COUPON_STATES } from '../constants.js';
+import { PAGINATION, DISCOUNT_TYPES, COUPON_STATES, COUPON_STATUS } from '../constants.js';
 
 export const getValidCoupons = handleAsync(async (_req, res) => {
   const coupons = await Coupon.find({
@@ -31,14 +31,28 @@ export const checkCouponValidity = handleAsync(async (req, res) => {
 });
 
 export const getCoupons = handleAsync(async (req, res) => {
-  const { sort, page } = req.query;
+  const { expiryWithin, discountType, status, sort, page } = req.query;
+  const filters = {};
 
-  const sortRule = couponSortRules[sort];
+  filters.expiryDate = {
+    $gt: new Date(),
+    $lt: new Date(Date.now() + expiryWithin * 24 * 60 * 60 * 1000),
+  };
+
+  if (discountType.length > 0) {
+    filters.discountType = { $in: discountType };
+  }
+
+  if (status.length === 1) {
+    filters.isActive = status[0] === COUPON_STATUS.ACTIVE;
+  }
+
+  const sortRule = sort ? couponSortRules[sort] : { createdAt: -1 };
   const offset = (page - 1) * PAGINATION.COUPONS_PER_PAGE;
   const limit = PAGINATION.COUPONS_PER_PAGE;
 
-  const coupons = await Coupon.find().sort(sortRule).skip(offset).limit(limit);
-  const couponCount = await Coupon.countDocuments();
+  const coupons = await Coupon.find(filters).sort(sortRule).skip(offset).limit(limit);
+  const couponCount = await Coupon.countDocuments(filters);
 
   res.set('X-Total-Count', couponCount);
 

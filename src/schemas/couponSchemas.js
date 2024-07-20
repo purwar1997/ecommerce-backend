@@ -1,9 +1,16 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { couponCodeRegex } from '../utils/regex.js';
-import { formatOptions, validateOption } from '../utils/helpers.js';
+import { formatOptions, validateCommaSeparatedValues, validateOption } from '../utils/helpers.js';
 import { paginationSchema, getPathIDSchema } from './commonSchemas.js';
-import { DISCOUNT_TYPES, DISCOUNT, COUPON_STATES, COUPON_SORT_OPTIONS } from '../constants.js';
+import {
+  DISCOUNT_TYPES,
+  DISCOUNT,
+  COUPON_STATES,
+  COUPON_STATUS,
+  COUPON_SORT_OPTIONS,
+  COUPON_EXPIRY_WITHIN,
+} from '../constants.js';
 
 export const couponSchema = customJoi.object({
   code: Joi.string().trim().uppercase().pattern(couponCodeRegex).required().messages({
@@ -95,11 +102,48 @@ export const couponCodeSchema = Joi.object({
 });
 
 export const couponQuerySchema = Joi.object({
+  expiryWithin: Joi.number()
+    .integer()
+    .min(COUPON_EXPIRY_WITHIN.MIN)
+    .max(COUPON_EXPIRY_WITHIN.MAX)
+    .empty('')
+    .default(COUPON_EXPIRY_WITHIN.DEFAULT)
+    .unsafe()
+    .messages({
+      'number.base': 'Expiry within must be a number',
+      'number.integer': 'Expiry within must be an integer',
+      'number.min': `Expiry within must be at least ${COUPON_EXPIRY_WITHIN.MIN}`,
+      'number.max': `Expiry within must be less than or equal to ${COUPON_EXPIRY_WITHIN.MAX}`,
+    }),
+
+  discountType: Joi.string()
+    .trim()
+    .empty('')
+    .default([])
+    .custom(validateCommaSeparatedValues(DISCOUNT_TYPES))
+    .messages({
+      'string.base': 'Discount type must be a string',
+      'any.invalid': `Provided an invalid discount type. Valid options are: ${formatOptions(
+        DISCOUNT_TYPES
+      )}`,
+    }),
+
+  status: Joi.string()
+    .trim()
+    .empty('')
+    .default([])
+    .custom(validateCommaSeparatedValues(COUPON_STATUS))
+    .messages({
+      'string.base': 'Coupon status must be a string',
+      'any.invalid': `Provided an invalid coupon status. Valid options are: ${formatOptions(
+        COUPON_STATUS
+      )}`,
+    }),
+
   sort: Joi.string()
     .trim()
     .lowercase()
-    .empty('')
-    .default(COUPON_SORT_OPTIONS.EXPIRY_DESC)
+    .allow('')
     .custom(validateOption(COUPON_SORT_OPTIONS))
     .messages({
       'string.base': 'Sort option must be a string',

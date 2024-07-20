@@ -36,6 +36,11 @@ export const COUPON_STATES = Object.freeze({
   DEACTIVATE: 'deactivate',
 });
 
+export const COUPON_STATUS = Object.freeze({
+  ACTIVE: 'active',
+  INACTIVE: 'inactive',
+});
+
 export const UPLOAD_FOLDERS = Object.freeze({
   USER_AVATARS: 'user_avatars',
   CATEGORY_IMAGES: 'category_images',
@@ -134,4 +139,10 @@ export const REVIEW_SORT_OPTIONS = Object.freeze({
 export const USER_SORT_OPTIONS = Object.freeze({
   NAME_ASC: 'name_asc',
   NAME_DESC: 'name_desc',
+});
+
+export const COUPON_EXPIRY_WITHIN = Object.freeze({
+  MIN: 1,
+  MAX: Number.MAX_SAFE_INTEGER,
+  DEFAULT: 15,
 });
