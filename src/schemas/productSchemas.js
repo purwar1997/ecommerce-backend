@@ -7,6 +7,7 @@ import {
   parseCommaSeparatedStrings,
   validateOption,
   formatOptions,
+  validateBoolean,
 } from '../utils/helpers.js';
 import { paginationSchema, getPathIDSchema } from './commonSchemas.js';
 import {
@@ -130,6 +131,14 @@ export const adminProductQuerySchema = Joi.object({
   categories: categoryListSchema,
   brands: brandListSchema,
   rating: ratingSchema,
+
+  availability: Joi.string().allow('').custom(validateBoolean).messages({
+    'any.invalid': 'Availability must be a boolean value',
+  }),
+
+  deleted: Joi.string().allow('').custom(validateBoolean).messages({
+    'any.invalid': 'Deleted must be a boolean value',
+  }),
 
   sort: Joi.string()
     .trim()

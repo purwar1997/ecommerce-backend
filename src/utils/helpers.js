@@ -205,3 +205,24 @@ export const validatePathId = (value, helpers) => {
 
   return value;
 };
+
+export const validateBoolean = (value, helpers) => {
+  if (typeof value === 'string') {
+    value = value.trim().toLowerCase();
+  }
+
+  if (value === '') {
+    return '';
+  }
+
+  const truthyValues = ['true', 'yes', '1'];
+  const falsyValues = ['false', 'no', '0'];
+
+  if (truthyValues.includes(value)) {
+    return true;
+  } else if (falsyValues.includes(value)) {
+    return false;
+  } else {
+    return helpers.error('any.invalid', { value });
+  }
+};

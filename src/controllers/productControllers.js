@@ -61,7 +61,7 @@ export const getProductById = handleAsync(async (req, res) => {
 });
 
 export const adminGetProducts = handleAsync(async (req, res) => {
-  const { categories, brands, rating, sort, page } = req.query;
+  const { categories, brands, rating, availability, deleted, sort, page } = req.query;
 
   const filters = {};
 
@@ -79,6 +79,14 @@ export const adminGetProducts = handleAsync(async (req, res) => {
 
   if (rating) {
     filters.avgRating = { $gte: rating };
+  }
+
+  if (typeof availability === 'boolean') {
+    filters.stock = availability ? { $gt: 0 } : 0;
+  }
+
+  if (typeof deleted === 'boolean') {
+    filters.isDeleted = deleted;
   }
 
   const sortRule = adminProductSortRules[sort];
