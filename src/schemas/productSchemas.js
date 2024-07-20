@@ -9,7 +9,44 @@ import {
   formatOptions,
 } from '../utils/helpers.js';
 import { paginationSchema, getPathIDSchema } from './commonSchemas.js';
-import { PRICE, STOCK, RATING, PRODUCT_SORT_OPTIONS } from '../constants.js';
+import {
+  PRICE,
+  STOCK,
+  RATING,
+  PRODUCT_SORT_OPTIONS,
+  ADMIN_PRODUCT_SORT_OPTIONS,
+} from '../constants.js';
+
+const categoryListSchema = Joi.string()
+  .trim()
+  .empty('')
+  .default([])
+  .custom(parseCommaSeparatedStrings)
+  .messages({
+    'string.base': 'Categories must be a string',
+  });
+
+const brandListSchema = Joi.string()
+  .trim()
+  .empty('')
+  .default([])
+  .custom(parseCommaSeparatedStrings)
+  .messages({
+    'string.base': 'Brands must be a string',
+  });
+
+const ratingSchema = Joi.number()
+  .integer()
+  .min(RATING.MIN)
+  .max(RATING.MAX)
+  .empty('')
+  .unsafe()
+  .messages({
+    'number.base': 'Rating must be a number',
+    'number.integer': 'Rating must be an integer',
+    'number.min': `Rating must be at least ${RATING.MIN}`,
+    'number.max': `Rating must be at most ${RATING.MAX}`,
+  });
 
 export const productSchema = customJoi.object({
   title: Joi.string().trim().max(100).required().custom(removeExtraInnerSpaces).messages({
@@ -69,31 +106,9 @@ export const productSchema = customJoi.object({
 });
 
 export const productQuerySchema = Joi.object({
-  categories: Joi.string()
-    .trim()
-    .empty('')
-    .default([])
-    .custom(parseCommaSeparatedStrings)
-    .messages({
-      'string.base': 'Categories must be a string',
-    }),
-
-  brands: Joi.string().trim().empty('').default([]).custom(parseCommaSeparatedStrings).messages({
-    'string.base': 'Brands must be a string',
-  }),
-
-  rating: Joi.number()
-    .integer()
-    .min(RATING.MIN)
-    .max(RATING.MAX)
-    .empty('')
-    .unsafe()
-    .messages({
-      'number.base': 'Rating must be a number',
-      'number.integer': 'Rating must be an integer',
-      'number.min': `Rating must be at least ${RATING.MIN}`,
-      'number.max': `Rating must be at most ${RATING.MAX}`,
-    }),
+  categories: categoryListSchema,
+  brands: brandListSchema,
+  rating: ratingSchema,
 
   sort: Joi.string()
     .trim()
@@ -105,6 +120,27 @@ export const productQuerySchema = Joi.object({
       'string.base': 'Sort option must be a string',
       'any.invalid': `Provided an invalid sort value. Valid options are: ${formatOptions(
         PRODUCT_SORT_OPTIONS
+      )}`,
+    }),
+
+  page: paginationSchema,
+});
+
+export const adminProductQuerySchema = Joi.object({
+  categories: categoryListSchema,
+  brands: brandListSchema,
+  rating: ratingSchema,
+
+  sort: Joi.string()
+    .trim()
+    .lowercase()
+    .empty('')
+    .default(ADMIN_PRODUCT_SORT_OPTIONS.NEWLY_ADDED)
+    .custom(validateOption(ADMIN_PRODUCT_SORT_OPTIONS))
+    .messages({
+      'string.base': 'Sort option must be a string',
+      'any.invalid': `Provided an invalid sort value. Valid options are: ${formatOptions(
+        ADMIN_PRODUCT_SORT_OPTIONS
       )}`,
     }),
 

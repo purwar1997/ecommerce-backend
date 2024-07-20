@@ -106,10 +106,19 @@ export const SAFE_INTEGER = Object.freeze({
 
 export const PRODUCT_SORT_OPTIONS = Object.freeze({
   RECOMMENDED: 'recommended',
-  RATING: 'rating',
+  NEWLY_ADDED: 'new',
+  CUSTOMER_RATING: 'rating',
   PRICE_LOW_TO_HIGH: 'price_asc',
   PRICE_HIGH_TO_LOW: 'price_desc',
+});
+
+export const ADMIN_PRODUCT_SORT_OPTIONS = Object.freeze({
   NEWLY_ADDED: 'new',
+  CUSTOMER_RATING: 'rating',
+  PRICE_LOW_TO_HIGH: 'price_asc',
+  PRICE_HIGH_TO_LOW: 'price_desc',
+  STOCK_LOW_TO_HIGH: 'stock_asc',
+  STOCK_HIGH_TO_LOW: 'stock_desc',
 });
 
 export const COUPON_SORT_OPTIONS = Object.freeze({

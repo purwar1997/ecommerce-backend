@@ -9,7 +9,12 @@ import {
   deleteProduct,
   restoreDeletedProduct,
 } from '../controllers/productControllers.js';
-import { productSchema, productIdSchema, productQuerySchema } from '../schemas/productSchemas.js';
+import {
+  productSchema,
+  productIdSchema,
+  productQuerySchema,
+  adminProductQuerySchema,
+} from '../schemas/productSchemas.js';
 import { isHttpMethodAllowed } from '../middlewares/isHttpMethodAllowed.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
 import { parseFormData } from '../middlewares/parseFormData.js';
@@ -28,7 +33,7 @@ router.route('/products/:productId').get(validatePathParams(productIdSchema), ge
 router
   .route('/admin/products')
   .all(isHttpMethodAllowed, isAuthenticated, authorizeRole(ROLES.ADMIN))
-  .get(validateQueryParams(productQuerySchema), adminGetProducts)
+  .get(validateQueryParams(adminProductQuerySchema), adminGetProducts)
   .post(
     parseFormData(UPLOAD_FOLDERS.PRODUCT_IMAGES, UPLOAD_FILES.PRODUCT_IMAGE),
     validatePayload(productSchema),

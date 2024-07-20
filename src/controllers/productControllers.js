@@ -5,7 +5,7 @@ import Brand from '../models/brand.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import { sendResponse } from '../utils/helpers.js';
-import { productSortRules } from '../utils/sortRules.js';
+import { productSortRules, adminProductSortRules } from '../utils/sortRules.js';
 import { deleteImage, uploadImage } from '../services/cloudinaryAPIs.js';
 import { PAGINATION, UPLOAD_FOLDERS } from '../constants.js';
 
@@ -81,7 +81,7 @@ export const adminGetProducts = handleAsync(async (req, res) => {
     filters.avgRating = { $gte: rating };
   }
 
-  const sortRule = productSortRules[sort];
+  const sortRule = adminProductSortRules[sort];
   const offset = (page - 1) * PAGINATION.PRODUCTS_PER_PAGE;
   const limit = PAGINATION.PRODUCTS_PER_PAGE;
 
