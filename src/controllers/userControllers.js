@@ -4,6 +4,7 @@ import CustomError from '../utils/customError.js';
 import { sendResponse } from '../utils/helpers.js';
 import { clearCookieOptions } from '../utils/cookieOptions.js';
 import { uploadImage, deleteImage } from '../services/cloudinaryAPIs.js';
+import { userSortRules } from '../utils/sortRules.js';
 import { UPLOAD_FOLDERS, PAGINATION } from '../constants.js';
 
 export const getProfile = handleAsync(async (req, res) => {
@@ -93,14 +94,23 @@ export const removeProfilePhoto = handleAsync(async (req, res) => {
 });
 
 export const getUsers = handleAsync(async (req, res) => {
-  const { page } = req.query;
+  const { roles, sort, page } = req.query;
+  const filters = {};
 
-  const sortRule = { createdAt: -1 };
+  if (roles && roles.length > 0) {
+    filters.role = { $in: roles };
+  }
+
+  const sortRule = sort ? userSortRules[sort] : { createdAt: -1 };
   const offset = (page - 1) * PAGINATION.USERS_PER_PAGE;
   const limit = PAGINATION.USERS_PER_PAGE;
 
-  const users = await User.find({ isDeleted: false }).sort(sortRule).skip(offset).limit(limit);
-  const userCount = await User.countDocuments({ isDeleted: false });
+  const users = await User.find({ ...filters, isDeleted: false })
+    .sort(sortRule)
+    .skip(offset)
+    .limit(limit);
+
+  const userCount = await User.countDocuments({ ...filters, isDeleted: false });
 
   res.set('X-Total-Count', userCount);
 

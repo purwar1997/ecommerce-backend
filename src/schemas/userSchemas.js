@@ -1,9 +1,9 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { nameRegex, phoneRegex, passwordRegex } from '../utils/regex.js';
-import { formatOptions, validateOption } from '../utils/helpers.js';
+import { formatOptions, validateOption, validateCommaSeparatedValues } from '../utils/helpers.js';
 import { getPathIDSchema, paginationSchema } from './commonSchemas.js';
-import { ROLES } from '../constants.js';
+import { ROLES, USER_SORT_OPTIONS } from '../constants.js';
 
 export const updateUserSchema = customJoi
   .object({
@@ -58,6 +58,28 @@ export const updateRoleSchema = customJoi.object({
 });
 
 export const userQuerySchema = Joi.object({
+  roles: Joi.string()
+    .trim()
+    .empty('')
+    .default([])
+    .custom(validateCommaSeparatedValues(ROLES))
+    .messages({
+      'string.base': 'Roles must be a string',
+      'any.invalid': `Provided an invalid role. Valid options are: ${formatOptions(ROLES)}`,
+    }),
+
+  sort: Joi.string()
+    .trim()
+    .lowercase()
+    .allow('')
+    .custom(validateOption(USER_SORT_OPTIONS))
+    .messages({
+      'string.base': 'Sort option must be a string',
+      'any.invalid': `Provided an invalid sort value. Valid options are: ${formatOptions(
+        USER_SORT_OPTIONS
+      )}`,
+    }),
+
   page: paginationSchema,
 });
 

@@ -130,3 +130,8 @@ export const REVIEW_SORT_OPTIONS = Object.freeze({
   TOP_REVIEWS: 'top',
   MOST_RECENT: 'recent',
 });
+
+export const USER_SORT_OPTIONS = Object.freeze({
+  NAME_ASC: 'name_asc',
+  NAME_DESC: 'name_desc',
+});

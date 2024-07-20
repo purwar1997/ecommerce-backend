@@ -226,3 +226,20 @@ export const validateBoolean = (value, helpers) => {
     return helpers.error('any.invalid', { value });
   }
 };
+
+export const validateCommaSeparatedValues = options => (value, helpers) => {
+  if (!value) {
+    return helpers.error('string.empty', { value });
+  }
+
+  const valuesArray = value.split(',').map(str => str.trim().toLowerCase());
+  options = Object.values(options);
+
+  for (const value of valuesArray) {
+    if (!options.includes(value)) {
+      return helpers.error('any.invalid', { valuesArray });
+    }
+  }
+
+  return valuesArray;
+};
