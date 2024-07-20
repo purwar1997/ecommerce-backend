@@ -5,15 +5,10 @@ export const expectedHttpActions = {
   '/admin/self': ['PUT', 'DELETE'],
   '/addresses': ['GET', 'POST'],
   '/addresses/:addressId': ['GET', 'PUT', 'DELETE'],
-
   '/admin/products': ['GET', 'POST'],
   '/admin/products/:productId': ['GET', 'POST', 'DELETE'],
-
   '/admin/coupons': ['GET', 'POST'],
   '/admin/coupons/:couponId': ['GET', 'PUT', 'DELETE'],
-
   '/orders': ['GET', 'POST'],
-
-  '/products/:productId/reviews': ['GET', 'POST'],
   '/reviews/:reviewId': ['GET', 'PUT'],
 };
