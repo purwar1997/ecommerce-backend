@@ -11,7 +11,7 @@ import { addressSchema, addressIdSchema } from '../schemas/addressSchemas.js';
 import { isHttpMethodAllowed } from '../middlewares/isHttpMethodAllowed.js';
 import { isAuthenticated } from '../middlewares/authMiddlewares.js';
 import { validatePayload, validatePathParams } from '../middlewares/requestValidators.js';
-import { isPhoneValid } from '../middlewares/verifyCredentials.js';
+import { verifyPhone } from '../middlewares/verifyCredentials.js';
 
 const router = express.Router();
 
@@ -19,13 +19,13 @@ router
   .route('/addresses')
   .all(isHttpMethodAllowed, isAuthenticated)
   .get(getAddresses)
-  .post(validatePayload(addressSchema), isPhoneValid, addNewAddress);
+  .post(validatePayload(addressSchema), verifyPhone, addNewAddress);
 
 router
   .route('/addresses/:addressId')
   .all(isHttpMethodAllowed, isAuthenticated, validatePathParams(addressIdSchema))
   .get(getAddressById)
-  .put(validatePayload(addressSchema), isPhoneValid, updateAddress)
+  .put(validatePayload(addressSchema), verifyPhone, updateAddress)
   .delete(deleteAddress);
 
 router

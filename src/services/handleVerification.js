@@ -2,7 +2,7 @@ import axios from 'axios';
 import config from '../config/config.js';
 import CustomError from '../utils/customError.js';
 
-export const verifyEmail = async email => {
+export const handleEmailVerification = async email => {
   try {
     const response = await axios.get(
       `https://emailvalidation.abstractapi.com/v1/?api_key=${config.verification.emailKey}&email=${email}`
@@ -13,9 +13,9 @@ export const verifyEmail = async email => {
     const result = { emailToVerify: email };
 
     if (is_valid_format.value && !is_disposable_email.value && deliverability === 'DELIVERABLE') {
-      result.emailVerified = true;
+      result.isEmailValid = true;
     } else {
-      result.emailVerified = false;
+      result.isEmailValid = false;
     }
 
     return result;
@@ -24,7 +24,7 @@ export const verifyEmail = async email => {
   }
 };
 
-export const verifyPhone = async phone => {
+export const handlePhoneVerification = async phone => {
   try {
     const response = await axios.get(
       `https://phonevalidation.abstractapi.com/v1/?api_key=${config.verification.phoneKey}&phone=${phone}&country=IN`
@@ -34,7 +34,7 @@ export const verifyPhone = async phone => {
 
     const result = {
       phoneToVerify: phone,
-      phoneVerified: valid,
+      isPhoneValid: valid,
     };
 
     return result;

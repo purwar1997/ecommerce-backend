@@ -14,11 +14,11 @@ import {
 } from '../schemas/authSchemas.js';
 import { isAuthenticated } from '../middlewares/authMiddlewares.js';
 import { validatePayload } from '../middlewares/requestValidators.js';
-import { isEmailValid, isPhoneValid } from '../middlewares/verifyCredentials.js';
+import { verifyEmail, verifyPhone } from '../middlewares/verifyCredentials.js';
 
 const router = express.Router();
 
-router.route('/signup').post(validatePayload(signupSchema), isEmailValid, isPhoneValid, signup);
+router.route('/signup').post(validatePayload(signupSchema), verifyEmail, verifyPhone, signup);
 router.route('/login').post(validatePayload(loginSchema), login);
 router.route('/logout').post(isAuthenticated, logout);
 router.route('/password/forgot').post(validatePayload(forgotPasswordSchema), forgotPassword);

@@ -27,7 +27,7 @@ import {
   validateQueryParams,
   validatePathParams,
 } from '../middlewares/requestValidators.js';
-import { isPhoneValid } from '../middlewares/verifyCredentials.js';
+import { verifyPhone } from '../middlewares/verifyCredentials.js';
 import { parseFormData } from '../middlewares/parseFormData.js';
 import { checkAdminSelfUpdate, checkAdminSelfDelete } from '../middlewares/checkAdmin.js';
 import { ROLES, UPLOAD_FOLDERS, UPLOAD_FILES } from '../constants.js';
@@ -38,7 +38,7 @@ router
   .route('/users/self')
   .all(isHttpMethodAllowed, isAuthenticated)
   .get(getProfile)
-  .put(validatePayload(updateUserSchema), isPhoneValid, updateProfile)
+  .put(validatePayload(updateUserSchema), verifyPhone, updateProfile)
   .delete(deleteAccount);
 
 router
