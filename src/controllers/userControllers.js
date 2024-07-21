@@ -67,7 +67,9 @@ export const addProfilePhoto = handleAsync(async (req, res) => {
 export const updateProfilePhoto = handleAsync(async (req, res) => {
   const { user } = req;
 
-  await deleteImage(user.avatar.publicId);
+  if (user.avatar.publicId) {
+    await deleteImage(user.avatar.publicId);
+  }
 
   const response = await uploadImage(UPLOAD_FOLDERS.USER_AVATARS, req.file, user._id);
 
@@ -82,7 +84,9 @@ export const updateProfilePhoto = handleAsync(async (req, res) => {
 export const removeProfilePhoto = handleAsync(async (req, res) => {
   const { user } = req;
 
-  await deleteImage(user.avatar.publicId);
+  if (user.avatar.publicId) {
+    await deleteImage(user.avatar.publicId);
+  }
 
   const updatedUser = await User.findByIdAndUpdate(
     user._id,
