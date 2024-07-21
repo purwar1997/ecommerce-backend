@@ -1,6 +1,6 @@
 export const expectedHttpActions = {
   '/users/self': ['GET', 'PUT', 'DELETE'],
-  '/users/self/avatar': ['POST', 'DELETE'],
+  '/users/self/avatar': ['POST', 'PUT'],
   '/admin/users/:userId': ['GET', 'PUT', 'DELETE'],
   '/admin/self': ['PUT', 'DELETE'],
   '/addresses': ['GET', 'POST'],

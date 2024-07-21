@@ -45,7 +45,7 @@ router
   .route('/users/self/avatar')
   .all(isHttpMethodAllowed, isAuthenticated)
   .post(parseFormData(UPLOAD_FOLDERS.USER_AVATARS, UPLOAD_FILES.USER_AVATAR), addProfilePhoto)
-  .delete(removeProfilePhoto);
+  .put(removeProfilePhoto);
 
 router
   .route('/users/self/avatar/update')
