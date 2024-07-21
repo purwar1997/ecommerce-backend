@@ -9,7 +9,7 @@ import {
   COUPON_STATES,
   COUPON_SORT_OPTIONS,
   COUPON_EXPIRY_LIMIT,
-  FILTER_OPTIONS,
+  COUPON_STATUS,
 } from '../constants.js';
 
 export const couponSchema = customJoi.object({
@@ -94,7 +94,7 @@ export const couponStateSchema = customJoi.object({
 });
 
 export const couponCodeSchema = Joi.object({
-  code: Joi.string().trim().uppercase().required().messages({
+  couponCode: Joi.string().trim().uppercase().required().messages({
     'any.required': 'Coupon code is required',
     'string.base': 'Coupon code must be a string',
     'string.empty': 'Coupon code cannot be empty',
@@ -128,15 +128,15 @@ export const couponQuerySchema = Joi.object({
       )}`,
     }),
 
-  active: Joi.string()
+  status: Joi.string()
     .trim()
-    .lowercase()
-    .allow('')
-    .custom(validateOption(FILTER_OPTIONS))
+    .empty('')
+    .default([])
+    .custom(validateCommaSeparatedValues(COUPON_STATUS))
     .messages({
-      'string.base': 'Active must be a string',
-      'any.invalid': `Provided an invalid value for active. Valid options are: ${formatOptions(
-        FILTER_OPTIONS
+      'string.base': 'Coupon status must be a string',
+      'any.invalid': `Provided an invalid coupon status. Valid options are: ${formatOptions(
+        COUPON_STATUS
       )}`,
     }),
 

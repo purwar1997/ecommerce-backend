@@ -3,6 +3,7 @@ import Coupon from '../models/coupon.js';
 import Address from '../models/address.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
+import { COUPON_STATUS } from '../constants.js';
 
 export const validateProducts = handleAsync(async (req, _res, next) => {
   const { items } = req.body;
@@ -37,14 +38,18 @@ export const validateCoupon = handleAsync(async (req, _res, next) => {
   const { couponCode } = req.body;
 
   if (couponCode) {
-    const coupon = await Coupon.findOne({ code: couponCode, isActive: true });
+    const coupon = await Coupon.findOne({ code: couponCode });
 
     if (!coupon) {
       throw new CustomError('Coupon does not exist', 404);
     }
 
     if (coupon.expiryDate < new Date()) {
-      throw new CustomError('Coupon has been expired', 410);
+      throw new CustomError('Coupon has been expired', 400);
+    }
+
+    if (coupon.status === COUPON_STATUS.INACTIVE) {
+      throw new CustomError('Coupon is currently inactive', 403);
     }
 
     req.coupon = coupon;

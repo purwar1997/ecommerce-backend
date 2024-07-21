@@ -1,37 +1,41 @@
 import Coupon from '../models/coupon.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
-import { checkBoolean, sendResponse } from '../utils/helpers.js';
+import { sendResponse } from '../utils/helpers.js';
 import { couponSortRules } from '../utils/sortRules.js';
-import { PAGINATION, DISCOUNT_TYPES, COUPON_STATES, FILTER_OPTIONS } from '../constants.js';
+import { PAGINATION, DISCOUNT_TYPES, COUPON_STATUS, COUPON_STATES } from '../constants.js';
 
 export const getValidCoupons = handleAsync(async (_req, res) => {
   const coupons = await Coupon.find({
     expiryDate: { $gt: new Date() },
-    isActive: true,
+    status: COUPON_STATUS.ACTIVE,
   });
 
   sendResponse(res, 200, 'Valid coupons fetched successfully', coupons);
 });
 
 export const checkCouponValidity = handleAsync(async (req, res) => {
-  const { code } = req.query;
+  const { couponCode } = req.query;
 
-  const coupon = await Coupon.findOne({ code, isActive: true });
+  const coupon = await Coupon.findOne({ code: couponCode });
 
   if (!coupon) {
     throw new CustomError('Coupon does not exist', 404);
   }
 
   if (coupon.expiryDate < new Date()) {
-    throw new CustomError('Coupon has been expired', 410);
+    throw new CustomError('Coupon has been expired', 400);
+  }
+
+  if (coupon.status === COUPON_STATUS.INACTIVE) {
+    throw new CustomError('Coupon is currently inactive', 403);
   }
 
   sendResponse(res, 200, 'Provided coupon is valid', { valid: true, coupon });
 });
 
 export const getCoupons = handleAsync(async (req, res) => {
-  const { expiryLimit, discountType, active, sort, page } = req.query;
+  const { expiryLimit, discountType, status, sort, page } = req.query;
   const filters = {};
 
   filters.expiryDate = {
@@ -42,8 +46,8 @@ export const getCoupons = handleAsync(async (req, res) => {
     filters.discountType = { $in: discountType };
   }
 
-  if (checkBoolean(active)) {
-    filters.isActive = active === FILTER_OPTIONS.TRUE;
+  if (status.length > 0) {
+    filters.status = { $in: status };
   }
 
   const sortRule = sort ? couponSortRules[sort] : { createdAt: -1 };
@@ -110,10 +114,13 @@ export const updateCoupon = handleAsync(async (req, res) => {
     couponId,
     {
       ...req.body,
-      isActive: coupon.expiryDate < new Date() && expiryDate > new Date() ? true : coupon.isActive,
-      lastUpdatedBy: req.user._id,
       $unset:
         discountType === DISCOUNT_TYPES.FLAT ? { percentageDiscount: 1 } : { flatDiscount: 1 },
+      status:
+        coupon.expiryDate < new Date() && expiryDate > new Date()
+          ? COUPON_STATUS.ACTIVE
+          : coupon.status,
+      lastUpdatedBy: req.user._id,
     },
     { runValidators: true, new: true }
   );
@@ -143,14 +150,14 @@ export const changeCouponState = handleAsync(async (req, res) => {
     throw new CustomError('Coupon not found', 404);
   }
 
-  if (state === COUPON_STATES.ACTIVATE && coupon.expiryDate < new Date()) {
+  if (coupon.expiryDate < new Date()) {
     throw new CustomError(
-      'This coupon has expired. Please extend the expiry date to reactivate it',
-      409
+      `Expired coupon cannot be ${state === COUPON_STATES.ACTIVATE ? 'activated' : 'deactivated'}`,
+      403
     );
   }
 
-  coupon.isActive = state === COUPON_STATES.ACTIVATE;
+  coupon.status = state === COUPON_STATES.ACTIVATE ? COUPON_STATUS.ACTIVE : COUPON_STATUS.INACTIVE;
   coupon.activeStatusLastUpdatedBy = req.user._id;
 
   coupon = await coupon.save();

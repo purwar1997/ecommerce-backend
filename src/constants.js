@@ -31,9 +31,15 @@ export const DISCOUNT_TYPES = Object.freeze({
   FLAT: 'flat',
 });
 
+export const COUPON_STATUS = Object.freeze({
+  ACTIVE: 'active',
+  INACTIVE: 'inactive',
+  EXPIRED: 'expired',
+});
+
 export const COUPON_STATES = Object.freeze({
-  ACTIVATE: 'activate',
-  DEACTIVATE: 'deactivate',
+  ACTIVATE: 'activated',
+  DEACTIVATE: 'deactivated',
 });
 
 export const UPLOAD_FOLDERS = Object.freeze({

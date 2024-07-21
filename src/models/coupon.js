@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { couponCodeRegex } from '../utils/regex.js';
 import { formatOptions } from '../utils/helpers.js';
-import { DISCOUNT_TYPES, DISCOUNT } from '../constants.js';
+import { DISCOUNT_TYPES, DISCOUNT, COUPON_STATUS } from '../constants.js';
 
 const Schema = mongoose.Schema;
 
@@ -68,9 +68,13 @@ const couponSchema = new Schema(
         message: 'Expiry date must be in the future',
       },
     },
-    isActive: {
-      type: Boolean,
-      default: true,
+    status: {
+      type: String,
+      default: COUPON_STATUS.ACTIVE,
+      enum: {
+        values: Object.values(COUPON_STATUS),
+        messages: `Invalid coupon status. Valid options are: ${formatOptions(COUPON_STATUS)}`,
+      },
     },
     createdBy: {
       type: Schema.Types.ObjectId,
@@ -93,15 +97,5 @@ const couponSchema = new Schema(
     },
   }
 );
-
-couponSchema.pre('save', function (next) {
-  if (this.discountType === DISCOUNT_TYPES.FLAT) {
-    this.percentageDiscount = undefined;
-  } else {
-    this.flatDiscount = undefined;
-  }
-
-  next();
-});
 
 export default mongoose.model('Coupon', couponSchema);
