@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { nameRegex, phoneRegex, passwordRegex } from '../utils/regex.js';
+import { validateToken } from '../utils/helpers.js';
 
 const emailSchema = Joi.string()
   .trim()
@@ -14,7 +15,7 @@ const emailSchema = Joi.string()
     'string.email': 'Please provide a valid email address',
   });
 
-const newPasswordSchema = Joi.string().pattern(passwordRegex).required().messages({
+const passwordSchema = Joi.string().pattern(passwordRegex).required().messages({
   'any.required': 'Password is required',
   'string.base': 'Password must be string',
   'string.empty': 'Password cannot be empty',
@@ -51,7 +52,7 @@ export const signupSchema = customJoi.object({
     'string.pattern.base': 'Please provide a valid phone number',
   }),
 
-  password: newPasswordSchema,
+  password: passwordSchema,
   confirmPassword: confirmPasswordSchema,
 });
 
@@ -70,6 +71,13 @@ export const forgotPasswordSchema = customJoi.object({
 });
 
 export const resetPasswordSchema = customJoi.object({
-  password: newPasswordSchema,
+  password: passwordSchema,
   confirmPassword: confirmPasswordSchema,
+});
+
+export const resetPasswordTokenSchema = Joi.object({
+  token: Joi.string().trim().custom(validateToken).messages({
+    'string.base': 'Reset password token must be a string',
+    'string.empty': 'Reset password token is required',
+  }),
 });

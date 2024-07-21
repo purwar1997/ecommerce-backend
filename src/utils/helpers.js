@@ -227,3 +227,11 @@ export const validateCommaSeparatedValues = options => (value, helpers) => {
 
   return valuesArray;
 };
+
+export const validateToken = (value, helpers) => {
+  if (value === ':token') {
+    return helpers.error('string.empty', { value });
+  }
+
+  return value;
+};
