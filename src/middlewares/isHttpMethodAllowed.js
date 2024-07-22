@@ -3,10 +3,22 @@ import CustomError from '../utils/customError.js';
 import { expectedHttpActions } from '../utils/expectedHttpActions.js';
 
 export const isHttpMethodAllowed = handleAsync((req, res, next) => {
-  const allowedMethods = expectedHttpActions[req.path];
+  const params = Object.keys(req.params);
+  let requestedPath = req.path;
+
+  if (params.length > 0) {
+    for (const value of params) {
+      requestedPath = requestedPath.replace(req.params[value], ':' + value);
+    }
+  }
+
+  const allowedMethods = expectedHttpActions[requestedPath];
 
   if (!allowedMethods || !allowedMethods.length) {
-    throw new CustomError(`No allowed methods defined for path: ${req.baseUrl + req.path}`, 500);
+    throw new CustomError(
+      `No allowed methods defined for path: ${req.baseUrl + requestedPath}`,
+      500
+    );
   }
 
   if (!allowedMethods.includes(req.method)) {
