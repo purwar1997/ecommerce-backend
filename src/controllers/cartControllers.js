@@ -3,12 +3,14 @@ import Product from '../models/product.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import { sendResponse } from '../utils/helpers.js';
+import { QUANTITY } from '../constants.js';
 
 export const getCart = handleAsync(async (req, res) => {
   const user = await User.findById(req.user._id).populate({
     path: 'cart.product',
     match: {
       isDeleted: false,
+      stock: { $gt: 0 },
     },
   });
 
@@ -25,12 +27,30 @@ export const addItemToCart = handleAsync(async (req, res) => {
     throw new CustomError('Product not found', 404);
   }
 
-  const productExistsInCart = user.cart.find(cartItem => cartItem.product === productId);
+  if (product.stock === 0) {
+    throw new CustomError('Item is out of stock and cannot be added to the cart', 403);
+  }
 
-  if (productExistsInCart) {
-    productExistsInCart.quantity = productExistsInCart.quantity + 1;
-    const index = user.cart.findIndex(cartItem => cartItem.product === productId);
-    user.cart.splice(index, 1, productExistsInCart);
+  const cartItem = user.cart.find(cartItem => cartItem.product.toString() === productId);
+
+  if (cartItem) {
+    if (cartItem.quantity >= QUANTITY.MAX) {
+      throw new CustomError(
+        `You cannot purchase more than ${QUANTITY.MAX} units of a specific item`,
+        403
+      );
+    }
+
+    if (cartItem.quantity >= product.stock) {
+      throw new CustomError(
+        `You cannot add more items than available stock (${product.stock} units)`,
+        403
+      );
+    }
+
+    cartItem.quantity = cartItem.quantity + 1;
+    const index = user.cart.findIndex(cartItem => cartItem.product.toString() === productId);
+    user.cart.splice(index, 1, cartItem);
   } else {
     user.cart.push({ product: productId, quantity: 1 });
   }
@@ -39,7 +59,7 @@ export const addItemToCart = handleAsync(async (req, res) => {
 
   const result = {
     product,
-    quantity: productExistsInCart ? productExistsInCart.quantity : 1,
+    quantity: cartItem ? cartItem.quantity : 1,
   };
 
   sendResponse(res, 200, 'Item added to cart successfully', result);
@@ -49,22 +69,20 @@ export const removeItemFromCart = handleAsync(async (req, res) => {
   const { productId } = req.body;
   const { user } = req;
 
-  const productExistsInCart = user.cart.find(cartItem => cartItem.product === productId);
+  const cartItem = user.cart.find(cartItem => cartItem.product.toString() === productId);
 
-  if (!productExistsInCart) {
-    throw new CustomError('Item not found in cart', 409);
+  if (!cartItem) {
+    throw new CustomError('Item not found in cart', 404);
   }
 
-  const index = user.cart.findIndex(cartItem => cartItem.product === productId);
-  user.cart.splice(index, 1);
-
+  user.cart = user.cart.filter(cartItem => cartItem.product.toString() !== productId);
   await user.save();
 
   sendResponse(res, 200, 'Item removed from cart successfully', productId);
 });
 
 export const updateItemQuantity = handleAsync(async (req, res) => {
-  const { productId } = req.body;
+  const { productId, quantity } = req.body;
   const { user } = req;
 
   const product = await Product.findOne({ _id: productId, isDeleted: false });
@@ -73,15 +91,22 @@ export const updateItemQuantity = handleAsync(async (req, res) => {
     throw new CustomError('Product not found', 404);
   }
 
-  const productExistsInCart = user.cart.find(cartItem => cartItem.product === productId);
+  const cartItem = user.cart.find(cartItem => cartItem.product.toString() === productId);
 
-  if (!productExistsInCart) {
-    throw new CustomError('Item not found in cart', 409);
+  if (!cartItem) {
+    throw new CustomError('Item not found in cart', 404);
   }
 
-  productExistsInCart.quantity = quantity;
-  const index = user.cart.findIndex(cartItem => cartItem.product === productId);
-  user.cart.splice(index, 1, productExistsInCart);
+  if (quantity > product.stock) {
+    throw new CustomError(
+      `Requested quantity exceeds available stock (${product.stock} units)`,
+      403
+    );
+  }
+
+  cartItem.quantity = quantity;
+  const index = user.cart.findIndex(cartItem => cartItem.product.toString() === productId);
+  user.cart.splice(index, 1, cartItem);
 
   await user.save();
 
@@ -100,18 +125,16 @@ export const moveItemToWishlist = handleAsync(async (req, res) => {
     throw new CustomError('Product not found', 404);
   }
 
-  const productExistsInCart = user.cart.find(cartItem => cartItem.product === productId);
+  const cartItem = user.cart.find(cartItem => cartItem.product.toString() === productId);
 
-  if (!productExistsInCart) {
-    throw new CustomError('Item not found in cart', 409);
+  if (!cartItem) {
+    throw new CustomError('Item not found in cart', 404);
   }
 
-  const index = user.cart.findIndex(cartItem => cartItem.product === productId);
-  user.cart.splice(index, 1, productExistsInCart);
+  user.cart = user.cart.filter(cartItem => cartItem.product.toString() !== productId);
+  const wishlistItem = user.wishlist.find(wishlistItem.toString() === productId);
 
-  const productExistsInWishlist = user.wishlist.includes(productId);
-
-  if (!productExistsInWishlist) {
+  if (!wishlistItem) {
     user.wishlist.push(productId);
   }
 

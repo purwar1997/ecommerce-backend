@@ -25,9 +25,9 @@ export const addItemToWishlist = handleAsync(async (req, res) => {
     throw new CustomError('Product not found', 404);
   }
 
-  const productExistsInWishlist = user.wishlist.includes(productId);
+  const wishlistItem = user.wishlist.find(wishlistItem.toString() === productId);
 
-  if (productExistsInWishlist) {
+  if (wishlistItem) {
     throw new CustomError('Item already exists in wishlist', 409);
   }
 
@@ -41,13 +41,13 @@ export const removeItemFromWishlist = handleAsync(async (req, res) => {
   const { productId } = req.body;
   const { user } = req;
 
-  const productExistsInWishlist = user.wishlist.includes(productId);
+  const wishlistItem = user.wishlist.find(wishlistItem.toString() === productId);
 
-  if (!productExistsInWishlist) {
-    throw new CustomError('Item not found in wishlist', 409);
+  if (!wishlistItem) {
+    throw new CustomError('Item not found in wishlist', 404);
   }
 
-  user.wishlist = user.wishlist.filter(item => item !== productId);
+  user.wishlist = user.wishlist.filter(wishlistItem => wishlistItem.toString() !== productId);
   await user.save();
 
   sendResponse(res, 200, 'Item removed from wishlist successfully', productId);
@@ -63,21 +63,24 @@ export const moveItemToCart = handleAsync(async (req, res) => {
     throw new CustomError('Product not found', 404);
   }
 
-  const productExistsInWishlist = user.wishlist.includes(productId);
+  const wishlistItem = user.wishlist.find(wishlistItem.toString() === productId);
 
-  if (!productExistsInWishlist) {
-    throw new CustomError('Item not found in wishlist', 409);
+  if (!wishlistItem) {
+    throw new CustomError('Item not found in wishlist', 404);
   }
 
-  const productExistsInCart = user.cart.find(item => item.product === productId);
+  if (product.stock === 0) {
+    throw new CustomError('Item is out of stock and cannot be moved to the cart', 403);
+  }
 
-  if (productExistsInCart) {
-    productExistsInCart.quantity = productExistsInCart.quantity + 1;
-    const index = user.cart.findIndex(item => item.product === productId);
-    user.cart.splice(index, 1, productExistsInCart);
-  } else {
+  user.wishlist = user.wishlist.filter(wishlistItem => wishlistItem.toString() !== productId);
+  const cartItem = user.cart.find(cartItem => cartItem.product.toString() === productId);
+
+  if (!cartItem) {
     user.cart.push({ product: productId, quantity: 1 });
   }
+
+  await user.save();
 
   sendResponse(res, 200, 'Item moved from wishlist to cart successfully', product);
 });
