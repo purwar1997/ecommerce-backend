@@ -334,14 +334,14 @@ export const deleteOrder = handleAsync(async (req, res) => {
       const options = {
         recipient: order.user.email,
         subject: 'Order deletion email',
-        text: `Dear ${fullname}, we regret to inform you that your order #v${orderId} placed on ${order.createdAt}, has been deleted.`,
+        text: `Dear ${fullname}, we regret to inform you that your order #${orderId} placed on ${order.createdAt}, has been deleted.`,
       };
 
       await sendEmail(options);
     } catch (error) {
       throw new CustomError('Failed to send order deletion email to the user', 500);
     }
-
-    sendResponse(res, 200, 'Order deleted successfully', orderId);
   }
+
+  sendResponse(res, 200, 'Order deleted successfully', orderId);
 });

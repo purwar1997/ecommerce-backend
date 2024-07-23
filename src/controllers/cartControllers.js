@@ -28,7 +28,7 @@ export const addItemToCart = handleAsync(async (req, res) => {
   }
 
   if (product.stock === 0) {
-    throw new CustomError('Item is out of stock and cannot be added to the cart', 403);
+    throw new CustomError('Item is out of stock and cannot be added to the cart', 409);
   }
 
   const cartItem = user.cart.find(cartItem => cartItem.product.toString() === productId);
@@ -57,12 +57,12 @@ export const addItemToCart = handleAsync(async (req, res) => {
 
   await user.save();
 
-  const result = {
+  const data = {
     product,
     quantity: cartItem ? cartItem.quantity : 1,
   };
 
-  sendResponse(res, 200, 'Item added to cart successfully', result);
+  sendResponse(res, 200, 'Item added to cart successfully', data);
 });
 
 export const removeItemFromCart = handleAsync(async (req, res) => {
@@ -100,19 +100,18 @@ export const updateItemQuantity = handleAsync(async (req, res) => {
   if (quantity > product.stock) {
     throw new CustomError(
       `Requested quantity exceeds available stock (${product.stock} units)`,
-      403
+      409
     );
   }
 
   cartItem.quantity = quantity;
   const index = user.cart.findIndex(cartItem => cartItem.product.toString() === productId);
   user.cart.splice(index, 1, cartItem);
-
   await user.save();
 
-  const result = { product, quantity };
+  const data = { product, quantity };
 
-  sendResponse(res, 200, 'Item quantity updated successfully', result);
+  sendResponse(res, 200, 'Item quantity updated successfully', data);
 });
 
 export const moveItemToWishlist = handleAsync(async (req, res) => {

@@ -70,7 +70,7 @@ export const moveItemToCart = handleAsync(async (req, res) => {
   }
 
   if (product.stock === 0) {
-    throw new CustomError('Item is out of stock and cannot be moved to the cart', 403);
+    throw new CustomError('Item is out of stock and cannot be moved to the cart', 409);
   }
 
   user.wishlist = user.wishlist.filter(wishlistItem => wishlistItem.toString() !== productId);

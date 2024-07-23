@@ -11,8 +11,7 @@ import { PAGINATION, UPLOAD_FOLDERS, FILTER_OPTIONS } from '../constants.js';
 
 export const getProducts = handleAsync(async (req, res) => {
   const { categories, brands, rating, sort, page } = req.query;
-
-  const filters = {};
+  const filters = { isDeleted: false };
 
   if (categories.length > 0) {
     const categoryList = await Category.find({ title: { $in: categories } });
@@ -34,14 +33,14 @@ export const getProducts = handleAsync(async (req, res) => {
   const offset = (page - 1) * PAGINATION.PRODUCTS_PER_PAGE;
   const limit = PAGINATION.PRODUCTS_PER_PAGE;
 
-  const products = await Product.find({ ...filters, isDeleted: false })
+  const products = await Product.find(filters)
     .sort(sortRule)
     .skip(offset)
     .limit(limit)
     .populate('brand', 'name')
     .populate('category', 'title');
 
-  const productCount = await Product.countDocuments({ ...filters, isDeleted: false });
+  const productCount = await Product.countDocuments(filters);
 
   res.set('X-Total-Count', productCount);
 
@@ -62,7 +61,6 @@ export const getProductById = handleAsync(async (req, res) => {
 
 export const adminGetProducts = handleAsync(async (req, res) => {
   const { categories, brands, rating, availability, deleted, sort, page } = req.query;
-
   const filters = {};
 
   if (categories.length > 0) {
@@ -205,7 +203,7 @@ export const deleteProduct = handleAsync(async (req, res) => {
     throw new CustomError('Product not found', 404);
   }
 
-  sendResponse(res, 200, 'Product deleted successfully');
+  sendResponse(res, 200, 'Product deleted successfully', productId);
 });
 
 export const restoreDeletedProduct = handleAsync(async (req, res) => {

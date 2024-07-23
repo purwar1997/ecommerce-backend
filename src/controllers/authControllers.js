@@ -53,7 +53,6 @@ export const signup = handleAsync(async (req, res) => {
   }
 
   const newUser = await User.create({ firstname, lastname, email, phone, password });
-
   newUser.password = undefined;
 
   sendResponse(res, 201, 'User signed up successfully', newUser);
@@ -97,19 +96,18 @@ export const forgotPassword = handleAsync(async (req, res) => {
   }
 
   const resetPasswordToken = user.generateForgotPasswordToken();
-
   await user.save();
 
   const resetPasswordUrl = `${req.protocol}://${req.hostname}/reset-password/${resetPasswordToken}`;
 
-  const messageOptions = {
-    recipient: email,
-    subject: 'Password reset email',
-    text: `To reset password, copy paste this URL in browser and hit ENTER: ${resetPasswordUrl}`,
-  };
-
   try {
-    await sendEmail(messageOptions);
+    const options = {
+      recipient: email,
+      subject: 'Password reset email',
+      text: `To reset password, copy paste this URL in browser and hit ENTER: ${resetPasswordUrl}`,
+    };
+
+    await sendEmail(options);
   } catch (error) {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpiry = undefined;
@@ -136,13 +134,12 @@ export const resetPassword = handleAsync(async (req, res) => {
   }
 
   if (user.isDeleted) {
-    throw new CustomError('User account has been deleted', 404);
+    throw new CustomError('Cannot reset password because account does not exist', 409);
   }
 
   user.password = password;
   user.resetPasswordToken = undefined;
   user.resetPasswordExpiry = undefined;
-
   await user.save();
 
   sendResponse(res, 200, 'Password has been reset successfully');

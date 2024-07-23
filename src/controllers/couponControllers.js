@@ -36,10 +36,9 @@ export const checkCouponValidity = handleAsync(async (req, res) => {
 
 export const getCoupons = handleAsync(async (req, res) => {
   const { duration, discountType, status, sort, page } = req.query;
-  const filters = {};
 
-  filters.expiryDate = {
-    $lt: new Date(getCurrentDateMilliSec() + duration * 24 * 60 * 60 * 1000),
+  const filters = {
+    expiryDate: { $lt: new Date(getCurrentDateMilliSec() + duration * 24 * 60 * 60 * 1000) },
   };
 
   if (discountType.length > 0) {
@@ -137,7 +136,7 @@ export const deleteCoupon = handleAsync(async (req, res) => {
     throw new CustomError('Coupon not found', 404);
   }
 
-  sendResponse(res, 200, 'Coupon deleted successfully');
+  sendResponse(res, 200, 'Coupon deleted successfully', couponId);
 });
 
 export const changeCouponState = handleAsync(async (req, res) => {

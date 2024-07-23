@@ -99,7 +99,7 @@ export const removeProfilePhoto = handleAsync(async (req, res) => {
 
 export const getUsers = handleAsync(async (req, res) => {
   const { roles, sort, page } = req.query;
-  const filters = {};
+  const filters = { isDeleted: false };
 
   if (roles.length > 0) {
     filters.role = { $in: roles };
@@ -109,12 +109,8 @@ export const getUsers = handleAsync(async (req, res) => {
   const offset = (page - 1) * PAGINATION.USERS_PER_PAGE;
   const limit = PAGINATION.USERS_PER_PAGE;
 
-  const users = await User.find({ ...filters, isDeleted: false })
-    .sort(sortRule)
-    .skip(offset)
-    .limit(limit);
-
-  const userCount = await User.countDocuments({ ...filters, isDeleted: false });
+  const users = await User.find(filters).sort(sortRule).skip(offset).limit(limit);
+  const userCount = await User.countDocuments(filters);
 
   res.set('X-Total-Count', userCount);
 
@@ -163,7 +159,7 @@ export const deleteUser = handleAsync(async (req, res) => {
     throw new CustomError('User not found', 404);
   }
 
-  sendResponse(res, 200, 'User deleted successfully');
+  sendResponse(res, 200, 'User deleted successfully', userId);
 });
 
 export const getOtherAdmins = handleAsync(async (req, res) => {
@@ -185,7 +181,7 @@ export const adminSelfDemote = handleAsync(async (req, res) => {
     _id: { $ne: userId },
   });
 
-  if (!adminCount) {
+  if (adminCount === 0) {
     throw new CustomError(
       'You are the only admin. Promote another user before demoting yourself',
       409
@@ -210,7 +206,7 @@ export const adminSelfDelete = handleAsync(async (req, res) => {
     _id: { $ne: userId },
   });
 
-  if (!adminCount) {
+  if (adminCount === 0) {
     throw new CustomError(
       'You are the only admin. Promote another user before deleting yourself',
       409
