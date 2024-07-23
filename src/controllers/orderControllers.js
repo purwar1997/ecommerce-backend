@@ -4,7 +4,7 @@ import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import sendEmail from '../services/sendEmail.js';
 import { sendResponse, getCurrentDateMilliSec } from '../utils/helpers.js';
-import { GST, DISCOUNT_TYPES, PAGINATION } from '../constants.js';
+import { GST, DISCOUNT_TYPES, PAGINATION, ORDER_STATUS, PAYMENT_METHODS } from '../constants.js';
 
 export const createOrder = handleAsync(async (req, res) => {
   const { items, shippingCharges } = req.body;
@@ -48,22 +48,21 @@ export const createOrder = handleAsync(async (req, res) => {
 
   await Promise.all(
     items.map(async item => {
-      const { product: id, quantity } = item;
-
-      const product = await Product.findById(id);
-      product.stock = product.stock - quantity;
-      product.soldUnits = product.soldUnits + quantity;
-
+      const product = await Product.findById(item.product);
+      product.stock = product.stock - item.quantity;
+      product.soldUnits = product.soldUnits + item.quantity;
       await product.save();
     })
   );
 
   try {
-    await sendEmail({
+    const options = {
       recepient: user.email,
       subject: 'Order confirmation email',
-      text: `Order with ID ${newOrder._id} has been placed successfully`,
-    });
+      text: `Order with ID ${newOrder._id} has been placed successfully.`,
+    };
+
+    await sendEmail(options);
   } catch (error) {
     throw new CustomError('Failed to send order confirmation email to the user', 500);
   }
@@ -92,8 +91,12 @@ export const getOrders = handleAsync(async (req, res) => {
     .limit(limit)
     .populate({
       path: 'items.product',
-      select: { title: 1, description: 1, price: 1, image: 1, isDeleted: false },
+      select: { title: 1, description: 1, price: 1, image: 1, isDeleted: 1 },
     });
+
+  const orderCount = await Order.countDocuments(filters);
+
+  res.set('X-Total-Count', orderCount);
 
   sendResponse(res, 200, 'Orders fetched successfully', orders);
 });
@@ -112,5 +115,76 @@ export const getOrderById = handleAsync(async (req, res) => {
     throw new CustomError('Order not found', 404);
   }
 
+  if (order.user.toString() !== req.user._id.toString()) {
+    throw new CustomError('Only the user who placed this order can view it', 403);
+  }
+
   sendResponse(res, 200, 'Order by ID fetched successfully', order);
+});
+
+export const cancelOrder = handleAsync(async (req, res) => {
+  const { orderId } = req.params;
+
+  const order = await Order.findOne({ _id: orderId, isDeleted: false });
+
+  if (!order) {
+    throw new CustomError('Order not found', 404);
+  }
+
+  if (order.user.toString() !== req.user._id.toString()) {
+    throw new CustomError('Only the user who placed this order can cancel it', 403);
+  }
+
+  if (order.status === ORDER_STATUS.CANCELLED) {
+    throw new CustomError('Order has been already cancelled', 409);
+  }
+
+  if (order.status === ORDER_STATUS.DELIVERED) {
+    throw new CustomError('Delivered orders cannot be cancelled', 409);
+  }
+
+  const cancelledOrder = await Order.findByIdAndUpdate(
+    orderId,
+    { status: ORDER_STATUS.CANCELLED },
+    { runValidators: true, new: true }
+  ).populate({
+    path: 'items.product',
+    select: { title: 1, description: 1, price: 1, image: 1, isDeleted: 1 },
+  });
+
+  await Promise.all(
+    order.items.map(async item => {
+      const product = await Product.findById(item.product);
+      product.stock = product.stock + item.quantity;
+      product.soldUnits = product.soldUnits - item.quantity;
+      await product.save();
+    })
+  );
+
+  if (
+    order.paymentMethod === PAYMENT_METHODS.DEBIT_CARD ||
+    order.paymentMethod === PAYMENT_METHODS.CREDIT_CARD
+  ) {
+    // Refund money to the user
+  }
+
+  try {
+    const emailContent =
+      order.paymentMethod === PAYMENT_METHODS.DEBIT_CARD ||
+      order.paymentMethod === PAYMENT_METHODS.CREDIT_CARD
+        ? `Order with ID ${order._id} has been cancelled successfully. Order amount of ₹${order.totalAmount} will be refunded shortly.`
+        : `Order with ID ${order._id} has been cancelled successfully.`;
+
+    const options = {
+      recipient: req.user.email,
+      subject: 'Order cancellation email',
+      text: emailContent,
+    };
+
+    await sendEmail(options);
+  } catch (error) {
+    throw new CustomError('Failed to send order cancellation email', 500);
+  }
+
+  sendResponse(res, 200, 'Order cancelled successfully', cancelledOrder);
 });
