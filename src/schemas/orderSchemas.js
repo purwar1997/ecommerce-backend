@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
-import { getPathIDSchema } from './commonSchemas.js';
+import { getPathIDSchema, paginationSchema } from './commonSchemas.js';
 import {
   validateObjectId,
   roundToTwoDecimalPlaces,
@@ -8,7 +8,14 @@ import {
   formatOptions,
   validateOption,
 } from '../utils/helpers.js';
-import { QUANTITY, PRICE, SHIPPING_CHARGE, PAYMENT_METHODS } from '../constants.js';
+import {
+  QUANTITY,
+  PRICE,
+  SHIPPING_CHARGE,
+  PAYMENT_METHODS,
+  ORDER_DURATION,
+  SAFE_INTEGER,
+} from '../constants.js';
 
 const orderItemSchema = Joi.object({
   product: Joi.string().trim().required().custom(validateObjectId).messages({
@@ -92,7 +99,25 @@ export const createOrderSchema = customJoi
         )}`,
       }),
   })
-  .custom(stripEmptyKeys, 'Custom sanitization to strip empty fields');
+  .custom(stripEmptyKeys);
+
+export const ordersQuerySchema = Joi.object({
+  duration: Joi.number()
+    .integer()
+    .min(ORDER_DURATION.MIN)
+    .max(ORDER_DURATION.MAX)
+    .empty('')
+    .default(ORDER_DURATION.DEFAULT)
+    .unsafe()
+    .messages({
+      'number.base': 'Order duration must be a number',
+      'number.integer': 'Order duration must be an integer',
+      'number.min': `Order duration must be at least ${ORDER_DURATION.MIN}`,
+      'number.max': `Order duration must be less than or equal to ${ORDER_DURATION.MAX}`,
+    }),
+
+  page: paginationSchema,
+});
 
 export const orderIdSchema = Joi.object({
   orderId: getPathIDSchema('Order ID'),

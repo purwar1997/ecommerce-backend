@@ -13,7 +13,7 @@ export const ROLES = Object.freeze({
 });
 
 export const ORDER_STATUS = Object.freeze({
-  PENDING: 'pending',
+  CREATED: 'created',
   PROCESSING: 'processing',
   SHIPPED: 'shipped',
   DELIVERED: 'delivered',
@@ -58,9 +58,9 @@ export const UPLOAD_FILES = Object.freeze({
 
 export const PAGINATION = Object.freeze({
   PRODUCTS_PER_PAGE: 15,
-  ORDERS_PER_PAGE: 5,
-  USERS_PER_PAGE: 5,
-  COUPONS_PER_PAGE: 5,
+  ORDERS_PER_PAGE: 10,
+  USERS_PER_PAGE: 10,
+  COUPONS_PER_PAGE: 10,
   REVIEWS_PER_PAGE: 5,
 });
 
@@ -152,5 +152,11 @@ export const COUPON_EXPIRY_LIMIT = Object.freeze({
   MIN: 1,
   MAX: Number.MAX_SAFE_INTEGER,
   DEFAULT: 15,
+});
+
+export const ORDER_DURATION = Object.freeze({
+  MIN: 1,
+  MAX: Number.MAX_SAFE_INTEGER,
+  DEFAULT: 30,
 });
 

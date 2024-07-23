@@ -112,26 +112,24 @@ export const parseDate = currentDate => {
   const date = currentDate.getDate();
 
   return `${year}/${month}/${date}`;
-};
+}
+
+export const getCurrentDateMilliSec = () => {
+   const current = new Date();
+   const year = current.getFullYear();
+   const month = current.getMonth();
+   const date = current.getDate()
+
+   const normalizedDate = new Date(year, month, date);
+   return normalizedDate.getTime()
+}
 
 export const checkBoolean = str => {
   str = str.trim().toLowerCase();
   return str === 'true' || str === 'false';
 };
 
-// Custom joi sanitizers
-
-export const stripCouponDiscount = coupon => {
-  const { discountType } = coupon;
-
-  if (discountType === DISCOUNT_TYPES.FLAT) {
-    delete coupon.percentageDiscount;
-  } else {
-    delete coupon.flatDiscount;
-  }
-
-  return coupon;
-};
+// Normalization using Joi
 
 export const stripEmptyKeys = obj => {
   for (const key in obj) {
@@ -171,7 +169,7 @@ export const parseCommaSeparatedStrings = (value, helpers) => {
   return value.split(',').map(str => str.trim());
 };
 
-// Custom joi validators
+// Validation using Joi
 
 export const validateObjectId = (value, helpers) => {
   if (!mongoose.Types.ObjectId.isValid(value)) {

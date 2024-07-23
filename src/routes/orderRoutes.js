@@ -1,9 +1,9 @@
 import express from 'express';
-import { createOrder } from '../controllers/orderControllers.js';
-import { createOrderSchema } from '../schemas/orderSchemas.js';
+import { createOrder, getOrders } from '../controllers/orderControllers.js';
+import { createOrderSchema, ordersQuerySchema } from '../schemas/orderSchemas.js';
 import { isHttpMethodAllowed } from '../middlewares/isHttpMethodAllowed.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
-import { validatePayload } from '../middlewares/requestValidators.js';
+import { validatePayload, validateQueryParams } from '../middlewares/requestValidators.js';
 import {
   validateProducts,
   validateCoupon,
@@ -15,7 +15,7 @@ const router = express.Router();
 router
   .route('/orders')
   .all(isHttpMethodAllowed, isAuthenticated)
-  .get()
+  .get(validateQueryParams(ordersQuerySchema), getOrders)
   .post(
     validatePayload(createOrderSchema),
     validateProducts,

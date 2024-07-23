@@ -91,7 +91,7 @@ const orderSchema = new Schema(
     },
     status: {
       type: String,
-      default: ORDER_STATUS.PENDING,
+      default: ORDER_STATUS.CREATED,
       enum: {
         values: Object.values(ORDER_STATUS),
         message: `Invalid order status. Valid options are: ${formatOptions(ORDER_STATUS)}`,

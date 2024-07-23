@@ -3,8 +3,8 @@ import Product from '../models/product.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import sendEmail from '../services/sendEmail.js';
-import { sendResponse } from '../utils/helpers.js';
-import { GST, DISCOUNT_TYPES } from '../constants.js';
+import { sendResponse, getCurrentDateMilliSec } from '../utils/helpers.js';
+import { GST, DISCOUNT_TYPES, PAGINATION } from '../constants.js';
 
 export const createOrder = handleAsync(async (req, res) => {
   const { items, shippingCharges } = req.body;
@@ -69,4 +69,24 @@ export const createOrder = handleAsync(async (req, res) => {
   }
 
   sendResponse(res, 201, 'Order created successfully', newOrder);
+});
+
+export const getOrders = handleAsync(async (req, res) => {
+  const { duration, page } = req.query;
+
+  const filters = {
+    user: req.user._id,
+    createdAt: {
+      $gt: new Date(getCurrentDateMilliSec() - (duration - 1) * 24 * 60 * 60 * 1000),
+    },
+    isDeleted: false,
+  };
+
+  const sortRule = { createdAt: -1 };
+  const offset = (page - 1) * PAGINATION.ORDERS_PER_PAGE;
+  const limit = PAGINATION.ORDERS_PER_PAGE;
+
+  const orders = await Order.find(filters).sort(sortRule).skip(offset).limit(limit);
+
+  sendResponse(res, 200, 'Orders fetched successfully', orders);
 });
