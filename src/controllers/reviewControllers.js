@@ -88,7 +88,7 @@ export const getProductReviewById = handleAsync(async (req, res) => {
     throw new CustomError('Review not found', 404);
   }
 
-  if (review.user !== req.user._id) {
+  if (review.user.toString() !== req.user._id.toString()) {
     throw new CustomError('Only the user who has added this review can view it', 403);
   }
 
@@ -105,7 +105,7 @@ export const updateProductReview = handleAsync(async (req, res) => {
     throw new CustomError('Review not found', 404);
   }
 
-  if (review.user !== req.user._id) {
+  if (review.user.toString() !== req.user._id.toString()) {
     throw new CustomError('Only the user who has added this review can update it', 403);
   }
 
