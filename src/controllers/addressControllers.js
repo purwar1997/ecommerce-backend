@@ -18,6 +18,10 @@ export const getAddressById = handleAsync(async (req, res) => {
     throw new CustomError('Address not found', 404);
   }
 
+  if (address.user.toString() !== req.user._id.toString()) {
+    throw new CustomError('Only the user who owns this address can view it', 403);
+  }
+
   sendResponse(res, 200, 'Address fetched by ID successfully', address);
 });
 
@@ -54,10 +58,14 @@ export const updateAddress = handleAsync(async (req, res) => {
     throw new CustomError('Address not found', 404);
   }
 
+  if (address.user.toString() !== req.user._id.toString()) {
+    throw new CustomError('Only the user who owns this address can update it', 403);
+  }
+
   if (!updates.isDefault) {
     const addressCount = await Address.countDocuments({
-      isDeleted: false,
       _id: { $ne: addressId },
+      isDeleted: false,
     });
 
     if (!addressCount) {
@@ -93,6 +101,10 @@ export const deleteAddress = handleAsync(async (req, res) => {
     throw new CustomError('Address not found', 404);
   }
 
+  if (address.user.toString() !== req.user._id.toString()) {
+    throw new CustomError('Only the user who owns this address can delete it', 403);
+  }
+
   if (address.isDefault) {
     throw new CustomError(
       'Please set another address as the default before deleting this address',
@@ -101,10 +113,9 @@ export const deleteAddress = handleAsync(async (req, res) => {
   }
 
   address.isDeleted = true;
-
   await address.save();
 
-  sendResponse(res, 200, 'Address deleted successfully');
+  sendResponse(res, 200, 'Address deleted successfully', addressId);
 });
 
 export const setDefaultAddress = handleAsync(async (req, res) => {
@@ -116,6 +127,10 @@ export const setDefaultAddress = handleAsync(async (req, res) => {
     throw new CustomError('Address not found', 404);
   }
 
+  if (address.user.toString() !== req.user._id.toString()) {
+    throw new CustomError('Only the user who owns this address can set it as default', 403);
+  }
+
   await Address.findOneAndUpdate(
     { user: req.user._id, isDefault: true },
     { isDefault: false },
@@ -123,7 +138,6 @@ export const setDefaultAddress = handleAsync(async (req, res) => {
   );
 
   address.isDefault = true;
-
   const defaultAddress = await address.save();
 
   sendResponse(res, 200, 'Address has been set as the default successfully', defaultAddress);
