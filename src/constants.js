@@ -148,6 +148,13 @@ export const USER_SORT_OPTIONS = Object.freeze({
   NAME_DESC: 'name_desc',
 });
 
+export const ORDER_SORT_OPTIONS = Object.freeze({
+  DATE_ASC: 'date_asc',
+  DATE_DESC: 'date_desc',
+  AMOUNT_LOW_TO_HIGH: 'amount_asc',
+  AMOUNT_HIGH_TO_LOW: 'amount_desc',
+});
+
 export const EXPIRY_DURATION = Object.freeze({
   MIN: 1,
   MAX: Number.MAX_SAFE_INTEGER,

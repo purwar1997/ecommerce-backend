@@ -4,6 +4,7 @@ import {
   COUPON_SORT_OPTIONS,
   REVIEW_SORT_OPTIONS,
   USER_SORT_OPTIONS,
+  ORDER_SORT_OPTIONS,
 } from '../constants.js';
 
 const { RECOMMENDED, NEWLY_ADDED, CUSTOMER_RATING, PRICE_LOW_TO_HIGH, PRICE_HIGH_TO_LOW } =
@@ -13,6 +14,7 @@ const { STOCK_LOW_TO_HIGH, STOCK_HIGH_TO_LOW } = ADMIN_PRODUCT_SORT_OPTIONS;
 const { EXPIRY_ASC, EXPIRY_DESC } = COUPON_SORT_OPTIONS;
 const { TOP_REVIEWS, MOST_RECENT } = REVIEW_SORT_OPTIONS;
 const { NAME_ASC, NAME_DESC } = USER_SORT_OPTIONS;
+const { DATE_ASC, DATE_DESC, AMOUNT_LOW_TO_HIGH, AMOUNT_HIGH_TO_LOW } = ORDER_SORT_OPTIONS;
 
 export const productSortRules = {
   [RECOMMENDED]: { updatedAt: -1 },
@@ -44,4 +46,11 @@ export const reviewSortRules = {
 export const userSortRules = {
   [NAME_ASC]: { firstname: 1, lastname: 1 },
   [NAME_DESC]: { firstname: -1, lastname: -1 },
+};
+
+export const orderSortRules = {
+  [DATE_ASC]: { createdAt: 1 },
+  [DATE_DESC]: { createdAt: -1 },
+  [AMOUNT_LOW_TO_HIGH]: { totalAmount: 1 },
+  [AMOUNT_HIGH_TO_LOW]: { totalAmount: -1 },
 };

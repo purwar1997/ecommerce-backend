@@ -4,8 +4,14 @@ import {
   getOrders,
   getOrderById,
   cancelOrder,
+  adminGetOrders,
 } from '../controllers/orderControllers.js';
-import { createOrderSchema, ordersQuerySchema, orderIdSchema } from '../schemas/orderSchemas.js';
+import {
+  createOrderSchema,
+  ordersQuerySchema,
+  adminOrdersQuerySchema,
+  orderIdSchema,
+} from '../schemas/orderSchemas.js';
 import { isHttpMethodAllowed } from '../middlewares/isHttpMethodAllowed.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
 import {
@@ -18,6 +24,7 @@ import {
   validateCoupon,
   validateAddress,
 } from '../middlewares/orderValidators.js';
+import { ROLES } from '../constants.js';
 
 const router = express.Router();
 
@@ -40,5 +47,14 @@ router
 router
   .route('/orders/:orderId/cancel')
   .put(isAuthenticated, validatePathParams(orderIdSchema), cancelOrder);
+
+router
+  .route('/admin/orders')
+  .get(
+    isAuthenticated,
+    authorizeRole(ROLES.ADMIN),
+    validateQueryParams(adminOrdersQuerySchema),
+    adminGetOrders
+  );
 
 export default router;

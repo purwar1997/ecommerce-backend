@@ -4,6 +4,7 @@ import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import sendEmail from '../services/sendEmail.js';
 import { sendResponse, getCurrentDateMilliSec } from '../utils/helpers.js';
+import { orderSortRules } from '../utils/sortRules.js';
 import { GST, DISCOUNT_TYPES, PAGINATION, ORDER_STATUS, PAYMENT_METHODS } from '../constants.js';
 
 export const createOrder = handleAsync(async (req, res) => {
@@ -187,4 +188,36 @@ export const cancelOrder = handleAsync(async (req, res) => {
   }
 
   sendResponse(res, 200, 'Order cancelled successfully', cancelledOrder);
+});
+
+export const adminGetOrders = handleAsync(async (req, res) => {
+  const { duration, status, sort, page } = req.query;
+
+  const filters = {
+    createdAt: { $gt: getCurrentDateMilliSec() - (duration - 1) * 24 * 60 * 60 * 1000 },
+    isDeleted: false,
+  };
+
+  if (status.length > 0) {
+    filters.status = { $in: status };
+  }
+
+  const sortRule = orderSortRules[sort];
+  const offset = (page - 1) * PAGINATION.ORDERS_PER_PAGE;
+  const limit = PAGINATION.ORDERS_PER_PAGE;
+
+  const orders = await Order.find(filters)
+    .sort(sortRule)
+    .skip(offset)
+    .limit(limit)
+    .populate({
+      path: 'items.product',
+      select: { name: 1, price: 1 },
+    });
+
+  const orderCount = await Order.countDocuments(filters);
+
+  res.set('X-Total-Count', orderCount);
+
+  sendResponse(res, 200, 'Orders fetched successfully', orders);
 });

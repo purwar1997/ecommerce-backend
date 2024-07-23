@@ -7,8 +7,17 @@ import {
   stripEmptyKeys,
   formatOptions,
   validateOption,
+  validateCommaSeparatedValues,
 } from '../utils/helpers.js';
-import { QUANTITY, PRICE, SHIPPING_CHARGE, PAYMENT_METHODS, ORDER_DURATION } from '../constants.js';
+import {
+  QUANTITY,
+  PRICE,
+  SHIPPING_CHARGE,
+  PAYMENT_METHODS,
+  ORDER_DURATION,
+  ORDER_SORT_OPTIONS,
+  ORDER_STATUS,
+} from '../constants.js';
 
 const orderItemSchema = Joi.object({
   product: Joi.string().trim().required().custom(validateObjectId).messages({
@@ -107,6 +116,49 @@ export const ordersQuerySchema = Joi.object({
       'number.integer': 'Order duration must be an integer',
       'number.min': `Order duration must be at least ${ORDER_DURATION.MIN}`,
       'number.max': `Order duration must be less than or equal to ${ORDER_DURATION.MAX}`,
+    }),
+
+  page: paginationSchema,
+});
+
+export const adminOrdersQuerySchema = Joi.object({
+  duration: Joi.number()
+    .integer()
+    .min(ORDER_DURATION.MIN)
+    .max(ORDER_DURATION.MAX)
+    .empty('')
+    .default(ORDER_DURATION.DEFAULT)
+    .unsafe()
+    .messages({
+      'number.base': 'Order duration must be a number',
+      'number.integer': 'Order duration must be an integer',
+      'number.min': `Order duration must be at least ${ORDER_DURATION.MIN}`,
+      'number.max': `Order duration must be less than or equal to ${ORDER_DURATION.MAX}`,
+    }),
+
+  status: Joi.string()
+    .trim()
+    .empty('')
+    .default([])
+    .custom(validateCommaSeparatedValues(ORDER_STATUS))
+    .messages({
+      'string.base': 'Order status must be a string',
+      'any.invalid': `Provided an invalid order status. Valid options are: ${formatOptions(
+        ORDER_STATUS
+      )}`,
+    }),
+
+  sort: Joi.string()
+    .trim()
+    .lowercase()
+    .empty('')
+    .default(ORDER_SORT_OPTIONS.DATE_DESC)
+    .custom(validateOption(ORDER_SORT_OPTIONS))
+    .messages({
+      'string.base': 'Sort option must be a string',
+      'any.invalid': `Provided an invalid sort value. Valid options are: ${formatOptions(
+        ORDER_SORT_OPTIONS
+      )}`,
     }),
 
   page: paginationSchema,
