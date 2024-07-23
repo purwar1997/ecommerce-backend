@@ -7,6 +7,7 @@ import {
   adminGetOrders,
   adminGetOrderById,
   updateOrderStatus,
+  deleteOrder,
 } from '../controllers/orderControllers.js';
 import {
   createOrderSchema,
@@ -69,6 +70,7 @@ router
     validatePathParams(orderIdSchema)
   )
   .get(adminGetOrderById)
-  .put(validatePayload(orderStatusSchema), updateOrderStatus);
+  .put(validatePayload(orderStatusSchema), updateOrderStatus)
+  .delete(deleteOrder);
 
 export default router;

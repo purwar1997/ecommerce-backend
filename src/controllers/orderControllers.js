@@ -60,7 +60,7 @@ export const createOrder = handleAsync(async (req, res) => {
     const options = {
       recepient: user.email,
       subject: 'Order confirmation email',
-      text: `Order with ID ${newOrder._id} has been placed successfully.`,
+      text: `Order #${newOrder._id} has been placed successfully.`,
     };
 
     await sendEmail(options);
@@ -137,7 +137,7 @@ export const cancelOrder = handleAsync(async (req, res) => {
   }
 
   if (order.status === ORDER_STATUS.CANCELLED) {
-    throw new CustomError('Order has been already cancelled', 409);
+    throw new CustomError('This order has already been cancelled', 409);
   }
 
   if (order.status === ORDER_STATUS.DELIVERED) {
@@ -173,8 +173,8 @@ export const cancelOrder = handleAsync(async (req, res) => {
     const emailContent =
       order.paymentMethod === PAYMENT_METHODS.DEBIT_CARD ||
       order.paymentMethod === PAYMENT_METHODS.CREDIT_CARD
-        ? `Order with ID ${order._id} has been cancelled successfully. Order amount of ₹${order.totalAmount} will be refunded shortly.`
-        : `Order with ID ${order._id} has been cancelled successfully.`;
+        ? `Order #${order._id} has been cancelled successfully. Order amount of ₹${order.totalAmount} will be refunded shortly.`
+        : `Order #${order._id} has been cancelled successfully.`;
 
     const options = {
       recipient: req.user.email,
@@ -184,7 +184,7 @@ export const cancelOrder = handleAsync(async (req, res) => {
 
     await sendEmail(options);
   } catch (error) {
-    throw new CustomError('Failed to send order cancellation email', 500);
+    throw new CustomError('Failed to send order cancellation email to the user', 500);
   }
 
   sendResponse(res, 200, 'Order cancelled successfully', cancelledOrder);
@@ -254,25 +254,25 @@ export const updateOrderStatus = handleAsync(async (req, res) => {
   }
 
   if (order.status === ORDER_STATUS.CANCELLED) {
-    throw new CustomError('Status of cancelled orders cannot be updated', 403);
+    throw new CustomError('Cannot update status of a cancelled order', 403);
   }
 
   const currentStatusIndex = allowedStatus.indexOf(order.status);
   const newStatusIndex = allowedStatus.indexOf(status);
 
   if (order.status === status) {
-    throw new CustomError(`This order has already been marked as ${status}`, 409);
+    throw new CustomError(`This order is already marked as ${status}`, 409);
   }
 
   if (newStatusIndex < currentStatusIndex) {
-    throw new CustomError(`${order.status} order cannot be set back to ${status}`, 403);
+    throw new CustomError(`Cannot change order status from ${order.status} back to ${status}`, 403);
   }
 
   if (newStatusIndex > currentStatusIndex + 1) {
     const validStatus = allowedStatus[currentStatusIndex + 1];
 
     throw new CustomError(
-      `${order.status} order has to be marked as ${validStatus} first, only then it can be ${status}`,
+      `Order status must be updated to ${validStatus} before it can be changed to ${status}`,
       403
     );
   }
@@ -285,7 +285,63 @@ export const updateOrderStatus = handleAsync(async (req, res) => {
       statusUpdatedAt: new Date(),
     },
     { runValidators: true, new: true }
-  );
+  ).populate({
+    path: 'items.product',
+    select: { title: 1, price: 1 },
+  });
 
   sendResponse(res, 200, 'Order status updated successfully', updatedOrder);
+});
+
+export const deleteOrder = handleAsync(async (req, res) => {
+  const { orderId } = req.params;
+
+  const order = await Order.findOneAndUpdate(
+    { _id: orderId, isDeleted: false },
+    { isDeleted: true, deletedBy: req.user._id, deletedAt: new Date() },
+    { runValidators: true }
+  ).populate({
+    path: 'user',
+    select: { fullname: 1, email: 1 },
+  });
+
+  if (!order) {
+    throw new CustomError('Order not found', 404);
+  }
+
+  if (
+    order.status === ORDER_STATUS.CREATED ||
+    order.status === ORDER_STATUS.PROCESSING ||
+    order.status === ORDER_STATUS.SHIPPED
+  ) {
+    await Promise.all(
+      order.items.map(async item => {
+        const product = await Product.findById(item.product);
+        product.stock = product.stock + item.quantity;
+        product.soldUnits = product.soldUnits - item.quantity;
+        await product.save();
+      })
+    );
+
+    if (
+      order.paymentMethod === PAYMENT_METHODS.DEBIT_CARD ||
+      order.paymentMethod === PAYMENT_METHODS.CREDIT_CARD
+    ) {
+      // Refund order amount
+    }
+
+    try {
+      const options = {
+        recipient: order.user.email,
+        subject: 'Order deletion email',
+        text: `Dear ${fullname}, we regret to inform you that your order #v${orderId} placed on ${order.createdAt}, has been deleted.`,
+      };
+
+      await sendEmail(options);
+    } catch (error) {
+      throw new CustomError('Failed to send order deletion email to the user', 500);
+    }
+
+    sendResponse(res, 200, 'Order deleted successfully', orderId);
+  }
 });
