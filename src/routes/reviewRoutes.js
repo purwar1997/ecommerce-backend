@@ -5,7 +5,7 @@ import {
   getProductReviewById,
   updateProductReview,
 } from '../controllers/reviewControllers.js';
-import { reviewSchema, reviewIdSchema, reviewQuerySchema } from '../schemas/reviewSchemas.js';
+import { reviewSchema, reviewIdSchema, reviewsQuerySchema } from '../schemas/reviewSchemas.js';
 import { productIdSchema } from '../schemas/productSchemas.js';
 import { isHttpMethodAllowed } from '../middlewares/isHttpMethodAllowed.js';
 import { isAuthenticated } from '../middlewares/authMiddlewares.js';
@@ -21,7 +21,7 @@ router
   .route('/products/:productId/reviews')
   .get(
     validatePathParams(productIdSchema),
-    validateQueryParams(reviewQuerySchema),
+    validateQueryParams(reviewsQuerySchema),
     getProductReviews
   )
   .post(

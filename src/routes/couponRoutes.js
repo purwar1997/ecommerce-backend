@@ -13,7 +13,7 @@ import {
   couponSchema,
   couponStateSchema,
   couponCodeSchema,
-  couponQuerySchema,
+  couponsQuerySchema,
   couponIdSchema,
 } from '../schemas/couponSchemas.js';
 import { isHttpMethodAllowed } from '../middlewares/isHttpMethodAllowed.js';
@@ -36,7 +36,7 @@ router
 router
   .route('/admin/coupons')
   .all(isHttpMethodAllowed, isAuthenticated, authorizeRole(ROLES.ADMIN))
-  .get(validateQueryParams(couponQuerySchema), getCoupons)
+  .get(validateQueryParams(couponsQuerySchema), getCoupons)
   .post(validatePayload(couponSchema), createCoupon);
 
 router

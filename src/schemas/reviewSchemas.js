@@ -34,7 +34,7 @@ export const reviewSchema = customJoi.object({
   }),
 });
 
-export const reviewQuerySchema = Joi.object({
+export const reviewsQuerySchema = Joi.object({
   sort: Joi.string()
     .trim()
     .lowercase()

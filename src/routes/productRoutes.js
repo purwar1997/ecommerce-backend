@@ -12,8 +12,8 @@ import {
 import {
   productSchema,
   productIdSchema,
-  productQuerySchema,
-  adminProductQuerySchema,
+  productsQuerySchema,
+  adminProductsQuerySchema,
 } from '../schemas/productSchemas.js';
 import { isHttpMethodAllowed } from '../middlewares/isHttpMethodAllowed.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
@@ -27,13 +27,13 @@ import { ROLES, UPLOAD_FOLDERS, UPLOAD_FILES } from '../constants.js';
 
 const router = express.Router();
 
-router.route('/products').get(validateQueryParams(productQuerySchema), getProducts);
+router.route('/products').get(validateQueryParams(productsQuerySchema), getProducts);
 router.route('/products/:productId').get(validatePathParams(productIdSchema), getProductById);
 
 router
   .route('/admin/products')
   .all(isHttpMethodAllowed, isAuthenticated, authorizeRole(ROLES.ADMIN))
-  .get(validateQueryParams(adminProductQuerySchema), adminGetProducts)
+  .get(validateQueryParams(adminProductsQuerySchema), adminGetProducts)
   .post(
     parseFormData(UPLOAD_FOLDERS.PRODUCT_IMAGES, UPLOAD_FILES.PRODUCT_IMAGE),
     validatePayload(productSchema),

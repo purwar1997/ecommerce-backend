@@ -18,7 +18,7 @@ import {
   userIdSchema,
   updateUserSchema,
   updateRoleSchema,
-  userQuerySchema,
+  usersQuerySchema,
 } from '../schemas/userSchemas.js';
 import { isHttpMethodAllowed } from '../middlewares/isHttpMethodAllowed.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
@@ -57,7 +57,12 @@ router
 
 router
   .route('/admin/users')
-  .get(isAuthenticated, authorizeRole(ROLES.ADMIN), validateQueryParams(userQuerySchema), getUsers);
+  .get(
+    isAuthenticated,
+    authorizeRole(ROLES.ADMIN),
+    validateQueryParams(usersQuerySchema),
+    getUsers
+  );
 
 router
   .route('/admin/users/:userId')

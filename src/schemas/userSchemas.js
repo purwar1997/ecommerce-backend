@@ -57,7 +57,7 @@ export const updateRoleSchema = customJoi.object({
     }),
 });
 
-export const userQuerySchema = Joi.object({
+export const usersQuerySchema = Joi.object({
   roles: Joi.string()
     .trim()
     .empty('')

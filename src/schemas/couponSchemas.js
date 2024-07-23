@@ -101,7 +101,7 @@ export const couponCodeSchema = Joi.object({
   }),
 });
 
-export const couponQuerySchema = Joi.object({
+export const couponsQuerySchema = Joi.object({
   expiryLimit: Joi.number()
     .integer()
     .min(COUPON_EXPIRY_LIMIT.MIN)

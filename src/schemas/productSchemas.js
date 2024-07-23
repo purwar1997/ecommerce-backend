@@ -106,7 +106,7 @@ export const productSchema = customJoi.object({
     }),
 });
 
-export const productQuerySchema = Joi.object({
+export const productsQuerySchema = Joi.object({
   categories: categoriesSchema,
   brands: brandsSchema,
   rating: ratingSchema,
@@ -127,7 +127,7 @@ export const productQuerySchema = Joi.object({
   page: paginationSchema,
 });
 
-export const adminProductQuerySchema = Joi.object({
+export const adminProductsQuerySchema = Joi.object({
   categories: categoriesSchema,
   brands: brandsSchema,
   rating: ratingSchema,
