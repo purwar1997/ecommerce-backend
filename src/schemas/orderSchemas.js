@@ -8,14 +8,7 @@ import {
   formatOptions,
   validateOption,
 } from '../utils/helpers.js';
-import {
-  QUANTITY,
-  PRICE,
-  SHIPPING_CHARGE,
-  PAYMENT_METHODS,
-  ORDER_DURATION,
-  SAFE_INTEGER,
-} from '../constants.js';
+import { QUANTITY, PRICE, SHIPPING_CHARGE, PAYMENT_METHODS, ORDER_DURATION } from '../constants.js';
 
 const orderItemSchema = Joi.object({
   product: Joi.string().trim().required().custom(validateObjectId).messages({

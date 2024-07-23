@@ -1,9 +1,13 @@
 import express from 'express';
-import { createOrder, getOrders } from '../controllers/orderControllers.js';
-import { createOrderSchema, ordersQuerySchema } from '../schemas/orderSchemas.js';
+import { createOrder, getOrders, getOrderById } from '../controllers/orderControllers.js';
+import { createOrderSchema, ordersQuerySchema, orderIdSchema } from '../schemas/orderSchemas.js';
 import { isHttpMethodAllowed } from '../middlewares/isHttpMethodAllowed.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
-import { validatePayload, validateQueryParams } from '../middlewares/requestValidators.js';
+import {
+  validatePayload,
+  validateQueryParams,
+  validatePathParams,
+} from '../middlewares/requestValidators.js';
 import {
   validateProducts,
   validateCoupon,
@@ -23,5 +27,7 @@ router
     validateAddress,
     createOrder
   );
+
+router.route('/orders/:orderId').get(validatePathParams(orderIdSchema), getOrderById);
 
 export default router;

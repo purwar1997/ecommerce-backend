@@ -86,7 +86,31 @@ export const getOrders = handleAsync(async (req, res) => {
   const offset = (page - 1) * PAGINATION.ORDERS_PER_PAGE;
   const limit = PAGINATION.ORDERS_PER_PAGE;
 
-  const orders = await Order.find(filters).sort(sortRule).skip(offset).limit(limit);
+  const orders = await Order.find(filters)
+    .sort(sortRule)
+    .skip(offset)
+    .limit(limit)
+    .populate({
+      path: 'items.product',
+      select: { title: 1, description: 1, price: 1, image: 1, isDeleted: false },
+    });
 
   sendResponse(res, 200, 'Orders fetched successfully', orders);
+});
+
+export const getOrderById = handleAsync(async (req, res) => {
+  const { orderId } = req.params;
+
+  const order = await Order.findOne({ _id: orderId, isDeleted: false })
+    .populate({
+      path: 'items.product',
+      select: { title: 1, description: 1, price: 1, image: 1 },
+    })
+    .populate('shippingAddress');
+
+  if (!order) {
+    throw new CustomError('Order not found', 404);
+  }
+
+  sendResponse(res, 200, 'Order by ID fetched successfully', order);
 });
