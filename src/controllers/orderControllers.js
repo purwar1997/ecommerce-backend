@@ -120,7 +120,7 @@ export const getOrderById = handleAsync(async (req, res) => {
     throw new CustomError('Only the user who placed this order can view it', 403);
   }
 
-  sendResponse(res, 200, 'Order by ID fetched successfully', order);
+  sendResponse(res, 200, 'Order fetched by ID successfully', order);
 });
 
 export const cancelOrder = handleAsync(async (req, res) => {
@@ -220,4 +220,21 @@ export const adminGetOrders = handleAsync(async (req, res) => {
   res.set('X-Total-Count', orderCount);
 
   sendResponse(res, 200, 'Orders fetched successfully', orders);
+});
+
+export const adminGetOrderById = handleAsync(async (req, res) => {
+  const { orderId } = req.params;
+
+  const order = await Order.findById(orderId)
+    .populate({
+      path: 'items.product',
+      select: { title: 1, description: 1, price: 1, image: 1 },
+    })
+    .populate('shippingAddress');
+
+  if (!order) {
+    throw new CustomError('Order not found', 404);
+  }
+
+  sendResponse(res, 200, 'Order fetched by ID successfully', order);
 });

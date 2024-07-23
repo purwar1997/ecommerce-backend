@@ -10,5 +10,6 @@ export const expectedHttpActions = {
   '/admin/coupons': ['GET', 'POST'],
   '/admin/coupons/:couponId': ['GET', 'PUT', 'DELETE'],
   '/orders': ['GET', 'POST'],
+  '/admin/orders/:orderId': ['GET', 'PUT', 'DELETE'],
   '/reviews/:reviewId': ['GET', 'PUT'],
 };

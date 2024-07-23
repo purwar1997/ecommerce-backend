@@ -5,6 +5,7 @@ import {
   getOrderById,
   cancelOrder,
   adminGetOrders,
+  adminGetOrderById,
 } from '../controllers/orderControllers.js';
 import {
   createOrderSchema,
@@ -56,5 +57,15 @@ router
     validateQueryParams(adminOrdersQuerySchema),
     adminGetOrders
   );
+
+router
+  .route('/admin/orders/:orderId')
+  .all(
+    isHttpMethodAllowed,
+    isAuthenticated,
+    authorizeRole(ROLES.ADMIN),
+    validatePathParams(orderIdSchema)
+  )
+  .get(adminGetOrderById);
 
 export default router;
