@@ -12,7 +12,7 @@ export const getPathIDSchema = path =>
       'any.invalid': `Invalid ID format. Expected a valid objectId`,
     });
 
-export const paginationSchema = Joi.number()
+export const pageSchema = Joi.number()
   .integer()
   .min(1)
   .max(SAFE_INTEGER.MAX)

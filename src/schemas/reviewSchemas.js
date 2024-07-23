@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { formatOptions, removeExtraInnerSpaces, validateOption } from '../utils/helpers.js';
-import { getPathIDSchema, paginationSchema } from './commonSchemas.js';
+import { getPathIDSchema, pageSchema } from './commonSchemas.js';
 import { RATING, REVIEW_SORT_OPTIONS } from '../constants.js';
 
 export const reviewSchema = customJoi.object({
@@ -48,7 +48,7 @@ export const reviewsQuerySchema = Joi.object({
       )}`,
     }),
 
-  page: paginationSchema,
+  page: pageSchema,
 });
 
 export const reviewIdSchema = Joi.object({

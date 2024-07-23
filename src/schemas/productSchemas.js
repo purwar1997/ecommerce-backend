@@ -8,7 +8,7 @@ import {
   validateOption,
   formatOptions,
 } from '../utils/helpers.js';
-import { paginationSchema, getPathIDSchema } from './commonSchemas.js';
+import { pageSchema, getPathIDSchema } from './commonSchemas.js';
 import {
   PRICE,
   STOCK,
@@ -124,7 +124,7 @@ export const productsQuerySchema = Joi.object({
       )}`,
     }),
 
-  page: paginationSchema,
+  page: pageSchema,
 });
 
 export const adminProductsQuerySchema = Joi.object({
@@ -169,7 +169,7 @@ export const adminProductsQuerySchema = Joi.object({
       )}`,
     }),
 
-  page: paginationSchema,
+  page: pageSchema,
 });
 
 export const productIdSchema = Joi.object({

@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
-import { getPathIDSchema, paginationSchema } from './commonSchemas.js';
+import { getPathIDSchema, pageSchema } from './commonSchemas.js';
 import {
   validateObjectId,
   roundToTwoDecimalPlaces,
@@ -122,7 +122,7 @@ export const ordersQuerySchema = Joi.object({
       'number.max': `Order duration must be less than or equal to ${ORDER_DURATION.MAX}`,
     }),
 
-  page: paginationSchema,
+  page: pageSchema,
 });
 
 export const adminOrdersQuerySchema = Joi.object({
@@ -165,7 +165,7 @@ export const adminOrdersQuerySchema = Joi.object({
       )}`,
     }),
 
-  page: paginationSchema,
+  page: pageSchema,
 });
 
 export const orderStatusSchema = customJoi.object({

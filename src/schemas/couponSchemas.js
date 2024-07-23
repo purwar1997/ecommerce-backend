@@ -2,7 +2,7 @@ import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { couponCodeRegex } from '../utils/regex.js';
 import { formatOptions, validateCommaSeparatedValues, validateOption } from '../utils/helpers.js';
-import { paginationSchema, getPathIDSchema } from './commonSchemas.js';
+import { pageSchema, getPathIDSchema } from './commonSchemas.js';
 import {
   DISCOUNT_TYPES,
   DISCOUNT,
@@ -152,7 +152,7 @@ export const couponsQuerySchema = Joi.object({
       )}`,
     }),
 
-  page: paginationSchema,
+  page: pageSchema,
 });
 
 export const couponIdSchema = Joi.object({

@@ -2,7 +2,7 @@ import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { nameRegex, phoneRegex, passwordRegex } from '../utils/regex.js';
 import { formatOptions, validateOption, validateCommaSeparatedValues } from '../utils/helpers.js';
-import { getPathIDSchema, paginationSchema } from './commonSchemas.js';
+import { getPathIDSchema, pageSchema } from './commonSchemas.js';
 import { ROLES, USER_SORT_OPTIONS } from '../constants.js';
 
 export const updateUserSchema = customJoi
@@ -80,7 +80,7 @@ export const usersQuerySchema = Joi.object({
       )}`,
     }),
 
-  page: paginationSchema,
+  page: pageSchema,
 });
 
 export const userIdSchema = Joi.object({
