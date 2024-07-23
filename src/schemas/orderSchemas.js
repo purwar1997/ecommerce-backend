@@ -19,6 +19,10 @@ import {
   ORDER_STATUS,
 } from '../constants.js';
 
+const allowedStatusForUpdate = { ...ORDER_STATUS };
+delete allowedStatusForUpdate.CREATED;
+delete allowedStatusForUpdate.CANCELLED;
+
 const orderItemSchema = Joi.object({
   product: Joi.string().trim().required().custom(validateObjectId).messages({
     'any.required': 'Product is required',
@@ -162,6 +166,22 @@ export const adminOrdersQuerySchema = Joi.object({
     }),
 
   page: paginationSchema,
+});
+
+export const orderStatusSchema = customJoi.object({
+  status: Joi.string()
+    .trim()
+    .lowercase()
+    .required()
+    .custom(validateOption(allowedStatusForUpdate))
+    .messages({
+      'any.required': 'Order status is required',
+      'string.base': 'Order status must be a string',
+      'string.empty': 'Order status cannot be empty',
+      'any.invalid': `Invalid order status. Valid options are: ${formatOptions(
+        allowedStatusForUpdate
+      )}`,
+    }),
 });
 
 export const orderIdSchema = Joi.object({

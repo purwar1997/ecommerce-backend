@@ -238,3 +238,54 @@ export const adminGetOrderById = handleAsync(async (req, res) => {
 
   sendResponse(res, 200, 'Order fetched by ID successfully', order);
 });
+
+export const updateOrderStatus = handleAsync(async (req, res) => {
+  const { orderId } = req.params;
+  const { status } = req.body;
+
+  const allowedStatus = Object.values(ORDER_STATUS).filter(
+    status => status !== ORDER_STATUS.CANCELLED
+  );
+
+  const order = await Order.findOne({ _id: orderId, isDeleted: false });
+
+  if (!order) {
+    throw new CustomError('Order not found', 404);
+  }
+
+  if (order.status === ORDER_STATUS.CANCELLED) {
+    throw new CustomError('Status of cancelled orders cannot be updated', 403);
+  }
+
+  const currentStatusIndex = allowedStatus.indexOf(order.status);
+  const newStatusIndex = allowedStatus.indexOf(status);
+
+  if (order.status === status) {
+    throw new CustomError(`This order has already been marked as ${status}`, 409);
+  }
+
+  if (newStatusIndex < currentStatusIndex) {
+    throw new CustomError(`${order.status} order cannot be set back to ${status}`, 403);
+  }
+
+  if (newStatusIndex > currentStatusIndex + 1) {
+    const validStatus = allowedStatus[currentStatusIndex + 1];
+
+    throw new CustomError(
+      `${order.status} order has to be marked as ${validStatus} first, only then it can be ${status}`,
+      403
+    );
+  }
+
+  const updatedOrder = await Order.findByIdAndUpdate(
+    orderId,
+    {
+      status,
+      statusLastUpdatedBy: req.user._id,
+      statusUpdatedAt: new Date(),
+    },
+    { runValidators: true, new: true }
+  );
+
+  sendResponse(res, 200, 'Order status updated successfully', updatedOrder);
+});

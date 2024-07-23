@@ -6,11 +6,13 @@ import {
   cancelOrder,
   adminGetOrders,
   adminGetOrderById,
+  updateOrderStatus,
 } from '../controllers/orderControllers.js';
 import {
   createOrderSchema,
   ordersQuerySchema,
   adminOrdersQuerySchema,
+  orderStatusSchema,
   orderIdSchema,
 } from '../schemas/orderSchemas.js';
 import { isHttpMethodAllowed } from '../middlewares/isHttpMethodAllowed.js';
@@ -66,6 +68,7 @@ router
     authorizeRole(ROLES.ADMIN),
     validatePathParams(orderIdSchema)
   )
-  .get(adminGetOrderById);
+  .get(adminGetOrderById)
+  .put(validatePayload(orderStatusSchema), updateOrderStatus);
 
 export default router;
