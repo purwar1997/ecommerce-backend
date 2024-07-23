@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import pluralize from 'pluralize';
-import { DISCOUNT_TYPES } from '../constants.js';
+import { format } from 'date-fns';
 
 export const serializeDocs = data => {
   if (!data) {
@@ -106,13 +106,7 @@ export const singularize = str => {
   return pluralize.singular(str);
 };
 
-export const parseDate = currentDate => {
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth() + 1;
-  const date = currentDate.getDate();
-
-  return `${year}/${month}/${date}`;
-}
+export const getDateString = isoDateStr => format(new Date(isoDateStr), 'MMMM d, YYYY');
 
 export const getCurrentDateMilliSec = () => {
    const current = new Date();

@@ -3,8 +3,8 @@ import Product from '../models/product.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import sendEmail from '../services/sendEmail.js';
-import { sendResponse, getCurrentDateMilliSec } from '../utils/helpers.js';
 import { orderSortRules } from '../utils/sortRules.js';
+import { sendResponse, getCurrentDateMilliSec, getDateString } from '../utils/helpers.js';
 import { GST, DISCOUNT_TYPES, PAGINATION, ORDER_STATUS, PAYMENT_METHODS } from '../constants.js';
 
 export const createOrder = handleAsync(async (req, res) => {
@@ -334,7 +334,9 @@ export const deleteOrder = handleAsync(async (req, res) => {
       const options = {
         recipient: order.user.email,
         subject: 'Order deletion email',
-        text: `Dear ${fullname}, we regret to inform you that your order #${orderId} placed on ${order.createdAt}, has been deleted.`,
+        text: `Dear ${fullname}, we regret to inform you that your order #${orderId} placed on ${getDateString(
+          order.createdAt
+        )}, has been deleted.`,
       };
 
       await sendEmail(options);

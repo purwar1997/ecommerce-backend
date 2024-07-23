@@ -1,19 +1,16 @@
-const padZero = num => (num < 10 ? '0' : '') + num;
+import { format } from 'date-fns';
 
-const parseDate = currentDate => {
-  const year = currentDate.getFullYear();
-  const month = padZero(currentDate.getMonth() + 1);
-  const date = padZero(currentDate.getDate());
-
-  return `access-${year}-${month}-${date}.log`;
+const formatDate = date => {
+  const dateString = format(date, 'yyyy-MM-dd');
+  return `access-${dateString}.log`;
 };
 
 const generator = date => {
   if (!date) {
-    return parseDate(new Date());
+    return formatDate(new Date());
   }
 
-  return parseDate(date);
+  return formatDate(date);
 };
 
 export default generator;
