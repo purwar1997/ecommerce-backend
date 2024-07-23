@@ -8,7 +8,7 @@ import {
   DISCOUNT,
   COUPON_STATES,
   COUPON_SORT_OPTIONS,
-  COUPON_EXPIRY_LIMIT,
+  EXPIRY_DURATION,
   COUPON_STATUS,
 } from '../constants.js';
 
@@ -102,18 +102,18 @@ export const couponCodeSchema = Joi.object({
 });
 
 export const couponsQuerySchema = Joi.object({
-  expiryLimit: Joi.number()
+  duration: Joi.number()
     .integer()
-    .min(COUPON_EXPIRY_LIMIT.MIN)
-    .max(COUPON_EXPIRY_LIMIT.MAX)
+    .min(EXPIRY_DURATION.MIN)
+    .max(EXPIRY_DURATION.MAX)
     .empty('')
-    .default(COUPON_EXPIRY_LIMIT.DEFAULT)
+    .default(EXPIRY_DURATION.DEFAULT)
     .unsafe()
     .messages({
-      'number.base': 'Expiry limit must be a number',
-      'number.integer': 'Expiry limit must be an integer',
-      'number.min': `Expiry limit must be at least ${COUPON_EXPIRY_LIMIT.MIN}`,
-      'number.max': `Expiry limit must be less than or equal to ${COUPON_EXPIRY_LIMIT.MAX}`,
+      'number.base': 'Expiry duration must be a number',
+      'number.integer': 'Expiry duration must be an integer',
+      'number.min': `Expiry duration must be at least ${EXPIRY_DURATION.MIN}`,
+      'number.max': `Expiry duration must be less than or equal to ${EXPIRY_DURATION.MAX}`,
     }),
 
   discountType: Joi.string()

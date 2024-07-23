@@ -148,7 +148,7 @@ export const USER_SORT_OPTIONS = Object.freeze({
   NAME_DESC: 'name_desc',
 });
 
-export const COUPON_EXPIRY_LIMIT = Object.freeze({
+export const EXPIRY_DURATION = Object.freeze({
   MIN: 1,
   MAX: Number.MAX_SAFE_INTEGER,
   DEFAULT: 15,

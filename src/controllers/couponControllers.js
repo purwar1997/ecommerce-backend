@@ -35,11 +35,11 @@ export const checkCouponValidity = handleAsync(async (req, res) => {
 });
 
 export const getCoupons = handleAsync(async (req, res) => {
-  const { expiryLimit, discountType, status, sort, page } = req.query;
+  const { duration, discountType, status, sort, page } = req.query;
   const filters = {};
 
   filters.expiryDate = {
-    $lt: new Date(getCurrentDateMilliSec() + expiryLimit * 24 * 60 * 60 * 1000),
+    $lt: new Date(getCurrentDateMilliSec() + duration * 24 * 60 * 60 * 1000),
   };
 
   if (discountType.length > 0) {
