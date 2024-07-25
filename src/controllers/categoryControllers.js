@@ -3,7 +3,7 @@ import Category from '../models/category.js';
 import Product from '../models/product.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
-import { sendResponse, removeDuplicateItems } from '../utils/helpers.js';
+import { sendResponse, removeDuplicateItems } from '../utils/helperFunctions.js';
 import { uploadImage, deleteImage } from '../services/cloudinaryAPIs.js';
 import { UPLOAD_FOLDERS } from '../constants.js';
 

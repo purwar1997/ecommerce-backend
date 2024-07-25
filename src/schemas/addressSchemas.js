@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { fullnameRegex, phoneRegex, postalCodeRegex } from '../utils/regex.js';
-import { removeExtraInnerSpaces } from '../utils/helpers.js';
+import { removeExtraInnerSpaces } from '../utils/joiSanitizers.js';
 import { getPathIDSchema } from './commonSchemas.js';
 
 export const addressSchema = customJoi.object({

@@ -1,7 +1,8 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { nameRegex, phoneRegex, passwordRegex } from '../utils/regex.js';
-import { formatOptions, validateOption, validateCommaSeparatedValues } from '../utils/helpers.js';
+import { formatOptions } from '../utils/helperFunctions.js';
+import { validateOption, validateCommaSeparatedValues } from '../utils/joiValidators.js';
 import { getPathIDSchema, pageSchema } from './commonSchemas.js';
 import { ROLES, USER_SORT_OPTIONS } from '../constants.js';
 

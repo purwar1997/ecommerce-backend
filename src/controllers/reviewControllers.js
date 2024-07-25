@@ -3,7 +3,7 @@ import Product from '../models/product.js';
 import Order from '../models/order.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
-import { sendResponse } from '../utils/helpers.js';
+import { sendResponse } from '../utils/helperFunctions.js';
 import { reviewSortRules } from '../utils/sortRules.js';
 import { PAGINATION, ORDER_STATUS } from '../constants.js';
 

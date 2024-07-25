@@ -1,7 +1,8 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { couponCodeRegex } from '../utils/regex.js';
-import { formatOptions, validateCommaSeparatedValues, validateOption } from '../utils/helpers.js';
+import { formatOptions } from '../utils/helperFunctions.js';
+import { validateCommaSeparatedValues, validateOption } from '../utils/joiValidators.js';
 import { pageSchema, getPathIDSchema } from './commonSchemas.js';
 import {
   DISCOUNT_TYPES,

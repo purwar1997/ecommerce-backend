@@ -1,7 +1,7 @@
 import User from '../models/user.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
-import { sendResponse } from '../utils/helpers.js';
+import { sendResponse } from '../utils/helperFunctions.js';
 import { clearCookieOptions } from '../utils/cookieOptions.js';
 import { uploadImage, deleteImage } from '../services/cloudinaryAPIs.js';
 import { userSortRules } from '../utils/sortRules.js';

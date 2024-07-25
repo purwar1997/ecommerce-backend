@@ -1,7 +1,7 @@
 import Coupon from '../models/coupon.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
-import { sendResponse, getCurrentDateMilliSec } from '../utils/helpers.js';
+import { sendResponse, getCurrentDateMilliSec } from '../utils/helperFunctions.js';
 import { couponSortRules } from '../utils/sortRules.js';
 import { PAGINATION, DISCOUNT_TYPES, COUPON_STATUS, COUPON_STATES } from '../constants.js';
 

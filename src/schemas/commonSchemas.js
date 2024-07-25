@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { validatePathId } from '../utils/helpers.js';
+import { validatePathId } from '../utils/joiValidators.js';
 import { SAFE_INTEGER } from '../constants.js';
 
 export const getPathIDSchema = path =>

@@ -1,7 +1,7 @@
 import Address from '../models/address.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
-import { sendResponse } from '../utils/helpers.js';
+import { sendResponse } from '../utils/helperFunctions.js';
 
 export const getAddresses = handleAsync(async (req, res) => {
   const addresses = await Address.find({ user: req.user._id, isDeleted: false });

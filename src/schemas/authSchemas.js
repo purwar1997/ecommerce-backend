@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { nameRegex, phoneRegex, passwordRegex } from '../utils/regex.js';
-import { validateToken } from '../utils/helpers.js';
+import { validateToken } from '../utils/joiValidators.js';
 
 const emailSchema = Joi.string()
   .trim()

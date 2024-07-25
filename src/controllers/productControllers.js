@@ -4,7 +4,7 @@ import Category from '../models/category.js';
 import Brand from '../models/brand.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
-import { sendResponse, checkBoolean } from '../utils/helpers.js';
+import { sendResponse, checkBoolean } from '../utils/helperFunctions.js';
 import { productSortRules, adminProductSortRules } from '../utils/sortRules.js';
 import { deleteImage, uploadImage } from '../services/cloudinaryAPIs.js';
 import { PAGINATION, UPLOAD_FOLDERS, FILTER_OPTIONS } from '../constants.js';

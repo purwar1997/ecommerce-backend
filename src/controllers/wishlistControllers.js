@@ -2,7 +2,7 @@ import User from '../models/user.js';
 import Product from '../models/product.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
-import { sendResponse } from '../utils/helpers.js';
+import { sendResponse } from '../utils/helperFunctions.js';
 
 export const getWishlist = handleAsync(async (req, res) => {
   const user = await User.findById(req.user._id).populate({

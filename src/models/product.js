@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { roundOneDecimal, roundTwoDecimals } from '../utils/helpers.js';
+import { roundOneDecimal, roundTwoDecimals } from '../utils/helperFunctions.js';
 import { imageUrlRegex } from '../utils/regex.js';
 import { PRICE, STOCK } from '../constants.js';
 

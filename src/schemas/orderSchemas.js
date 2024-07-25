@@ -1,14 +1,13 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
 import { getPathIDSchema, pageSchema } from './commonSchemas.js';
+import { formatOptions } from '../utils/helperFunctions.js';
+import { roundToTwoDecimalPlaces, stripEmptyKeys } from '../utils/joiSanitizers.js';
 import {
   validateObjectId,
-  roundToTwoDecimalPlaces,
-  stripEmptyKeys,
-  formatOptions,
   validateOption,
   validateCommaSeparatedValues,
-} from '../utils/helpers.js';
+} from '../utils/joiValidators.js';
 import {
   QUANTITY,
   PRICE,

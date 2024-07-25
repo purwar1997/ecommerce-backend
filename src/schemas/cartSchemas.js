@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
-import { validateObjectId } from '../utils/helpers.js';
+import { validateObjectId } from '../utils/joiValidators.js';
 import { QUANTITY } from '../constants.js';
 
 export const productIdSchema = customJoi.object({

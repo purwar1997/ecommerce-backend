@@ -4,7 +4,7 @@ import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import sendEmail from '../services/sendEmail.js';
 import { setCookieOptions, clearCookieOptions } from '../utils/cookieOptions.js';
-import { sendResponse } from '../utils/helpers.js';
+import { sendResponse } from '../utils/helperFunctions.js';
 
 export const signup = handleAsync(async (req, res) => {
   const { firstname, lastname, email, phone, password } = req.body;

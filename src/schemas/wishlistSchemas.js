@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
-import { validateObjectId } from '../utils/helpers.js';
+import { validateObjectId } from '../utils/joiValidators.js';
 
 export const productIdSchema = customJoi.object({
   productId: Joi.string().trim().required().custom(validateObjectId).messages({

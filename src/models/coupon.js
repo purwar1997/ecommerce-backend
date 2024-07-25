@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { couponCodeRegex } from '../utils/regex.js';
-import { formatOptions } from '../utils/helpers.js';
+import { formatOptions } from '../utils/helperFunctions.js';
 import { DISCOUNT_TYPES, DISCOUNT, COUPON_STATUS } from '../constants.js';
 
 const Schema = mongoose.Schema;

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import CustomError from '../utils/customError.js';
-import { formatCastError } from '../utils/helpers.js';
+import { formatCastError } from '../utils/helperFunctions.js';
 
 export const errorHandler = (err, _req, res, _next) => {
   console.error(err);

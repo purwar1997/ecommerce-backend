@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import config from '../config/config.js';
 import { nameRegex, emailRegex, phoneRegex, imageUrlRegex } from '../utils/regex.js';
-import { formatOptions } from '../utils/helpers.js';
+import { formatOptions } from '../utils/helperFunctions.js';
 import { QUANTITY, ROLES, JWT } from '../constants.js';
 
 const Schema = mongoose.Schema;
