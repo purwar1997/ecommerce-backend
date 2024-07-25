@@ -21,7 +21,7 @@ export const createOrder = handleAsync(async (req, res) => {
     if (discountType === DISCOUNT_TYPES.FLAT) {
       if (orderAmount < flatDiscount) {
         throw new CustomError(
-          `Order amount must be atleast ₹${flatDiscount} to apply this coupon`,
+          `Order amount must be at least ₹${flatDiscount} to apply this coupon`,
           400
         );
       }
@@ -212,7 +212,7 @@ export const adminGetOrders = handleAsync(async (req, res) => {
     .limit(limit)
     .populate({
       path: 'items.product',
-      select: { name: 1, price: 1 },
+      select: { title: 1, price: 1 },
     });
 
   const orderCount = await Order.countDocuments(filters);

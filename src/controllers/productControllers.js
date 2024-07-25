@@ -33,13 +33,7 @@ export const getProducts = handleAsync(async (req, res) => {
   const offset = (page - 1) * PAGINATION.PRODUCTS_PER_PAGE;
   const limit = PAGINATION.PRODUCTS_PER_PAGE;
 
-  const products = await Product.find(filters)
-    .sort(sortRule)
-    .skip(offset)
-    .limit(limit)
-    .populate('brand', 'name')
-    .populate('category', 'title');
-
+  const products = await Product.find(filters).sort(sortRule).skip(offset).limit(limit);
   const productCount = await Product.countDocuments(filters);
 
   res.set('X-Total-Count', productCount);
@@ -91,13 +85,7 @@ export const adminGetProducts = handleAsync(async (req, res) => {
   const offset = (page - 1) * PAGINATION.PRODUCTS_PER_PAGE;
   const limit = PAGINATION.PRODUCTS_PER_PAGE;
 
-  const products = await Product.find(filters)
-    .sort(sortRule)
-    .skip(offset)
-    .limit(limit)
-    .populate('brand', 'name')
-    .populate('category', 'title');
-
+  const products = await Product.find(filters).sort(sortRule).skip(offset).limit(limit);
   const productCount = await Product.countDocuments(filters);
 
   res.set('X-Total-Count', productCount);
