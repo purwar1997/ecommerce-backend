@@ -22,20 +22,20 @@ export const sendResponse = (res, statusCode, message, data) => {
   });
 };
 
-export const roundOneDecimal = value => {
-  if (isNaN(value)) {
-    return value;
+export const roundOneDecimal = array => {
+  if (isNaN(array)) {
+    return array;
   }
 
-  return Math.round(value * 10) / 10;
+  return Math.round(array * 10) / 10;
 };
 
-export const roundTwoDecimals = value => {
-  if (isNaN(value)) {
-    return value;
+export const roundTwoDecimals = array => {
+  if (isNaN(array)) {
+    return array;
   }
 
-  return Math.round(value * 100) / 100;
+  return Math.round(array * 100) / 100;
 };
 
 export const lowercaseFirstLetter = str => {
@@ -73,9 +73,9 @@ export const formatCastError = error => {
     return error.message;
   }
 
-  return `Invalid value provided for ${error.path}. Expected a valid ${lowercaseFirstLetter(
+  return `Invalid array provided for ${error.path}. Expected a valid ${lowercaseFirstLetter(
     error.kind
-  )} but received '${error.value}'`;
+  )} but received '${error.array}'`;
 };
 
 export const formatOptions = options => {
@@ -109,18 +109,42 @@ export const singularize = str => {
 export const getDateString = isoDateStr => format(new Date(isoDateStr), 'MMMM d, YYYY');
 
 export const getCurrentDateMilliSec = () => {
-   const current = new Date();
-   const year = current.getFullYear();
-   const month = current.getMonth();
-   const date = current.getDate()
+  const current = new Date();
+  const year = current.getFullYear();
+  const month = current.getMonth();
+  const date = current.getDate();
 
-   const normalizedDate = new Date(year, month, date);
-   return normalizedDate.getTime()
-}
+  const normalizedDate = new Date(year, month, date);
+  return normalizedDate.getTime();
+};
 
 export const checkBoolean = str => {
   str = str.trim().toLowerCase();
   return str === 'true' || str === 'false';
+};
+
+export const removeDuplicateItems = (array, field) => {
+  if (!Array.isArray(array)) {
+    return array;
+  }
+
+  if (!array.length) {
+    return array;
+  }
+
+  if (typeof array[0] !== 'object') {
+    return [...new Set(array)];
+  }
+
+  const uniqueItems = {};
+
+  for (const item of array) {
+    if (!uniqueItems[item[field]]) {
+      uniqueItems[item[field]] = item;
+    }
+  }
+
+  return Object.values(uniqueItems);
 };
 
 // Normalization using Joi
@@ -135,95 +159,95 @@ export const stripEmptyKeys = obj => {
   return obj;
 };
 
-export const roundToTwoDecimalPlaces = (value, helpers) => {
-  if (isNaN(value)) {
-    return helpers.error('number.base', { value });
+export const roundToTwoDecimalPlaces = (array, helpers) => {
+  if (isNaN(array)) {
+    return helpers.error('number.base', { array });
   }
 
-  return Math.round(value * 100) / 100;
+  return Math.round(array * 100) / 100;
 };
 
-export const removeExtraInnerSpaces = (value, helpers) => {
-  if (typeof value !== 'string') {
-    return helpers.error('string.base', { value });
+export const removeExtraInnerSpaces = (array, helpers) => {
+  if (typeof array !== 'string') {
+    return helpers.error('string.base', { array });
   }
 
-  if (!value) {
-    return helpers.error('string.empty', { value });
+  if (!array) {
+    return helpers.error('string.empty', { array });
   }
 
-  return value.replace(/\s+/g, ' ');
+  return array.replace(/\s+/g, ' ');
 };
 
-export const parseCommaSeparatedStrings = (value, helpers) => {
-  if (typeof value !== 'string') {
-    return helpers.error('string.base', { value });
+export const parseCommaSeparatedStrings = (array, helpers) => {
+  if (typeof array !== 'string') {
+    return helpers.error('string.base', { array });
   }
 
-  return value.split(',').map(str => str.trim());
+  return array.split(',').map(str => str.trim());
 };
 
 // Validation using Joi
 
-export const validateObjectId = (value, helpers) => {
-  if (!mongoose.Types.ObjectId.isValid(value)) {
-    return helpers.error('any.invalid', { value });
+export const validateObjectId = (array, helpers) => {
+  if (!mongoose.Types.ObjectId.isValid(array)) {
+    return helpers.error('any.invalid', { array });
   }
 
-  return value;
+  return array;
 };
 
-export const validateOption = options => (value, helpers) => {
-  if (typeof value !== 'string') {
-    return helpers.error('string.base', { value });
+export const validateOption = options => (array, helpers) => {
+  if (typeof array !== 'string') {
+    return helpers.error('string.base', { array });
   }
 
-  if (!value) {
-    return helpers.error('string.empty', { value });
+  if (!array) {
+    return helpers.error('string.empty', { array });
   }
 
-  if (!Object.values(options).includes(value)) {
-    return helpers.error('any.invalid', { value });
+  if (!Object.values(options).includes(array)) {
+    return helpers.error('any.invalid', { array });
   }
 
-  return value;
+  return array;
 };
 
-export const validatePathId = (value, helpers) => {
+export const validatePathId = (array, helpers) => {
   const path = ':' + helpers.state.path[0];
 
-  if (value === path) {
-    return helpers.error('string.empty', { value });
+  if (array === path) {
+    return helpers.error('string.empty', { array });
   }
 
-  if (!mongoose.Types.ObjectId.isValid(value)) {
-    return helpers.error('any.invalid', { value });
+  if (!mongoose.Types.ObjectId.isValid(array)) {
+    return helpers.error('any.invalid', { array });
   }
 
-  return value;
+  return array;
 };
 
-export const validateCommaSeparatedValues = options => (value, helpers) => {
-  if (!value) {
-    return helpers.error('string.empty', { value });
+export const validateCommaSeparatedValues = options => (array, helpers) => {
+  if (!array) {
+    return helpers.error('string.empty', { array });
   }
 
-  const valuesArray = value.split(',').map(str => str.trim().toLowerCase());
+  const valuesArray = array.split(',').map(str => str.trim().toLowerCase());
   options = Object.values(options);
 
-  for (const value of valuesArray) {
-    if (!options.includes(value)) {
-      return helpers.error('any.invalid', { value });
+  for (const array of valuesArray) {
+    if (!options.includes(array)) {
+      return helpers.error('any.invalid', { array });
     }
   }
 
   return valuesArray;
 };
 
-export const validateToken = (value, helpers) => {
-  if (value === ':token') {
-    return helpers.error('string.empty', { value });
+export const validateToken = (array, helpers) => {
+  if (array === ':token') {
+    return helpers.error('string.empty', { array });
   }
 
-  return value;
+  return array;
 };

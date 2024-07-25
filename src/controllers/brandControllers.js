@@ -1,8 +1,9 @@
 import mongoose from 'mongoose';
 import Brand from '../models/brand.js';
+import Product from '../models/product.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
-import { sendResponse } from '../utils/helpers.js';
+import { removeDuplicateItems, sendResponse } from '../utils/helpers.js';
 import { uploadImage, deleteImage } from '../services/cloudinaryAPIs.js';
 import { UPLOAD_FOLDERS } from '../constants.js';
 
@@ -90,4 +91,13 @@ export const updateBrand = handleAsync(async (req, res) => {
   );
 
   sendResponse(res, 200, 'Brand updated successfully', updatedBrand);
+});
+
+export const getProductBrands = handleAsync(async (_req, res) => {
+  const products = await Product.find({ isDeleted: false }).select('brand').populate('brand');
+
+  let brands = products.map(product => product.brand);
+  brands = removeDuplicateItems(brands, '_id');
+
+  sendResponse(res, 200, 'Product brands fetched successfully', brands);
 });

@@ -4,6 +4,7 @@ import {
   getBrandById,
   addNewBrand,
   updateBrand,
+  getProductBrands,
 } from '../controllers/brandControllers.js';
 import { brandSchema, brandIdSchema } from '../schemas/brandSchemas.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
@@ -36,5 +37,7 @@ router
     validatePayload(brandSchema),
     updateBrand
   );
+
+router.route('/product/brands').get(getProductBrands);
 
 export default router;

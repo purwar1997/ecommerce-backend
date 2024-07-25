@@ -1,12 +1,13 @@
 import mongoose from 'mongoose';
 import Category from '../models/category.js';
+import Product from '../models/product.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
-import { sendResponse } from '../utils/helpers.js';
+import { sendResponse, removeDuplicateItems } from '../utils/helpers.js';
 import { uploadImage, deleteImage } from '../services/cloudinaryAPIs.js';
 import { UPLOAD_FOLDERS } from '../constants.js';
 
-export const getCategories = handleAsync(async (_req, res) => {
+export const getAllCategories = handleAsync(async (_req, res) => {
   const categories = await Category.find();
 
   sendResponse(res, 200, 'Categories fetched successfully', categories);
@@ -90,4 +91,13 @@ export const updateCategory = handleAsync(async (req, res) => {
   );
 
   sendResponse(res, 200, 'Category updated successfully', updatedCategory);
+});
+
+export const getProductCategories = handleAsync(async (_req, res) => {
+  const products = await Product.find({ isDeleted: false }).select('category').populate('category');
+
+  let categories = products.map(product => product.category);
+  categories = removeDuplicateItems(categories, '_id');
+
+  sendResponse(res, 200, 'Product categories fetched successfully', categories);
 });

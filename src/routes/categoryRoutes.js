@@ -1,9 +1,10 @@
 import express from 'express';
 import {
-  getCategories,
+  getAllCategories,
   getCategoryById,
   addNewCategory,
   updateCategory,
+  getProductCategories,
 } from '../controllers/categoryControllers.js';
 import { categorySchema, categoryIdSchema } from '../schemas/categorySchemas.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
@@ -13,7 +14,7 @@ import { ROLES, UPLOAD_FOLDERS, UPLOAD_FILES } from '../constants.js';
 
 const router = express.Router();
 
-router.route('/categories').get(getCategories);
+router.route('/categories').get(getAllCategories);
 router.route('/categories/:categoryId').get(validatePathParams(categoryIdSchema), getCategoryById);
 
 router
@@ -37,4 +38,6 @@ router
     updateCategory
   );
 
+router.route('/product/categories').get(getProductCategories);
+  
 export default router;
