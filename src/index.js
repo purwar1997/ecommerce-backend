@@ -1,4 +1,4 @@
-import config from './config/config.js';
+import config from './config/env.config.js';
 import connectDB from './db/index.js';
 import app from './app.js';
 

@@ -1,5 +1,5 @@
 import transporter from '../config/transporter.config.js';
-import config from '../config/config.js';
+import config from '../config/env.config.js';
 import CustomError from '../utils/customError.js';
 
 const sendEmail = async options => {

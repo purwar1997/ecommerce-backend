@@ -2,10 +2,10 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import config from '../config/config.js';
-import { nameRegex, emailRegex, phoneRegex, imageUrlRegex } from '../utils/regex.js';
+import config from '../config/env.config.js';
 import { formatOptions } from '../utils/helperFunctions.js';
-import { QUANTITY, ROLES, JWT } from '../constants.js';
+import { QUANTITY, ROLES, JWT } from '../constants/common.js';
+import { REGEX } from '../constants/regexPatterns.js';
 
 const Schema = mongoose.Schema;
 
@@ -32,12 +32,12 @@ const userSchema = new Schema(
     firstname: {
       type: String,
       required: [true, 'First name is required'],
-      match: [nameRegex, 'First name must contain only letters'],
+      match: [REGEX.NAME, 'First name must contain only letters'],
       maxLength: [50, 'First name cannot exceed 50 characters'],
     },
     lastname: {
       type: String,
-      match: [nameRegex, 'Last name must contain only letters'],
+      match: [REGEX.NAME, 'Last name must contain only letters'],
       maxLength: [50, 'Last name cannot exceed 50 characters'],
     },
     email: {
@@ -45,13 +45,13 @@ const userSchema = new Schema(
       unique: true,
       immutable: true,
       required: [true, 'Email address is required'],
-      match: [emailRegex, 'Please provide a valid email address'],
+      match: [REGEX.EMAIL, 'Please provide a valid email address'],
     },
     phone: {
       type: String,
       unique: true,
       required: [true, 'Phone number is required'],
-      match: [phoneRegex, 'Please provide a valid phone number'],
+      match: [REGEX.PHONE, 'Please provide a valid phone number'],
     },
     password: {
       type: String,
@@ -69,7 +69,7 @@ const userSchema = new Schema(
     avatar: {
       url: {
         type: String,
-        match: [imageUrlRegex, 'Invalid image URL format'],
+        match: [REGEX.IMAGE_URL, 'Invalid image URL format'],
       },
       publicId: String,
     },

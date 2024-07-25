@@ -5,7 +5,7 @@ import {
   REVIEW_SORT_OPTIONS,
   USER_SORT_OPTIONS,
   ORDER_SORT_OPTIONS,
-} from '../constants.js';
+} from '../constants/sortOptions.js';
 
 const { RECOMMENDED, NEWLY_ADDED, CUSTOMER_RATING, PRICE_LOW_TO_HIGH, PRICE_HIGH_TO_LOW } =
   PRODUCT_SORT_OPTIONS;

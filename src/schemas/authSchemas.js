@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
-import { nameRegex, phoneRegex, passwordRegex } from '../utils/regex.js';
 import { validateToken } from '../utils/joiValidators.js';
+import { REGEX } from '../constants/regexPatterns.js';
 
 const emailSchema = Joi.string()
   .trim()
@@ -15,7 +15,7 @@ const emailSchema = Joi.string()
     'string.email': 'Please provide a valid email address',
   });
 
-const passwordSchema = Joi.string().pattern(passwordRegex).required().messages({
+const passwordSchema = Joi.string().pattern(REGEX.PASSWORD).required().messages({
   'any.required': 'Password is required',
   'string.base': 'Password must be string',
   'string.empty': 'Password cannot be empty',
@@ -29,7 +29,7 @@ const confirmPasswordSchema = Joi.any().valid(Joi.ref('password')).required().st
 });
 
 export const signupSchema = customJoi.object({
-  firstname: Joi.string().trim().pattern(nameRegex).max(50).required().messages({
+  firstname: Joi.string().trim().pattern(REGEX.NAME).max(50).required().messages({
     'any.required': 'First name is required',
     'string.base': 'First name must be a string',
     'string.empty': 'First name cannot be empty',
@@ -37,7 +37,7 @@ export const signupSchema = customJoi.object({
     'string.max': 'First name cannot exceed 50 characters',
   }),
 
-  lastname: Joi.string().trim().pattern(nameRegex).max(50).allow('').messages({
+  lastname: Joi.string().trim().pattern(REGEX.NAME).max(50).allow('').messages({
     'string.base': 'Last name must be a string',
     'string.pattern.base': 'Last name must contain only letters',
     'string.max': 'Last name cannot exceed 50 characters',
@@ -45,7 +45,7 @@ export const signupSchema = customJoi.object({
 
   email: emailSchema,
 
-  phone: Joi.string().trim().pattern(phoneRegex).required().messages({
+  phone: Joi.string().trim().pattern(REGEX.PHONE).required().messages({
     'any.required': 'Phone number is required',
     'string.base': 'Phone number must be a string',
     'string.empty': 'Phone number cannot be empty',

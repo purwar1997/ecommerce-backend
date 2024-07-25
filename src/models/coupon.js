@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
-import { couponCodeRegex } from '../utils/regex.js';
 import { formatOptions } from '../utils/helperFunctions.js';
-import { DISCOUNT_TYPES, DISCOUNT, COUPON_STATUS } from '../constants.js';
+import { REGEX } from '../constants/regexPatterns.js';
+import { DISCOUNT_TYPES, DISCOUNT, COUPON_STATUS } from '../constants/common.js';
 
 const Schema = mongoose.Schema;
 
@@ -12,7 +12,7 @@ const couponSchema = new Schema(
       unique: true,
       required: [true, 'Coupon code is required'],
       match: [
-        couponCodeRegex,
+        REGEX.COUPON_CODE,
         'Coupon code must be 5-15 characters long, start with a letter, and contain only uppercase letters and digits',
       ],
     },

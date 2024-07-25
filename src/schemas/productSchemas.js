@@ -8,14 +8,9 @@ import {
 } from '../utils/joiSanitizers.js';
 import { validateObjectId, validateOption } from '../utils/joiValidators.js';
 import { pageSchema, getPathIDSchema } from './commonSchemas.js';
-import {
-  PRICE,
-  STOCK,
-  RATING,
-  PRODUCT_SORT_OPTIONS,
-  ADMIN_PRODUCT_SORT_OPTIONS,
-  FILTER_OPTIONS,
-} from '../constants.js';
+import { PRICE, STOCK, RATING } from '../constants/common.js';
+import { PRODUCT_SORT_OPTIONS, ADMIN_PRODUCT_SORT_OPTIONS } from '../constants/sortOptions.js';
+import { FILTER_OPTIONS } from '../constants/filterOptions.js';
 
 const categoriesSchema = Joi.string()
   .trim()

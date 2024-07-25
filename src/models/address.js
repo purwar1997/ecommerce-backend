@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { fullnameRegex, phoneRegex, postalCodeRegex } from '../utils/regex.js';
+import { REGEX } from '../constants/regexPatterns.js';
 
 const Schema = mongoose.Schema;
 
@@ -8,13 +8,13 @@ const addressSchema = new Schema(
     fullname: {
       type: String,
       required: [true, 'Full name is required'],
-      match: [fullnameRegex, 'Full name must contain only letters'],
+      match: [REGEX.FULL_NAME, 'Full name must contain only letters'],
       maxLength: [100, 'Full name cannot exceed 100 characters'],
     },
     phone: {
       type: String,
       required: [true, 'Phone number is required'],
-      match: [phoneRegex, 'Please enter a valid phone number for delivery issues'],
+      match: [REGEX.PHONE, 'Please enter a valid phone number for delivery issues'],
     },
     line1: {
       type: String,
@@ -44,7 +44,7 @@ const addressSchema = new Schema(
     postalCode: {
       type: String,
       required: [true, 'Postal code is required'],
-      match: [postalCodeRegex, 'Please enter a valid postal code'],
+      match: [REGEX.POSTAL_CODE, 'Please enter a valid postal code'],
     },
     isDefault: {
       type: Boolean,

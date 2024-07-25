@@ -28,7 +28,7 @@ import {
   validateCoupon,
   validateAddress,
 } from '../middlewares/orderValidators.js';
-import { ROLES } from '../constants.js';
+import { ROLES } from '../constants/common.js';
 
 const router = express.Router();
 

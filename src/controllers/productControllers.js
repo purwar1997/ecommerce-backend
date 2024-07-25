@@ -7,7 +7,8 @@ import CustomError from '../utils/customError.js';
 import { sendResponse, checkBoolean } from '../utils/helperFunctions.js';
 import { productSortRules, adminProductSortRules } from '../utils/sortRules.js';
 import { deleteImage, uploadImage } from '../services/cloudinaryAPIs.js';
-import { PAGINATION, UPLOAD_FOLDERS, FILTER_OPTIONS } from '../constants.js';
+import { PAGINATION, UPLOAD_FOLDERS } from '../constants/common.js';
+import { FILTER_OPTIONS } from '../constants/filterOptions.js';
 
 export const getProducts = handleAsync(async (req, res) => {
   const { categories, brands, rating, sort, page } = req.query;

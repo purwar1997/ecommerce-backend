@@ -5,7 +5,13 @@ import CustomError from '../utils/customError.js';
 import sendEmail from '../services/sendEmail.js';
 import { orderSortRules } from '../utils/sortRules.js';
 import { sendResponse, getCurrentDateMilliSec, getDateString } from '../utils/helperFunctions.js';
-import { GST, DISCOUNT_TYPES, PAGINATION, ORDER_STATUS, PAYMENT_METHODS } from '../constants.js';
+import {
+  GST,
+  DISCOUNT_TYPES,
+  PAGINATION,
+  ORDER_STATUS,
+  PAYMENT_METHODS,
+} from '../constants/common.js';
 
 export const createOrder = handleAsync(async (req, res) => {
   const { items, shippingCharges } = req.body;

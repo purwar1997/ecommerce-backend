@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import config from '../config/config.js';
-import { STORAGE } from '../constants.js';
+import config from '../config/env.config.js';
+import { STORAGE } from '../constants/common.js';
 
 const connectDB = async () => {
   try {

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { imageUrlRegex } from '../utils/regex.js';
+import { REGEX } from '../constants/regexPatterns.js';
 
 const Schema = mongoose.Schema;
 
@@ -15,7 +15,7 @@ const brandSchema = new Schema(
       url: {
         type: String,
         required: [true, 'Image URL is required'],
-        match: [imageUrlRegex, 'Invalid image URL format'],
+        match: [REGEX.IMAGE_URL, 'Invalid image URL format'],
       },
       publicId: {
         type: String,

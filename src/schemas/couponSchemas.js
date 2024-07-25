@@ -1,20 +1,15 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
-import { couponCodeRegex } from '../utils/regex.js';
 import { formatOptions } from '../utils/helperFunctions.js';
 import { validateCommaSeparatedValues, validateOption } from '../utils/joiValidators.js';
 import { pageSchema, getPathIDSchema } from './commonSchemas.js';
-import {
-  DISCOUNT_TYPES,
-  DISCOUNT,
-  COUPON_STATES,
-  COUPON_SORT_OPTIONS,
-  EXPIRY_DURATION,
-  COUPON_STATUS,
-} from '../constants.js';
+import { DISCOUNT_TYPES, DISCOUNT, COUPON_STATES, COUPON_STATUS } from '../constants/common.js';
+import { COUPON_SORT_OPTIONS } from '../constants/sortOptions.js';
+import { EXPIRY_DURATION } from '../constants/filterOptions.js';
+import { REGEX } from '../constants/regexPatterns.js';
 
 export const couponSchema = customJoi.object({
-  code: Joi.string().trim().uppercase().pattern(couponCodeRegex).required().messages({
+  code: Joi.string().trim().uppercase().pattern(REGEX.COUPON_CODE).required().messages({
     'any.required': 'Coupon code is required',
     'string.base': 'Coupon code must be a string',
     'string.empty': 'Coupon code cannot be empty',

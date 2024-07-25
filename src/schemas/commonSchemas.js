@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import { validatePathId } from '../utils/joiValidators.js';
-import { SAFE_INTEGER } from '../constants.js';
+import { SAFE_INTEGER } from '../constants/common.js';
 
 export const getPathIDSchema = path =>
   Joi.string()

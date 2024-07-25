@@ -10,7 +10,7 @@ import { brandSchema, brandIdSchema } from '../schemas/brandSchemas.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
 import { parseFormData } from '../middlewares/parseFormData.js';
 import { validatePayload, validatePathParams } from '../middlewares/requestValidators.js';
-import { ROLES, UPLOAD_FOLDERS, UPLOAD_FILES } from '../constants.js';
+import { ROLES, UPLOAD_FOLDERS, UPLOAD_FILES } from '../constants/common.js';
 
 const router = express.Router();
 

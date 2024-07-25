@@ -3,7 +3,7 @@ import Coupon from '../models/coupon.js';
 import Address from '../models/address.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
-import { COUPON_STATUS } from '../constants.js';
+import { COUPON_STATUS } from '../constants/common.js';
 
 export const validateProducts = handleAsync(async (req, _res, next) => {
   const { items } = req.body;

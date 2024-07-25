@@ -1,6 +1,6 @@
 import { v2 as cloudinary } from 'cloudinary';
-import config from './config.js';
-import { STORAGE } from '../constants.js';
+import config from './env.config.js';
+import { STORAGE } from '../constants/common.js';
 
 cloudinary.config({
   cloud_name: STORAGE.CLOUD_NAME,

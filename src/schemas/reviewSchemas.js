@@ -4,7 +4,8 @@ import { formatOptions } from '../utils/helperFunctions.js';
 import { removeExtraInnerSpaces } from '../utils/joiSanitizers.js';
 import { validateOption } from '../utils/joiValidators.js';
 import { getPathIDSchema, pageSchema } from './commonSchemas.js';
-import { RATING, REVIEW_SORT_OPTIONS } from '../constants.js';
+import { RATING } from '../constants/common.js';
+import { REVIEW_SORT_OPTIONS } from '../constants/sortOptions.js';
 
 export const reviewSchema = customJoi.object({
   rating: Joi.number()

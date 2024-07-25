@@ -1,7 +1,13 @@
 import mongoose from 'mongoose';
 import { roundTwoDecimals, formatOptions } from '../utils/helperFunctions.js';
-import { couponCodeRegex } from '../utils/regex.js';
-import { QUANTITY, PRICE, SHIPPING_CHARGE, ORDER_STATUS, PAYMENT_METHODS } from '../constants.js';
+import {
+  QUANTITY,
+  PRICE,
+  SHIPPING_CHARGE,
+  ORDER_STATUS,
+  PAYMENT_METHODS,
+} from '../constants/common.js';
+import { REGEX } from '../constants/regexPatterns.js';
 
 const Schema = mongoose.Schema;
 
@@ -72,7 +78,7 @@ const orderSchema = new Schema(
     coupon: {
       type: String,
       match: [
-        couponCodeRegex,
+        REGEX.COUPON_CODE,
         'Coupon code must be 5-15 characters long, start with a letter, and contain only uppercase letters and digits',
       ],
     },

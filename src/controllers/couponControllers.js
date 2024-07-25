@@ -3,7 +3,7 @@ import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import { sendResponse, getCurrentDateMilliSec } from '../utils/helperFunctions.js';
 import { couponSortRules } from '../utils/sortRules.js';
-import { PAGINATION, DISCOUNT_TYPES, COUPON_STATUS, COUPON_STATES } from '../constants.js';
+import { PAGINATION, DISCOUNT_TYPES, COUPON_STATUS, COUPON_STATES } from '../constants/common.js';
 
 export const getValidCoupons = handleAsync(async (_req, res) => {
   const coupons = await Coupon.find({

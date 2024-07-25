@@ -1,13 +1,13 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
-import { fullnameRegex, phoneRegex, postalCodeRegex } from '../utils/regex.js';
 import { removeExtraInnerSpaces } from '../utils/joiSanitizers.js';
 import { getPathIDSchema } from './commonSchemas.js';
+import { REGEX } from '../constants/regexPatterns.js';
 
 export const addressSchema = customJoi.object({
   fullname: Joi.string()
     .trim()
-    .pattern(fullnameRegex)
+    .pattern(REGEX.FULL_NAME)
     .max(100)
     .required()
     .custom(removeExtraInnerSpaces)
@@ -19,7 +19,7 @@ export const addressSchema = customJoi.object({
       'string.max': 'Full name cannot exceed 100 characters',
     }),
 
-  phone: Joi.string().trim().pattern(phoneRegex).required().messages({
+  phone: Joi.string().trim().pattern(REGEX.PHONE).required().messages({
     'any.required': 'Phone number is required',
     'string.base': 'Phone number must be a string',
     'string.empty': 'Phone number cannot be empty',
@@ -61,7 +61,7 @@ export const addressSchema = customJoi.object({
     'string.empty': 'City cannot be empty',
   }),
 
-  postalCode: Joi.string().trim().pattern(postalCodeRegex).required().messages({
+  postalCode: Joi.string().trim().pattern(REGEX.POSTAL_CODE).required().messages({
     'any.required': 'Postal code is required',
     'string.base': 'Postal code must be a string',
     'string.empty': 'Postal code cannot be empty',

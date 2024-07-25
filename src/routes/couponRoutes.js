@@ -23,7 +23,7 @@ import {
   validateQueryParams,
   validatePathParams,
 } from '../middlewares/requestValidators.js';
-import { ROLES } from '../constants.js';
+import { ROLES } from '../constants/common.js';
 
 const router = express.Router();
 

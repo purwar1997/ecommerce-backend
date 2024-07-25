@@ -5,7 +5,7 @@ import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import { sendResponse, removeDuplicateItems } from '../utils/helperFunctions.js';
 import { uploadImage, deleteImage } from '../services/cloudinaryAPIs.js';
-import { UPLOAD_FOLDERS } from '../constants.js';
+import { UPLOAD_FOLDERS } from '../constants/common.js';
 
 export const getAllCategories = handleAsync(async (_req, res) => {
   const categories = await Category.find();

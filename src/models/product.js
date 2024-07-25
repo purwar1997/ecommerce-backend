@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { roundOneDecimal, roundTwoDecimals } from '../utils/helperFunctions.js';
-import { imageUrlRegex } from '../utils/regex.js';
-import { PRICE, STOCK } from '../constants.js';
+import { PRICE, STOCK } from '../constants/common.js';
+import { REGEX } from '../constants/regexPatterns.js';
 
 const Schema = mongoose.Schema;
 
@@ -48,7 +48,7 @@ const productSchema = new Schema(
       url: {
         type: String,
         required: [true, 'Image URL is required'],
-        match: [imageUrlRegex, 'Invalid image URL format'],
+        match: [REGEX.IMAGE_URL, 'Invalid image URL format'],
       },
       publicId: {
         type: String,

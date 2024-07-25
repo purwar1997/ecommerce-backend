@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { RATING } from '../constants.js';
+import { RATING } from '../constants/common.js';
 
 const Schema = mongoose.Schema;
 

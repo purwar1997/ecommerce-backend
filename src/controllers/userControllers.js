@@ -5,7 +5,7 @@ import { sendResponse } from '../utils/helperFunctions.js';
 import { clearCookieOptions } from '../utils/cookieOptions.js';
 import { uploadImage, deleteImage } from '../services/cloudinaryAPIs.js';
 import { userSortRules } from '../utils/sortRules.js';
-import { UPLOAD_FOLDERS, PAGINATION } from '../constants.js';
+import { UPLOAD_FOLDERS, PAGINATION } from '../constants/common.js';
 
 export const getProfile = handleAsync(async (req, res) => {
   const { user } = req;

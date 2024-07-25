@@ -23,7 +23,7 @@ import {
   validatePathParams,
   validateQueryParams,
 } from '../middlewares/requestValidators.js';
-import { ROLES, UPLOAD_FOLDERS, UPLOAD_FILES } from '../constants.js';
+import { ROLES, UPLOAD_FOLDERS, UPLOAD_FILES } from '../constants/common.js';
 
 const router = express.Router();
 

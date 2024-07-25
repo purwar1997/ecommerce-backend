@@ -5,7 +5,7 @@ import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
 import { sendResponse } from '../utils/helperFunctions.js';
 import { reviewSortRules } from '../utils/sortRules.js';
-import { PAGINATION, ORDER_STATUS } from '../constants.js';
+import { PAGINATION, ORDER_STATUS } from '../constants/common.js';
 
 export const getProductReviews = handleAsync(async (req, res) => {
   const { productId } = req.params;

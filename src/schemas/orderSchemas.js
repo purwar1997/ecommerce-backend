@@ -13,10 +13,10 @@ import {
   PRICE,
   SHIPPING_CHARGE,
   PAYMENT_METHODS,
-  ORDER_DURATION,
-  ORDER_SORT_OPTIONS,
   ORDER_STATUS,
-} from '../constants.js';
+} from '../constants/common.js';
+import { ORDER_SORT_OPTIONS } from '../constants/sortOptions.js';
+import { ORDER_DURATION } from '../constants/filterOptions.js';
 
 const allowedStatusForUpdate = { ...ORDER_STATUS };
 delete allowedStatusForUpdate.CREATED;

@@ -30,7 +30,7 @@ import {
 import { verifyPhone } from '../middlewares/verifyCredentials.js';
 import { parseFormData } from '../middlewares/parseFormData.js';
 import { checkAdminSelfUpdate, checkAdminSelfDelete } from '../middlewares/checkAdmin.js';
-import { ROLES, UPLOAD_FOLDERS, UPLOAD_FILES } from '../constants.js';
+import { ROLES, UPLOAD_FOLDERS, UPLOAD_FILES } from '../constants/common.js';
 
 const router = express.Router();
 
