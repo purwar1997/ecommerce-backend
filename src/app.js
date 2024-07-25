@@ -3,11 +3,13 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import url from 'url';
 import path from 'path';
+import cors from 'cors';
 import { createStream } from 'rotating-file-stream';
 import { v4 as uuidv4 } from 'uuid';
 import generator from './utils/generator.js';
 import apiRouter from './routes/index.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import corsOptions from './utils/corsOptions.js';
 
 const app = express();
 
@@ -40,6 +42,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(cors(corsOptions));
 app.use('/api/v1', apiRouter);
 app.use(errorHandler);
 
