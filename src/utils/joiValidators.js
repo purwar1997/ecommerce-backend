@@ -1,62 +1,62 @@
-export const validateObjectId = (array, helpers) => {
-  if (!mongoose.Types.ObjectId.isValid(array)) {
-    return helpers.error('any.invalid', { array });
+export const validateObjectId = (value, helpers) => {
+  if (!mongoose.Types.ObjectId.isValid(value)) {
+    return helpers.error('any.invalid', { value });
   }
 
-  return array;
+  return value;
 };
 
-export const validateOption = options => (array, helpers) => {
-  if (typeof array !== 'string') {
-    return helpers.error('string.base', { array });
+export const validateOption = options => (value, helpers) => {
+  if (typeof value !== 'string') {
+    return helpers.error('string.base', { value });
   }
 
-  if (!array) {
-    return helpers.error('string.empty', { array });
+  if (!value) {
+    return helpers.error('string.empty', { value });
   }
 
-  if (!Object.values(options).includes(array)) {
-    return helpers.error('any.invalid', { array });
+  if (!Object.values(options).includes(value)) {
+    return helpers.error('any.invalid', { value });
   }
 
-  return array;
+  return value;
 };
 
-export const validatePathId = (array, helpers) => {
+export const validatePathId = (value, helpers) => {
   const path = ':' + helpers.state.path[0];
 
-  if (array === path) {
-    return helpers.error('string.empty', { array });
+  if (value === path) {
+    return helpers.error('string.empty', { value });
   }
 
-  if (!mongoose.Types.ObjectId.isValid(array)) {
-    return helpers.error('any.invalid', { array });
+  if (!mongoose.Types.ObjectId.isValid(value)) {
+    return helpers.error('any.invalid', { value });
   }
 
-  return array;
+  return value;
 };
 
-export const validateCommaSeparatedValues = options => (array, helpers) => {
-  if (!array) {
-    return helpers.error('string.empty', { array });
+export const validateCommaSeparatedValues = options => (value, helpers) => {
+  if (!value) {
+    return helpers.error('string.empty', { value });
   }
 
-  const valuesArray = array.split(',').map(str => str.trim().toLowerCase());
+  const valuesArray = value.split(',').map(str => str.trim().toLowerCase());
   options = Object.values(options);
 
-  for (const array of valuesArray) {
-    if (!options.includes(array)) {
-      return helpers.error('any.invalid', { array });
+  for (const value of valuesArray) {
+    if (!options.includes(value)) {
+      return helpers.error('any.invalid', { value });
     }
   }
 
   return valuesArray;
 };
 
-export const validateToken = (array, helpers) => {
-  if (array === ':token') {
-    return helpers.error('string.empty', { array });
+export const validateToken = (value, helpers) => {
+  if (value === ':token') {
+    return helpers.error('string.empty', { value });
   }
 
-  return array;
+  return value;
 };

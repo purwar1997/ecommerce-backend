@@ -22,20 +22,20 @@ export const sendResponse = (res, statusCode, message, data) => {
   });
 };
 
-export const roundOneDecimal = array => {
-  if (isNaN(array)) {
-    return array;
+export const roundOneDecimal = value => {
+  if (isNaN(value)) {
+    return value;
   }
 
-  return Math.round(array * 10) / 10;
+  return Math.round(value * 10) / 10;
 };
 
-export const roundTwoDecimals = array => {
-  if (isNaN(array)) {
-    return array;
+export const roundTwoDecimals = value => {
+  if (isNaN(value)) {
+    return value;
   }
 
-  return Math.round(array * 100) / 100;
+  return Math.round(value * 100) / 100;
 };
 
 export const lowercaseFirstLetter = str => {
@@ -98,13 +98,7 @@ export const formatOptions = options => {
   return `${options.join(', ')} and ${lastOption}`;
 };
 
-export const singularize = str => {
-  if (!str) {
-    return str;
-  }
-
-  return pluralize.singular(str);
-};
+export const singularize = str => pluralize.singular(str);
 
 export const getDateString = isoDateStr => format(new Date(isoDateStr), 'MMMM d, YYYY');
 

@@ -8,30 +8,30 @@ export const stripEmptyKeys = obj => {
   return obj;
 };
 
-export const roundToTwoDecimalPlaces = (array, helpers) => {
-  if (isNaN(array)) {
-    return helpers.error('number.base', { array });
+export const roundToTwoDecimalPlaces = (value, helpers) => {
+  if (isNaN(value)) {
+    return helpers.error('number.base', { value });
   }
 
-  return Math.round(array * 100) / 100;
+  return Math.round(value * 100) / 100;
 };
 
-export const removeExtraInnerSpaces = (array, helpers) => {
-  if (typeof array !== 'string') {
-    return helpers.error('string.base', { array });
+export const removeExtraInnerSpaces = (value, helpers) => {
+  if (typeof value !== 'string') {
+    return helpers.error('string.base', { value });
   }
 
-  if (!array) {
-    return helpers.error('string.empty', { array });
+  if (!value) {
+    return helpers.error('string.empty', { value });
   }
 
-  return array.replace(/\s+/g, ' ');
+  return value.replace(/\s+/g, ' ');
 };
 
-export const parseCommaSeparatedStrings = (array, helpers) => {
-  if (typeof array !== 'string') {
-    return helpers.error('string.base', { array });
+export const parseCommaSeparatedStrings = (value, helpers) => {
+  if (typeof value !== 'string') {
+    return helpers.error('string.base', { value });
   }
 
-  return array.split(',').map(str => str.trim());
+  return value.split(',').map(str => str.trim());
 };
