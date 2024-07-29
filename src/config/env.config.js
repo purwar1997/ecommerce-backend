@@ -12,11 +12,9 @@ const config = {
   auth: {
     jwtSecretKey: process.env.JWT_SECRET_KEY,
   },
-  smtp: {
-    host: process.env.SMTP_HOST,
-    port: process.env.SMTP_PORT || 587,
-    username: process.env.SMTP_USERNAME,
-    password: process.env.SMTP_PASSWORD,
+  gmail: {
+    username: process.env.GMAIL_USERNAME,
+    password: process.env.GMAIL_PASSWORD,
     senderAddress: process.env.SENDER_ADDRESS,
   },
   verification: {
@@ -33,11 +31,9 @@ const requiredConfig = [
   'server.port',
   'database.url',
   'auth.jwtSecretKey',
-  'smtp.host',
-  'smtp.port',
-  'smtp.username',
-  'smtp.password',
-  'smtp.senderAddress',
+  'gmail.username',
+  'gmail.password',
+  'gmail.senderAddress',
   'verification.emailKey',
   'verification.phoneKey',
 ];

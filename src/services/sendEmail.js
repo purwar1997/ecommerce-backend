@@ -5,7 +5,7 @@ import CustomError from '../utils/customError.js';
 const sendEmail = async options => {
   try {
     const info = await transporter.sendMail({
-      from: config.smtp.senderAddress,
+      from: config.gmail.senderAddress,
       to: options.recipient,
       subject: options.subject,
       text: options.text,
