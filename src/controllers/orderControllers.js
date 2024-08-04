@@ -12,6 +12,7 @@ import {
   getCurrentDateMilliSec,
   getDateString,
   generateHmacSha256,
+  checkBoolean,
 } from '../utils/helperFunctions.js';
 import { GST, DISCOUNT_TYPES, PAGINATION, ORDER_STATUS } from '../constants/common.js';
 
@@ -21,7 +22,7 @@ export const createOrder = handleAsync(async (req, res) => {
 
   const orderAmount = items.reduce((total, item) => total + item.price * item.quantity, 0);
 
-  let discount;
+  let discount = 0;
 
   if (coupon) {
     const { discountType, flatDiscount, percentageDiscount } = coupon;
@@ -56,6 +57,7 @@ export const createOrder = handleAsync(async (req, res) => {
     discount,
     taxAmount,
     totalAmount,
+    paymentId: null,
     user: user._id,
   });
 
@@ -125,6 +127,7 @@ export const getOrders = handleAsync(async (req, res) => {
     createdAt: {
       $gt: new Date(getCurrentDateMilliSec() - (duration - 1) * 24 * 60 * 60 * 1000),
     },
+    isPaid: true,
     isDeleted: false,
   };
 
@@ -151,7 +154,7 @@ export const getOrders = handleAsync(async (req, res) => {
 export const getOrderById = handleAsync(async (req, res) => {
   const { orderId } = req.params;
 
-  const order = await Order.findOne({ _id: orderId, isDeleted: false })
+  const order = await Order.findOne({ _id: orderId, isPaid: true, isDeleted: false })
     .populate({
       path: 'items.product',
       select: { title: 1, description: 1, price: 1, image: 1 },
@@ -172,7 +175,7 @@ export const getOrderById = handleAsync(async (req, res) => {
 export const cancelOrder = handleAsync(async (req, res) => {
   const { orderId } = req.params;
 
-  const order = await Order.findOne({ _id: orderId, isDeleted: false });
+  const order = await Order.findOne({ _id: orderId, isPaid: true, isDeleted: false });
 
   if (!order) {
     throw new CustomError('Order not found', 404);
@@ -208,24 +211,13 @@ export const cancelOrder = handleAsync(async (req, res) => {
     })
   );
 
-  if (
-    order.paymentMethod === PAYMENT_METHODS.DEBIT_CARD ||
-    order.paymentMethod === PAYMENT_METHODS.CREDIT_CARD
-  ) {
-    // Refund money to the user
-  }
+  // Refund money to the user
 
   try {
-    const emailContent =
-      order.paymentMethod === PAYMENT_METHODS.DEBIT_CARD ||
-      order.paymentMethod === PAYMENT_METHODS.CREDIT_CARD
-        ? `Order #${order._id} has been cancelled successfully. Order amount of ₹${order.totalAmount} will be refunded shortly.`
-        : `Order #${order._id} has been cancelled successfully.`;
-
     const options = {
       recipient: req.user.email,
       subject: 'Order cancellation email',
-      text: emailContent,
+      text: `Order #${order._id} has been cancelled successfully. Order amount of ₹${order.totalAmount} will be refunded shortly.`,
     };
 
     await sendEmail(options);
@@ -237,7 +229,7 @@ export const cancelOrder = handleAsync(async (req, res) => {
 });
 
 export const adminGetOrders = handleAsync(async (req, res) => {
-  const { duration, status, sort, page } = req.query;
+  const { duration, status, paid, sort, page } = req.query;
 
   const filters = {
     createdAt: { $gt: getCurrentDateMilliSec() - (duration - 1) * 24 * 60 * 60 * 1000 },
@@ -246,6 +238,10 @@ export const adminGetOrders = handleAsync(async (req, res) => {
 
   if (status.length > 0) {
     filters.status = { $in: status };
+  }
+
+  if (checkBoolean(paid)) {
+    filters.isPaid = paid;
   }
 
   const sortRule = orderSortRules[sort];
@@ -297,6 +293,10 @@ export const updateOrderStatus = handleAsync(async (req, res) => {
 
   if (!order) {
     throw new CustomError('Order not found', 404);
+  }
+
+  if (!order.isPaid) {
+    throw new CustomError('Cannot update status of an unpaid order', 403);
   }
 
   if (order.status === ORDER_STATUS.CANCELLED) {
@@ -369,12 +369,7 @@ export const deleteOrder = handleAsync(async (req, res) => {
       })
     );
 
-    if (
-      order.paymentMethod === PAYMENT_METHODS.DEBIT_CARD ||
-      order.paymentMethod === PAYMENT_METHODS.CREDIT_CARD
-    ) {
-      // Refund order amount
-    }
+    // Refund order amount
 
     try {
       const options = {
@@ -382,7 +377,7 @@ export const deleteOrder = handleAsync(async (req, res) => {
         subject: 'Order deletion email',
         text: `Dear ${fullname}, we regret to inform you that your order #${orderId} placed on ${getDateString(
           order.createdAt
-        )}, has been deleted.`,
+        )}, has been deleted. Order amount of ₹${order.amount} will be refunded shortly.`,
       };
 
       await sendEmail(options);

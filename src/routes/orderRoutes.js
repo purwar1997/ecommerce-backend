@@ -17,7 +17,6 @@ import {
   adminOrdersQuerySchema,
   orderStatusSchema,
   orderIdSchema,
-  razorpayOrderIdSchema,
 } from '../schemas/orderSchemas.js';
 import { isHttpMethodAllowed } from '../middlewares/isHttpMethodAllowed.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
@@ -41,9 +40,9 @@ router
   .get(validateQueryParams(ordersQuerySchema), getOrders)
   .post(
     validatePayload(orderSchema),
-    validateProducts,
-    validateCoupon,
-    validateAddress,
+    // validateProducts,
+    // validateCoupon,
+    // validateAddress,
     createOrder
   );
 
@@ -55,7 +54,7 @@ router
   .route('/orders/:orderId/confirm')
   .put(
     isAuthenticated,
-    validatePathParams(razorpayOrderIdSchema),
+    validatePathParams(orderIdSchema),
     validatePayload(confirmOrderSchema),
     confirmOrder
   );

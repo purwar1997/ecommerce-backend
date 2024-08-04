@@ -106,7 +106,6 @@ const orderSchema = new Schema(
     paymentId: {
       type: String,
       unique: true,
-      required: [true, 'Payment ID is required'],
     },
     status: {
       type: String,
