@@ -25,6 +25,10 @@ const config = {
     apiKey: process.env.CLOUDINARY_API_KEY,
     apiSecret: process.env.CLOUDINARY_API_SECRET,
   },
+  razorpay: {
+    keyId: process.env.RAZORPAY_KEY_ID,
+    keySecret: process.env.RAZORPAY_KEY_SECRET,
+  },
 };
 
 const requiredConfig = [
@@ -36,6 +40,10 @@ const requiredConfig = [
   'gmail.senderAddress',
   'verification.emailKey',
   'verification.phoneKey',
+  'cloudinary.apiKey',
+  'cloudinary.apiSecret',
+  'razorpay.keyId',
+  'razorpay.keySecret',
 ];
 
 requiredConfig.forEach(key => {
