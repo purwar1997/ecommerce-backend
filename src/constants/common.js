@@ -114,7 +114,7 @@ export const SAFE_INTEGER = Object.freeze({
 export const DELIVERY_OPTIONS = deepFreeze([
   {
     TYPE: DELIVERY_MODES.STANDARD,
-    SHIPPING_CHARGESS: 30,
+    SHIPPING_CHARGES: 30,
     SHIPPING_TIME: {
       MIN: 4,
       MAX: 10,
@@ -122,7 +122,7 @@ export const DELIVERY_OPTIONS = deepFreeze([
   },
   {
     TYPE: DELIVERY_MODES.EXPRESS,
-    SHIPPING_CHARGESS: 100,
+    SHIPPING_CHARGES: 100,
     SHIPPING_TIME: {
       MIN: 2,
       MAX: 5,

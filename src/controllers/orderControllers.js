@@ -48,11 +48,11 @@ export const createOrder = handleAsync(async (req, res) => {
     }
   }
 
-  const { SHIPPING_CHARGESS: shippingCharges } = DELIVERY_OPTIONS.find(
-    option => option.type === deliveryMode
+  const { SHIPPING_CHARGES: shippingCharges } = DELIVERY_OPTIONS.find(
+    option => option.TYPE === deliveryMode
   );
 
-  const taxAmount = orderAmount * GST.RATE + shippingCharges * GST.RATE;
+  const taxAmount = (orderAmount - discount) * GST.RATE + shippingCharges * GST.RATE;
   const totalAmount = orderAmount - discount + shippingCharges + taxAmount;
 
   const razorpayOrder = await razorpay.orders.create({
@@ -99,7 +99,7 @@ export const confirmOrder = handleAsync(async (req, res) => {
     throw new CustomError('Invalid payment signature', 400);
   }
 
-  const { SHIPPING_TIME } = DELIVERY_OPTIONS.find(option => option.type === order.deliveryMode);
+  const { SHIPPING_TIME } = DELIVERY_OPTIONS.find(option => option.TYPE === order.deliveryMode);
 
   order.estimatedDeliveryDate = addDays(
     new Date(),
