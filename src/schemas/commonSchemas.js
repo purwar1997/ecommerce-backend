@@ -1,15 +1,24 @@
 import Joi from 'joi';
-import { validatePathId } from '../utils/joiValidators.js';
+import { validateObjectIdAsPathParam, validateRouteParams } from '../utils/joiValidators.js';
 import { SAFE_INTEGER } from '../constants/common.js';
 
-export const getPathIDSchema = path =>
+export const getPathIDSchema = param =>
   Joi.string()
     .trim()
-    .custom(validatePathId)
+    .custom(validateObjectIdAsPathParam)
     .messages({
-      'string.base': `${path} must be a string`,
-      'string.empty': `${path} is required`,
-      'any.invalid': `Invalid ID format. Expected a valid objectId`,
+      'string.base': `${param} must be a string`,
+      'string.empty': `${param} is required`,
+      'any.invalid': `${param} is invalid. Expected a valid objectId`,
+    });
+
+export const getPathParamSchema = param =>
+  Joi.string()
+    .trim()
+    .custom(validateRouteParams)
+    .messages({
+      'string.base': `${param} must be a string`,
+      'string.empty': `${param} is required`,
     });
 
 export const pageSchema = Joi.number()

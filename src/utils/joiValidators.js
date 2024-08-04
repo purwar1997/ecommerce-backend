@@ -24,7 +24,7 @@ export const validateOption = options => (value, helpers) => {
   return value;
 };
 
-export const validatePathId = (value, helpers) => {
+export const validateObjectIdAsPathParam = (value, helpers) => {
   const path = ':' + helpers.state.path[0];
 
   if (value === path) {
@@ -33,6 +33,16 @@ export const validatePathId = (value, helpers) => {
 
   if (!mongoose.Types.ObjectId.isValid(value)) {
     return helpers.error('any.invalid', { value });
+  }
+
+  return value;
+};
+
+export const validateRouteParams = (value, helpers) => {
+  const path = ':' + helpers.state.path[0];
+
+  if (value === path) {
+    return helpers.error('string.empty', { value });
   }
 
   return value;
@@ -53,12 +63,4 @@ export const validateCommaSeparatedValues = options => (value, helpers) => {
   }
 
   return valuesArray;
-};
-
-export const validateToken = (value, helpers) => {
-  if (value === ':token') {
-    return helpers.error('string.empty', { value });
-  }
-
-  return value;
 };

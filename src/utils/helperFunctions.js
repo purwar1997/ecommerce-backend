@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import pluralize from 'pluralize';
+import crypto from 'crypto';
 import { format } from 'date-fns';
 
 export const serializeDocs = data => {
@@ -73,9 +74,9 @@ export const formatCastError = error => {
     return error.message;
   }
 
-  return `Invalid array provided for ${error.path}. Expected a valid ${lowercaseFirstLetter(
+  return `Invalid value provided for ${error.path}. Expected a valid ${lowercaseFirstLetter(
     error.kind
-  )} but received '${error.array}'`;
+  )} but received '${error.value}'`;
 };
 
 export const formatOptions = options => {
@@ -140,3 +141,6 @@ export const removeDuplicateItems = (array, field) => {
 
   return Object.values(uniqueItems);
 };
+
+export const generateHmacSha256 = (message, secret) =>
+  crypto.createHmac('sha256', secret).update(message).digest('hex');
