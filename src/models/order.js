@@ -5,7 +5,7 @@ import {
   PRICE,
   SHIPPING_CHARGE,
   ORDER_STATUS,
-  PAYMENT_METHODS,
+  DELIVERY_MODES,
 } from '../constants/common.js';
 import { REGEX } from '../constants/regexPatterns.js';
 
@@ -38,6 +38,10 @@ const orderItemSchema = new Schema({
 
 const orderSchema = new Schema(
   {
+    _id: {
+      type: String,
+      required: [true, 'Order ID is required'],
+    },
     items: {
       type: [orderItemSchema],
       validate: {
@@ -75,7 +79,7 @@ const orderSchema = new Schema(
       min: [0, 'Total amount cannot be negative'],
       set: roundTwoDecimals,
     },
-    coupon: {
+    couponCode: {
       type: String,
       match: [
         REGEX.COUPON_CODE,
@@ -87,13 +91,22 @@ const orderSchema = new Schema(
       ref: 'Address',
       required: [true, 'Shipping address is required'],
     },
-    paymentMethod: {
+    deliveryMode: {
       type: String,
-      required: [true, 'Payment method is required'],
+      required: [true, 'Delivery mode is required'],
       enum: {
-        values: Object.values(PAYMENT_METHODS),
-        message: `Invalid payment method. Valid options are: ${formatOptions(PAYMENT_METHODS)}`,
+        values: Object.values(DELIVERY_MODES),
+        message: `Invalid delivery mode. Valid options are: ${formatOptions(DELIVERY_MODES)}`,
       },
+    },
+    isPaid: {
+      type: Boolean,
+      default: false,
+    },
+    paymentId: {
+      type: String,
+      unique: true,
+      required: [true, 'Payment ID is required'],
     },
     status: {
       type: String,

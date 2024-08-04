@@ -3,6 +3,7 @@ import {
   createOrder,
   getOrders,
   getOrderById,
+  confirmOrder,
   cancelOrder,
   adminGetOrders,
   adminGetOrderById,
@@ -10,11 +11,13 @@ import {
   deleteOrder,
 } from '../controllers/orderControllers.js';
 import {
-  createOrderSchema,
+  orderSchema,
+  confirmOrderSchema,
   ordersQuerySchema,
   adminOrdersQuerySchema,
   orderStatusSchema,
   orderIdSchema,
+  razorpayOrderIdSchema,
 } from '../schemas/orderSchemas.js';
 import { isHttpMethodAllowed } from '../middlewares/isHttpMethodAllowed.js';
 import { isAuthenticated, authorizeRole } from '../middlewares/authMiddlewares.js';
@@ -37,7 +40,7 @@ router
   .all(isHttpMethodAllowed, isAuthenticated)
   .get(validateQueryParams(ordersQuerySchema), getOrders)
   .post(
-    validatePayload(createOrderSchema),
+    validatePayload(orderSchema),
     validateProducts,
     validateCoupon,
     validateAddress,
@@ -47,6 +50,15 @@ router
 router
   .route('/orders/:orderId')
   .get(isAuthenticated, validatePathParams(orderIdSchema), getOrderById);
+
+router
+  .route('/orders/:orderId/confirm')
+  .put(
+    isAuthenticated,
+    validatePathParams(razorpayOrderIdSchema),
+    validatePayload(confirmOrderSchema),
+    confirmOrder
+  );
 
 router
   .route('/orders/:orderId/cancel')

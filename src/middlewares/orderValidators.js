@@ -67,5 +67,9 @@ export const validateAddress = handleAsync(async (req, _res, next) => {
     throw new CustomError('Shipping address not found', 404);
   }
 
+  if (address.user.toString() !== req.user._id.toString()) {
+    throw new CustomError('Only the user who owns this address can use it', 403);
+  }
+
   next();
 });

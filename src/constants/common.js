@@ -20,10 +20,9 @@ export const ORDER_STATUS = Object.freeze({
   CANCELLED: 'cancelled',
 });
 
-export const PAYMENT_METHODS = Object.freeze({
-  COD: 'cash_on_delivery',
-  DEBIT_CARD: 'debit_card',
-  CREDIT_CARD: 'credit_card',
+export const DELIVERY_MODES = Object.freeze({
+  STANDARD: 'standard',
+  EXPRESS: 'express',
 });
 
 export const DISCOUNT_TYPES = Object.freeze({

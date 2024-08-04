@@ -1,17 +1,19 @@
+import { v4 as uuidv4 } from 'uuid';
 import Order from '../models/order.js';
 import Product from '../models/product.js';
 import handleAsync from '../utils/handleAsync.js';
 import CustomError from '../utils/customError.js';
+import razorpay from '../config/razorpay.config.js';
+import config from '../config/env.config.js';
 import sendEmail from '../services/sendEmail.js';
 import { orderSortRules } from '../utils/sortRules.js';
-import { sendResponse, getCurrentDateMilliSec, getDateString } from '../utils/helperFunctions.js';
 import {
-  GST,
-  DISCOUNT_TYPES,
-  PAGINATION,
-  ORDER_STATUS,
-  PAYMENT_METHODS,
-} from '../constants/common.js';
+  sendResponse,
+  getCurrentDateMilliSec,
+  getDateString,
+  generateHmacSha256,
+} from '../utils/helperFunctions.js';
+import { GST, DISCOUNT_TYPES, PAGINATION, ORDER_STATUS } from '../constants/common.js';
 
 export const createOrder = handleAsync(async (req, res) => {
   const { items, shippingCharges } = req.body;
@@ -41,7 +43,14 @@ export const createOrder = handleAsync(async (req, res) => {
   const taxAmount = orderAmount * GST.RATE + shippingCharges * GST.RATE;
   const totalAmount = orderAmount - discount + shippingCharges + taxAmount;
 
-  const newOrder = await Order.create({
+  const razorpayOrder = await razorpay.orders.create({
+    amount: totalAmount * 100,
+    currency: 'INR',
+    receipt: uuidv4(),
+  });
+
+  const order = await Order.create({
+    _id: razorpayOrder.id,
     ...req.body,
     orderAmount,
     discount,
@@ -50,11 +59,42 @@ export const createOrder = handleAsync(async (req, res) => {
     user: user._id,
   });
 
+  sendResponse(res, 201, 'Order created successfully', order);
+});
+
+export const confirmOrder = handleAsync(async (req, res) => {
+  const { orderId } = req.params;
+  const { paymentId, paymentSignature } = req.body;
+  const { user } = req;
+
+  const order = await Order.findOne({ _id: orderId, isDeleted: false });
+
+  if (!order) {
+    throw new CustomError('Order not found', 404);
+  }
+
+  if (order.isPaid) {
+    throw new CustomError('Order has already been confirmed', 409);
+  }
+
+  const generatedSignature = generateHmacSha256(
+    orderId + '|' + paymentId,
+    config.razorpay.keySecret
+  );
+
+  if (paymentSignature !== generatedSignature) {
+    throw new CustomError('Invalid payment signature', 400);
+  }
+
+  order.isPaid = true;
+  order.paymentId = paymentId;
+  await order.save();
+
   user.cart = [];
   await user.save();
 
   await Promise.all(
-    items.map(async item => {
+    order.items.map(async item => {
       const product = await Product.findById(item.product);
       product.stock = product.stock - item.quantity;
       product.soldUnits = product.soldUnits + item.quantity;
@@ -66,7 +106,7 @@ export const createOrder = handleAsync(async (req, res) => {
     const options = {
       recepient: user.email,
       subject: 'Order confirmation email',
-      text: `Order #${newOrder._id} has been placed successfully.`,
+      text: `Order #${order._id} has been placed successfully.`,
     };
 
     await sendEmail(options);
@@ -74,7 +114,7 @@ export const createOrder = handleAsync(async (req, res) => {
     throw new CustomError('Failed to send order confirmation email to the user', 500);
   }
 
-  sendResponse(res, 201, 'Order created successfully', newOrder);
+  sendResponse(res, 200, 'Order placed successfully', order);
 });
 
 export const getOrders = handleAsync(async (req, res) => {

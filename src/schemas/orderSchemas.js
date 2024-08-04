@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import customJoi from '../utils/customJoi.js';
-import { getPathIDSchema, pageSchema } from './commonSchemas.js';
+import { getPathIDSchema, getPathParamSchema, pageSchema } from './commonSchemas.js';
 import { formatOptions } from '../utils/helperFunctions.js';
 import { roundToTwoDecimalPlaces, stripEmptyKeys } from '../utils/joiSanitizers.js';
 import {
@@ -12,8 +12,8 @@ import {
   QUANTITY,
   PRICE,
   SHIPPING_CHARGE,
-  PAYMENT_METHODS,
   ORDER_STATUS,
+  DELIVERY_MODES,
 } from '../constants/common.js';
 import { ORDER_SORT_OPTIONS } from '../constants/sortOptions.js';
 import { ORDER_DURATION } from '../constants/filterOptions.js';
@@ -60,7 +60,7 @@ const orderItemSchema = Joi.object({
   'object.base': 'Each order item must be an object with product, quantity and price fields',
 });
 
-export const createOrderSchema = customJoi
+export const orderSchema = customJoi
   .object({
     items: Joi.array().items(orderItemSchema).min(1).required().messages({
       'any.required': 'Order items are required',
@@ -90,21 +90,33 @@ export const createOrderSchema = customJoi
       'any.invalid': 'Invalid value provided for address. Expected a valid objectId',
     }),
 
-    paymentMethod: Joi.string()
+    deliveryMode: Joi.string()
       .trim()
       .lowercase()
       .required()
-      .custom(validateOption(PAYMENT_METHODS))
+      .custom(validateOption(DELIVERY_MODES))
       .messages({
-        'any.required': 'Payment method is required',
-        'string.base': 'Payment method must be a string',
-        'string.empty': 'Payment method cannot be empty',
-        'any.invalid': `Invalid payment method. Valid options are: ${formatOptions(
-          PAYMENT_METHODS
-        )}`,
+        'any.required': 'Delivery mode is required',
+        'string.base': 'Delivery mode must be a string',
+        'string.empty': 'Delivery mode cannot be empty',
+        'any.invalid': `Invalid delivery mode. Valid options are: ${formatOptions(DELIVERY_MODES)}`,
       }),
   })
   .custom(stripEmptyKeys);
+
+export const confirmOrderSchema = customJoi.object({
+  paymentId: Joi.string().trim().required().messages({
+    'any.required': 'Payment ID is required',
+    'string.base': 'Payment ID must be a string',
+    'string.empty': 'Payment ID cannot be empty',
+  }),
+
+  paymentSignature: Joi.string().trim().required().messages({
+    'any.required': 'Payment signature is required',
+    'string.base': 'Payment signature must be a string',
+    'string.empty': 'Payment signature cannot be empty',
+  }),
+});
 
 export const ordersQuerySchema = Joi.object({
   duration: Joi.number()
@@ -185,4 +197,8 @@ export const orderStatusSchema = customJoi.object({
 
 export const orderIdSchema = Joi.object({
   orderId: getPathIDSchema('Order ID'),
+});
+
+export const razorpayOrderIdSchema = Joi.object({
+  orderId: getPathParamSchema('Order ID'),
 });
