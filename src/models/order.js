@@ -3,7 +3,7 @@ import { roundTwoDecimals, formatOptions } from '../utils/helperFunctions.js';
 import {
   QUANTITY,
   PRICE,
-  SHIPPING_CHARGE,
+  SHIPPING_CHARGES,
   ORDER_STATUS,
   DELIVERY_MODES,
 } from '../constants/common.js';
@@ -64,7 +64,7 @@ const orderSchema = new Schema(
     shippingCharges: {
       type: Number,
       required: [true, 'Shipping charges are required'],
-      min: [SHIPPING_CHARGE.MIN, `Shipping charges must be at least ₹${SHIPPING_CHARGE.MIN}`],
+      min: [SHIPPING_CHARGES.MIN, `Shipping charges must be at least ₹${SHIPPING_CHARGES.MIN}`],
       set: roundTwoDecimals,
     },
     taxAmount: {
@@ -113,6 +113,13 @@ const orderSchema = new Schema(
       enum: {
         values: Object.values(ORDER_STATUS),
         message: `Invalid order status. Valid options are: ${formatOptions(ORDER_STATUS)}`,
+      },
+    },
+    estimatedDeliveryDate: {
+      type: Date,
+      validate: {
+        validator: date => date > new Date(),
+        message: 'Estimated delivery date must be in the future',
       },
     },
     user: {

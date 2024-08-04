@@ -11,7 +11,7 @@ import {
 import {
   QUANTITY,
   PRICE,
-  SHIPPING_CHARGE,
+  SHIPPING_CHARGES,
   ORDER_STATUS,
   DELIVERY_MODES,
 } from '../constants/common.js';
@@ -81,17 +81,6 @@ export const orderSchema = customJoi
       'array.base': 'Order items must be an array',
       'array.min': 'Items array must have at least one order item',
     }),
-
-    shippingCharges: Joi.number()
-      .min(SHIPPING_CHARGE.MIN)
-      .required()
-      .unsafe()
-      .custom(roundToTwoDecimalPlaces)
-      .messages({
-        'any.required': 'Shipping charges are required',
-        'number.base': 'Shipping charges must be a number',
-        'number.min': `Shipping charges must be at least ₹${SHIPPING_CHARGE.MIN}`,
-      }),
 
     couponCode: Joi.string().trim().uppercase().allow('').messages({
       'string.base': 'Coupon code must be a string',

@@ -101,7 +101,7 @@ export const formatOptions = options => {
 
 export const singularize = str => pluralize.singular(str);
 
-export const getDateString = isoDateStr => format(new Date(isoDateStr), 'MMMM d, YYYY');
+export const getDateString = date => format(new Date(date), 'MMMM d, yyyy');
 
 export const getCurrentDateMilliSec = () => {
   const current = new Date();
@@ -144,3 +144,15 @@ export const removeDuplicateItems = (array, field) => {
 
 export const generateHmacSha256 = (message, secret) =>
   crypto.createHmac('sha256', secret).update(message).digest('hex');
+
+export const deepFreeze = obj => {
+  Object.freeze(obj);
+
+  Object.keys(obj).forEach(key => {
+    if (typeof obj[key] === 'object' && obj[key] !== null && !Object.isFrozen(obj[key])) {
+      deepFreeze(obj[key]);
+    }
+  });
+
+  return obj;
+};

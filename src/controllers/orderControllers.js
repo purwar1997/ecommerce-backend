@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import { addDays } from 'date-fns';
 import Order from '../models/order.js';
 import Product from '../models/product.js';
 import handleAsync from '../utils/handleAsync.js';
@@ -14,10 +15,16 @@ import {
   generateHmacSha256,
   checkBoolean,
 } from '../utils/helperFunctions.js';
-import { GST, DISCOUNT_TYPES, PAGINATION, ORDER_STATUS } from '../constants/common.js';
+import {
+  GST,
+  DISCOUNT_TYPES,
+  PAGINATION,
+  ORDER_STATUS,
+  DELIVERY_OPTIONS,
+} from '../constants/common.js';
 
 export const createOrder = handleAsync(async (req, res) => {
-  const { items, shippingCharges } = req.body;
+  const { items, deliveryMode } = req.body;
   const { user, coupon } = req;
 
   const orderAmount = items.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -41,6 +48,10 @@ export const createOrder = handleAsync(async (req, res) => {
     }
   }
 
+  const { SHIPPING_CHARGESS: shippingCharges } = DELIVERY_OPTIONS.find(
+    option => option.type === deliveryMode
+  );
+
   const taxAmount = orderAmount * GST.RATE + shippingCharges * GST.RATE;
   const totalAmount = orderAmount - discount + shippingCharges + taxAmount;
 
@@ -55,9 +66,9 @@ export const createOrder = handleAsync(async (req, res) => {
     ...req.body,
     orderAmount,
     discount,
+    shippingCharges,
     taxAmount,
     totalAmount,
-    paymentId: null,
     user: user._id,
   });
 
@@ -88,6 +99,13 @@ export const confirmOrder = handleAsync(async (req, res) => {
     throw new CustomError('Invalid payment signature', 400);
   }
 
+  const { SHIPPING_TIME } = DELIVERY_OPTIONS.find(option => option.type === order.deliveryMode);
+
+  order.estimatedDeliveryDate = addDays(
+    new Date(),
+    Math.ceil((SHIPPING_TIME.MIN + SHIPPING_TIME.MAX) / 2)
+  );
+
   order.isPaid = true;
   order.paymentId = paymentId;
   await order.save();
@@ -108,7 +126,11 @@ export const confirmOrder = handleAsync(async (req, res) => {
     const options = {
       recepient: user.email,
       subject: 'Order confirmation email',
-      text: `Order #${order._id} has been placed successfully.`,
+      text: `Order #${
+        order._id
+      } has been placed successfully. Estimated delivery date is ${getDateString(
+        order.estimatedDeliveryDate
+      )}.`,
     };
 
     await sendEmail(options);
@@ -267,7 +289,7 @@ export const adminGetOrders = handleAsync(async (req, res) => {
 export const adminGetOrderById = handleAsync(async (req, res) => {
   const { orderId } = req.params;
 
-  const order = await Order.findById(orderId)
+  const order = await Order.findOne({ _id: orderId, isDeleted: false })
     .populate({
       path: 'items.product',
       select: { title: 1, description: 1, price: 1, image: 1 },
@@ -377,7 +399,7 @@ export const deleteOrder = handleAsync(async (req, res) => {
         subject: 'Order deletion email',
         text: `Dear ${fullname}, we regret to inform you that your order #${orderId} placed on ${getDateString(
           order.createdAt
-        )}, has been deleted. Order amount of ₹${order.amount} will be refunded shortly.`,
+        )}, has been deleted. Order amount of ₹${order.totalAmount} will be refunded shortly.`,
       };
 
       await sendEmail(options);

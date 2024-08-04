@@ -1,3 +1,5 @@
+import { deepFreeze } from '../utils/helperFunctions.js';
+
 export const STORAGE = Object.freeze({
   DATABASE_NAME: 'shopease_db',
   CLOUD_NAME: 'dlqnx5pot',
@@ -83,7 +85,7 @@ export const RATING = Object.freeze({
   MAX: 5,
 });
 
-export const SHIPPING_CHARGE = Object.freeze({
+export const SHIPPING_CHARGES = Object.freeze({
   MIN: 30,
 });
 
@@ -108,3 +110,22 @@ export const SAFE_INTEGER = Object.freeze({
   MIN: Number.MIN_SAFE_INTEGER,
   MAX: Number.MAX_SAFE_INTEGER,
 });
+
+export const DELIVERY_OPTIONS = deepFreeze([
+  {
+    TYPE: DELIVERY_MODES.STANDARD,
+    SHIPPING_CHARGESS: 30,
+    SHIPPING_TIME: {
+      MIN: 4,
+      MAX: 10,
+    },
+  },
+  {
+    TYPE: DELIVERY_MODES.EXPRESS,
+    SHIPPING_CHARGESS: 100,
+    SHIPPING_TIME: {
+      MIN: 2,
+      MAX: 5,
+    },
+  },
+]);
