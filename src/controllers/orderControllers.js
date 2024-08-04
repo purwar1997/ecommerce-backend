@@ -233,7 +233,11 @@ export const cancelOrder = handleAsync(async (req, res) => {
     })
   );
 
-  // Refund money to the user
+  await razorpay.payments.refund(cancelledOrder.paymentId, {
+    amount: cancelledOrder.totalAmount * 100,
+    speed: 'optimum',
+    receipt: uuidv4(),
+  });
 
   try {
     const options = {
@@ -391,7 +395,11 @@ export const deleteOrder = handleAsync(async (req, res) => {
       })
     );
 
-    // Refund order amount
+    await razorpay.payments.refund(order.paymentId, {
+      amount: order.totalAmount * 100,
+      speed: 'optimum',
+      receipt: uuidv4(),
+    });
 
     try {
       const options = {
