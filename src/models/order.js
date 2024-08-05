@@ -103,10 +103,7 @@ const orderSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    paymentId: {
-      type: String,
-      unique: true,
-    },
+    paymentId: String,
     status: {
       type: String,
       default: ORDER_STATUS.CREATED,
