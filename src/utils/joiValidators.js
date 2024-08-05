@@ -24,7 +24,7 @@ export const validateOption = options => (value, helpers) => {
   return value;
 };
 
-export const validateObjectIdAsPathParam = (value, helpers) => {
+export const validateObjectIdAsPathParams = (value, helpers) => {
   const path = ':' + helpers.state.path[0];
 
   if (value === path) {

@@ -77,7 +77,7 @@ export const createOrder = handleAsync(async (req, res) => {
 
 export const confirmOrder = handleAsync(async (req, res) => {
   const { orderId } = req.params;
-  const { paymentId, paymentSignature } = req.body;
+  const { razorpayPaymentId, razorpaySignature } = req.body;
   const { user } = req;
 
   const order = await Order.findOne({ _id: orderId, isDeleted: false });
@@ -91,12 +91,12 @@ export const confirmOrder = handleAsync(async (req, res) => {
   }
 
   const generatedSignature = generateHmacSha256(
-    orderId + '|' + paymentId,
+    orderId + '|' + razorpayPaymentId,
     config.razorpay.keySecret
   );
 
-  if (paymentSignature !== generatedSignature) {
-    throw new CustomError('Invalid payment signature', 400);
+  if (razorpaySignature !== generatedSignature) {
+    throw new CustomError('Provided invalid signature', 400);
   }
 
   const { SHIPPING_TIME } = DELIVERY_OPTIONS.find(option => option.TYPE === order.deliveryMode);
@@ -107,7 +107,7 @@ export const confirmOrder = handleAsync(async (req, res) => {
   );
 
   order.isPaid = true;
-  order.paymentId = paymentId;
+  order.paymentId = razorpayPaymentId;
   await order.save();
 
   user.cart = [];

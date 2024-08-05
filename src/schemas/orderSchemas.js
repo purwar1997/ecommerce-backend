@@ -8,13 +8,7 @@ import {
   validateOption,
   validateCommaSeparatedValues,
 } from '../utils/joiValidators.js';
-import {
-  QUANTITY,
-  PRICE,
-  SHIPPING_CHARGES,
-  ORDER_STATUS,
-  DELIVERY_MODES,
-} from '../constants/common.js';
+import { QUANTITY, PRICE, ORDER_STATUS, DELIVERY_MODES } from '../constants/common.js';
 import { ORDER_SORT_OPTIONS } from '../constants/sortOptions.js';
 import { ORDER_DURATION, FILTER_OPTIONS } from '../constants/filterOptions.js';
 
@@ -108,16 +102,16 @@ export const orderSchema = customJoi
   .custom(stripEmptyKeys);
 
 export const confirmOrderSchema = customJoi.object({
-  paymentId: Joi.string().trim().required().messages({
+  razorpayPaymentId: Joi.string().trim().required().messages({
     'any.required': 'Payment ID is required',
     'string.base': 'Payment ID must be a string',
     'string.empty': 'Payment ID cannot be empty',
   }),
 
-  paymentSignature: Joi.string().trim().required().messages({
-    'any.required': 'Payment signature is required',
-    'string.base': 'Payment signature must be a string',
-    'string.empty': 'Payment signature cannot be empty',
+  razorpaySignature: Joi.string().trim().required().messages({
+    'any.required': 'Razorpay signature is required',
+    'string.base': 'Razorpay signature must be a string',
+    'string.empty': 'Razorpay signature cannot be empty',
   }),
 });
 

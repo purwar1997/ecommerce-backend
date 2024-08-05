@@ -1,11 +1,11 @@
 import Joi from 'joi';
-import { validateObjectIdAsPathParam, validateRouteParams } from '../utils/joiValidators.js';
+import { validateObjectIdAsPathParams, validateRouteParams } from '../utils/joiValidators.js';
 import { SAFE_INTEGER } from '../constants/common.js';
 
 export const getPathIDSchema = param =>
   Joi.string()
     .trim()
-    .custom(validateObjectIdAsPathParam)
+    .custom(validateObjectIdAsPathParams)
     .messages({
       'string.base': `${param} must be a string`,
       'string.empty': `${param} is required`,
