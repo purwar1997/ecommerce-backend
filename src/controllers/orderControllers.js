@@ -87,7 +87,7 @@ export const confirmOrder = handleAsync(async (req, res) => {
   }
 
   if (order.isPaid) {
-    throw new CustomError('Order has already been confirmed', 409);
+    throw new CustomError('This order has already been confirmed', 409);
   }
 
   const generatedSignature = generateHmacSha256(
