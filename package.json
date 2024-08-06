@@ -7,6 +7,8 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
+    "start:cron": "node src/cron/scheduler.js",
+    "dev:cron": "nodemon src/cron/scheduler.js",
     "test": "jest"
   },
   "author": "Shubham Purwar",
@@ -25,6 +27,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.0",
     "morgan": "^1.10.0",
+    "node-cron": "^3.0.3",
     "nodemailer": "^6.9.13",
     "pluralize": "^8.0.0",
     "razorpay": "^2.9.4",
