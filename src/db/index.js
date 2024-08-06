@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import config from '../config/env.config.js';
 import { STORAGE } from '../constants/common.js';
 
-const connectDB = async () => {
+const connectToDB = async () => {
   try {
     const response = await mongoose.connect(`${config.database.url}/${STORAGE.DATABASE_NAME}`);
 
@@ -26,4 +26,4 @@ const connectDB = async () => {
   }
 };
 
-export default connectDB;
+export default connectToDB;

@@ -1,10 +1,10 @@
 import config from './config/env.config.js';
-import connectDB from './db/index.js';
+import connectToDB from './db/index.js';
 import app from './app.js';
 
 (async () => {
   try {
-    await connectDB();
+    await connectToDB();
 
     app.on('error', error => {
       throw error;

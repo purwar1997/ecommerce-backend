@@ -1,8 +1,8 @@
 import Coupon from '../../models/coupon.js';
-import connectDB from '../../db/index.js';
+import connectToDB from '../../db/index.js';
 import { COUPON_STATUS } from '../../constants/common.js';
 
-connectDB();
+connectToDB();
 
 export const checkCouponExpiry = async () => {
   try {
