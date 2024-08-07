@@ -1,19 +1,10 @@
 import express from 'express';
-import cors from 'cors';
 import cron from 'node-cron';
 import config from '../config/env.config.js';
 import { checkCouponExpiry } from './index.js';
-import { CRON_JOB } from '../constants/common.js';
+import { CRON_OPTIONS } from '../constants/common.js';
 
 const app = express();
-
-app.use(cors());
-
-app.get('/', (req, res) => {
-  res.status(200).json({
-    message: 'Home route',
-  });
-});
 
 app.listen(config.cron.port, () =>
   console.log(`Server is running on http://localhost:${config.cron.port}`)
@@ -22,7 +13,7 @@ app.listen(config.cron.port, () =>
 const scheduleJob = (cronExpression, jobFunction) => {
   cron.schedule(cronExpression, jobFunction, {
     scheduled: true,
-    timezone: CRON_JOB.TIMEZONE,
+    timezone: CRON_OPTIONS.TIMEZONE,
   });
 };
 

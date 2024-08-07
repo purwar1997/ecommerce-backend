@@ -130,6 +130,6 @@ export const DELIVERY_OPTIONS = deepFreeze([
   },
 ]);
 
-export const CRON_JOB = Object.freeze({
+export const CRON_OPTIONS = Object.freeze({
   TIMEZONE: 'Asia/Kolkata',
 });
