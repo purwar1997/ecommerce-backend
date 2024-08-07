@@ -18,4 +18,3 @@ const scheduleJob = (cronExpression, jobFunction) => {
 };
 
 scheduleJob('0 0 * * *', checkCouponExpiry);
-scheduleJob('*/5 * * * * *', () => console.log('Task running every 5 seconds'));
